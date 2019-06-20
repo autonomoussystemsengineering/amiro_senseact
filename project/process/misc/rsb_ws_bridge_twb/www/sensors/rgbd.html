@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <title>AMiRo Depth Camera View</title>
+  <link rel="icon" type="image/png" href="../media/logo.png">
+  <link rel="apple-touch-icon" href="../media/logo.png" />
+  <link rel="stylesheet" href="../iui/iui_sensors.css" type="text/css" />
+  <link rel="stylesheet" title="Default" href="../iui/t/default/default-theme_sensors.css"  type="text/css"/>
+  <script type="application/x-javascript" src="../iui/iui.js"></script>
+  
+  <!-- Handle ProtoBuffer -->
+  <script src="../Long.min.js"></script>         <!-- https://raw.github.com/dcodeIO/Long.js/master/dist/Long.min.js -->
+  <script src="../ByteBufferAB.min.js"></script> <!-- https://raw.github.com/dcodeIO/ByteBuffer.js/master/dist/ByteBufferAB.min.js -->
+  <script src="../ProtoBuf.min.js"></script>     <!-- https://raw.github.com/dcodeIO/ProtoBuf.js/master/dist/ProtoBuf.min.js -->
+  <script src="../d3.v3.min.js"></script>        <!-- http://d3js.org/d3.v3.min.js -->
+  <script>
+  if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+      throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+  }
+  // Initialize ProtoBuf.js
+  var ProtoBuf = dcodeIO.ProtoBuf;
+  var msg_proto = ProtoBuf.loadProtoFile("./text.proto").build("Message");
+
+  </script>
+</head>
+
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+</style>
+
+<body>
+  <div class="toolbar">
+      <h1 id="pageTitle">AMiRo Depth Camera</h1>
+      <!--img src="../media/lase2000d_22x_series.png" height=118-->
+      <a id="backButton" class="button" href="#"></a>
+  </div>
+
+<!--   <div id="home" class="panel" selected="true"> -->
+<!--     <textarea id="log" style="width: 100%; height: 200px"></textarea><br /> -->
+<!--     <input type="text" id="text" value="/cam" /> -->
+<!--     <button onclick="send()">Set Scope</button> -->
+
+    <canvas id="image"></canvas>
+<!--   </div> -->
+  
+  
+  <script>
+    var canvas = document.getElementById("image");
+    var log = document.getElementById("log");
+    var text = document.getElementById("text");
+
+    window.onload = function () {
+      send();
+    };
+
+    window.onbeforeunload = function () {
+      socket.close();
+    };
+
+    window.onunload = function () {
+      socket.close();
+    };
+
+    window.onpagehide = function() {
+      socket.close();
+    };
+
+    // Connect to our server
+    var socket = new WebSocket("ws://" + location.hostname + (location.port ? ':'+location.port: '') + "/ws");
+    socket.binaryType = "arraybuffer"; // We are talking binary
+
+    function send() {
+        if (socket.readyState == WebSocket.OPEN) {
+//             log.value = ""; // Clear log on new scope setup
+            socket.send("/rgbd");
+            console.log("Receive scope: " + text.value +"\n");
+        } else {
+            console.log("Not connected\n");
+        }
+    }
+
+    socket.onopen = function() {
+        console.log("Connected\n");
+    };
+
+    socket.onclose = function() {
+        console.log("Disconnected\n");
+    };
+        
+    socket.onmessage = function(evt) {
+        try {
+            var blob = new Blob([evt.data], { type: 'plain/text', endings: 'native' });
+
+            console.log("Rec Image\n");
+            var context = canvas.getContext('2d');
+            var image = new Image();
+            image.onload = function() {
+                canvas.width = image.width;
+                canvas.height = image.height;
+                context.drawImage(image, 0, 0);
+            };
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                image.src = e.target.result;
+            };
+            reader.readAsDataURL(blob);
+        } catch (err) {
+            console.log("Error: "+err+"\n");
+            socket.close();
+        }
+    };
+
+//     log.value = ""; // Clear log on reload
+  </script>
+
+
+</body>
+</html>

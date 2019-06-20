@@ -1,0 +1,5 @@
+====== Front Object Detection ======
+
+For the detection of the object in front of the robot based on proximity sensors, there are two programs:
+  * [[process:objectDetection:frontObjectDetection:frontObjectDetection:start|Front Object Detection]]: The basic object detection for the robot based on its proximity sensors.
+  * [[process:objectDetection:frontObjectDetection:frontObjectDetectionCommand:start|Front Object Detection Command]]: The tool for receiving the images of the front object detection.

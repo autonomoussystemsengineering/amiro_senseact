@@ -1,0 +1,10 @@
+/**
+ * Data types related to communication at the integration level.
+ *
+ * One example is @ref rst.communicationpatterns.TaskState which is
+ * used in the task state pattern.
+ *
+ * @see http://www.ros.org/wiki/actionlib_msgs
+ *      "Corresponding data types in ROS"
+ */
+package rst.communicationpatterns;

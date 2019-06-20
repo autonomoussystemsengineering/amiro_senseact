@@ -1,0 +1,27 @@
+package rst.math;
+
+option java_outer_classname = "Vec3DFloatType";
+
+/**
+ * A 3D vector with float entries.
+ *
+ * @author TODO
+ */
+message Vec3DFloat {
+
+    /**
+     * TODO
+     */
+    required float x = 1 [default = 0];
+
+    /**
+     * TODO
+     */
+    required float y = 2 [default = 0];
+
+    /**
+     * TODO
+     */
+    required float z = 3 [default = 0];
+
+}

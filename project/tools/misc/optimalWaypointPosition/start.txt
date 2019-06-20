@@ -1,0 +1,8 @@
+====== optimalWaypointPosition ======
+
+This program computes optimal waypoint positions given a map and marked rooms. The rooms should be marked in this grey (127, 127, 127).
+
+===== Build and run =====
+
+  - build: ''./build.sh''
+  - run, e.g.: ''./optimalWaypointPosition --map data/centralLab.png --rooms data/centralLab-*.png''

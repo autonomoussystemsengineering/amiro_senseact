@@ -1,0 +1,19 @@
+package rst.xml;
+
+import "rst/xml/XOP.proto";
+
+option java_outer_classname = "XOPsType";
+
+/**
+ * A collection of XML documents with optional binary attachments.
+ *
+ * @author "David Klotz" <dklotz@techfak.uni-bielefeld.de>
+ */
+message XOPs {
+
+    /**
+     * The collection of @ref rst.xml.XOP objects.
+     */
+    repeated XOP xops = 1;
+
+}

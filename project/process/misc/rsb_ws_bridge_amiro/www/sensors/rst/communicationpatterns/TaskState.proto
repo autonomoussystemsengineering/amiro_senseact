@@ -1,0 +1,179 @@
+package rst.communicationpatterns;
+
+option java_outer_classname = "TaskStateType";
+
+/**
+ * Represents the initiation or update of a potentially long-running task.
+ *
+ * The task is represented as a current state (@ref .state field) and
+ * a datum or "specification" (represented by the @ref .wire_schema
+ * and @ref .payload fields).
+ *
+ * @see http://opensource.cit-ec.de/projects/xtt/wiki/TaskStateProtocol
+ *      "A detailed description of the task state protocol"
+ *
+ * @author Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+ */
+message TaskState {
+
+    /**
+     * Possible states of the task an update of which the @ref
+     * .TaskState object represents.
+     *
+     * Initial task submission:
+     *
+     *   Applicable in states: none (since initial submission)
+     *
+     *   Possible values of @ref .state:
+     *
+     *   * @ref .INITIATED
+     *   * @ref .ACCEPTED
+     *   * @ref .REJECTED
+     *
+     * Updated of an accepted task:
+     *
+     *   Applicable in states: @ref .ACCEPTED
+     *
+     *   Possible values of @ref .state:
+     *
+     *   * @ref .UPDATE
+     *   * @ref .UPDATE_REJECTED
+     *
+     * Aborting an accepted task:
+     *
+     *   Applicable in states: @ref .ACCEPTED
+     *
+     *   Possible values of @ref .state:
+     *
+     *   * @ref .ABORT
+     *   * @ref .ABORTED
+     *   * @ref .ABORT_FAILED
+     *
+     * Final states:
+     *
+     *   * @ref .RESULT_AVAILABLE
+     *   * @ref .COMPLETED
+     *   * @ref .FAILED
+     *
+     */
+    enum State {
+
+        /**
+         * Client submits specification with @ref .INITIATED state.
+         *
+         * Server accepts or rejects task and publishes specification
+         * with @ref .ACCEPTED or @ref .REJECTED state accordingly.
+         */
+        INITIATED                = 0;
+
+        /**
+         * See @ref .INITIATED.
+         */
+        ACCEPTED                 = 1;
+
+        /**
+         * See @ref .INITIATED.
+         */
+        REJECTED                 = 2;
+
+        /**
+         * Client publishes (modified) specification with @ref .UPDATE
+         * state.
+         *
+         * Server accepts or rejects the update and publishes
+         * specification with @ref .ACCEPTED or @ref .UPDATE_REJECTED
+         * state accordingly.
+         */
+        UPDATE             = 3;
+
+        /**
+         * See @ref .UPDATE.
+         */
+        UPDATE_REJECTED    = 4;
+
+        /**
+         * @todo document
+         */
+        ABORT                = 5;
+
+        /**
+         * See @ref .ABORT.
+         */
+        ABORTED              = 6;
+
+        /**
+         * See @ref .ABORT.
+         */
+        ABORT_FAILED         = 7;
+
+        /**
+         * @todo document
+         */
+        RESULT_AVAILABLE = 8;
+
+        /**
+         * See @ref .RESULT_AVAILABLE.
+         */
+        COMPLETED        = 9;
+
+        /**
+         * See @ref .RESULT_AVAILABLE.
+         */
+        FAILED           = 10;
+    }
+
+    /**
+     * Describes the role of the component doing the update.
+     */
+    enum Origin {
+
+        /**
+         * The task state update is performed by the submitter.
+         */
+        SUBMITTER = 0;
+
+        /**
+         * The task state update is performed by the handler.
+         */
+        HANDLER   = 1;
+    }
+
+    /**
+     * Describes the origin of the update.
+     *
+     * Has to be @ref .Origin.SUBMITTER when the task is being
+     * initiated.
+     */
+    required Origin origin         = 1;
+
+    /**
+     * State to which the task should be updated.
+     *
+     * Has to be @ref .State.INITIATED when the task is being
+     * initiated.
+     */
+    required State    state        = 2;
+
+    /**
+     * TODO
+     */
+    required uint32 serial         = 3;
+
+    /**
+     * Type of the payload blob.
+     *
+     * This field and the @ref .payload field are intended to be
+     * processed by a (de)serialization mechanism that decodes/encodes
+     * the payload blob according to the type information in
+     * wireSchema.
+     *
+     * @todo "type should be ascii-string"
+     */
+    required bytes    wire_schema = 4;
+
+    /**
+     * See @ref .wire_schema.
+     */
+    required bytes    payload     = 5;
+
+}

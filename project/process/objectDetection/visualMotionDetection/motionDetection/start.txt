@@ -1,0 +1,43 @@
+====== Motion Detection ======
+
+This application detects motion by using a camera. It always uses the actual frame and two foreign ones for difference calculation. The (thresholded) differences are defined as motion. By giving commands the application can start and stop the motion detection or can be quit.
+
+The [[process:objectDetection:visualMotionDetection:motionDetectionCommand:start|Motion Detection Command]] serves as an interface application for users.
+
+===== Commands =====
+
+For external applications it is possible to send string commands.
+
+^ Key ^ Description ^
+| START | Starts the motion detection. |
+| STOP | Stops the motion detection. |
+| QUIT | Quits the application. |
+
+===== RSB Scopes =====
+
+For communication there are RSB scopes defined.
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Image scope | String | "/motionDetection/image" | Scope for sending the camera frame with motion marker (maybe additional the binary motion matrix) if activated (see paramters for activation). |
+| Detection scope | String | "/motionDetection/detected" | Scope for sending the detection signal. |
+| Command scope | String | "/motionDetection/command" | Scope for receiving commands. |
+
+===== Parameters =====
+
+For parameter information type ''motionDetection -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --imagescope, -i | String | "/motionDetection/image" | Sets the scope for sending camera frames. |
+| --outscope, -o | String | "/motionDetection/detected" | Sets the scope for sending detection signal. |
+| --commandscope, -c | String | "/motionDetection/command" | Sets the scope for receiving commands. |
+| --directory | String | "/home/root/motionDetection/" | Directory path for saving motion pictures. |
+| --device, -d | Integer | 0 | Device ID of the camera (/dev/camera<ID>). |
+| --quality, -q | Integer | 85 | Quality of the JPEG information [0,100]. |
+| --motionsize, -m | Integer | 5 | Minimum number of pixels which have been changed for motion detectin. |
+| --motiondeviation, -r | Integer | 100 | Maximum deviation of the image (the higher the value, the more motion is allowed). |
+| --waitForStart, -w | - | - | Does not start with motion detection immediately. It waits for start command. |
+| --sending, -s | - | - | Sends the camera frames over RSB. |
+| --saveMotion | - | - | Saves the motion pictures. |
+| --debug | - | - | Activates debugging which includes sending . |
+
+

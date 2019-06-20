@@ -1,0 +1,21 @@
+====== RSB-WebSockets Bridge ======
+
+This is a generic RSB-WebSockets bridge which offers the following functionality:
+
+  * http(s)/WebSockets webserver functionality using [[https://github.com/cesanta/mongoose|mongoose]] backend (hard linked into the program)
+  * Website interface by [[http://www.iui-js.org/|iui]]
+  * [[https://developers.google.com/protocol-buffers/|Protobuffer]] implementation in Javascript by [[https://github.com/dcodeIO/ProtoBuf.js/|protobuf.js]]
+  * Eye-candy visualization of raw data using [[http://d3js.org/|d3js]]
+
+The main functionality of the program ''rsb_ws_bridge'' is as follows:
+
+  - Offering a html based webside via html
+  - On a WebSockets upgrade request by any webbrowser, the webserver assumes to receive an RSB scope
+  - A anonymous RSB listener will be created and every received package content (without the RSB layer) will be forwarded to the WebSockets connection
+  - The webbrowser receives the raw binary content and needs to know how to interprete it (functionality needs to be programed in javascript inside the webpage).
+    * In the case of a Protobuffer message, the content can by interpreted by the webbrowser using protobuf.js
+    * In case of a JPEG image, the data can directly displayed as binary blob
+    * A nice visual interpretation of raw data can be done via [[http://d3js.org/|d3js]]
+    * The big advantage is, that the workload is outsourced to the webbrowser
+
+To see a running demonstration of the webserver, use the demonstration [[demo:webServer:start|webServer]].

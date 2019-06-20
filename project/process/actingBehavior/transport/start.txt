@@ -1,0 +1,33 @@
+====== Transport Scenario ======
+
+The following behavior by using proximity sensors is included in the transport task of the GEPTRO table top scenario. In this case, an object has be transported on top of an AMiRo. Because in the GEPTRO environment the AMiRo localizes itself by using the information of a tracking camera, which needs a marker on top of the AMiRo for identification, the object blocks this functionality. Another AMiRo has to guide the transporter to its final position.
+
+===== Programs =====
+
+For the following by using proximity sensors there are two programs:
+  * [[process:actingBehavior:transport:transportFollow:start|follow]]: The program for the following behavior.
+  * [[process:actingBehavior:transport:transportGuide:start|guide]]: The program for the guide.
+
+===== Transport Scenario with Two AMiRos =====
+
+  - At beginning the final transport position is initialized by an additional marker
+  - Both AMiRos are "waiting" (doing some basic behavior)
+  - An object is placed on one AMiRo (now called "Transporter")
+  - Transporter doesn't get any position -> Object has been placed on top of it
+  - Transporter calculates path to final transport position
+  - Transporter calculates start position in front of it (1 cm distance)
+  - Transporter transmits start position to other AMiRo (now called "Guide")
+  - Guide transmits OK on receiving start position
+  - Transporter transmits own position
+  - Guide receives Transporter's position
+  - Guide drives to start position (maybe driving around the Transporter)
+  - Guide transmits OK
+  - Transporter turns towards Guide
+  - Transporter transmits final transport position
+  - Transporter starts following behavior
+  - Guide calculates path to final transport position
+  - Guide drives to final transport position (followed by Transporter)
+  - Guide transmits OK
+  - Transporter stops follow behavior
+  - Transporter transmits disconnection
+  - Both AMiRos exit their tools

@@ -1,0 +1,53 @@
+====== Simple Object Transport ======
+
+In this task the robot just drives from edge to edge to transport objects:
+
+  - Drive to current table edge
+  - Turn to get the table edge direct behind
+  - Drive to next table edge
+  - Drive a little bit backwards to get distance from table edge
+  - Wait for command to repeat
+
+The command can be given via RSB or by using the sensors of the proximity sensor ring.
+
+===== Build Program =====
+
+  - ''cmake .''
+  - ''make''
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Obstacle Values    | /rir_prox/obstacle   | Inscope for receiving proximity sensor values for obstacle model. |
+| Edge Values        | /rir_prox/ground     | Inscope for receiving proximity sensor values for edge model. |
+| Command Input      | /tobiamirotable<id>  | Inscope for receiving commands (scope contains AMiRo ID). |
+| Answers and Status | /amirotable<id>tobi  | Outscope for sending command answers and status messages (scope contains AMiRo ID). |
+| Light Commands     | /amiro/lights        | Outscope for sending light commands. |
+
+===== Commands =====
+
+^ Command Name ^ Command ^ Type ^ Description ^
+| Command Input             | "drive"       | String | The robot will start the driving procedure to the next edge. |
+| Status Announcement       | "finish"      | String | If the robot is finished with the driving procedure, it will announce it. |
+| Command Input Recognition | Command+"rec" | String | If a command has been received, it will be recognized with the addition "rec". |
+
+The Command Input can also be given by the proximity sensors of the proximity sensor ring. In this case two neighboured sensors have to be "touched" for recognition. This feature can be deactivated by program parameter "commandsRSBOnly".
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| id                     | Integer | 0                  | AMiRo ID. |
+| proxObstacleInscope, o | String  | /rir_prox/obstacle | Inscope for receiving proximity sensor values for obstacle model. |
+| proxGroundInscope, g   | String  | /rir_prox/ground   | Inscope for receiving proximity sensor values for edge model. |
+| lightOutscope, l       | String  | /amiro/lights      | Outscope for light commands. |
+| forwardSpeed, f        | Float   | 0.06               | Forward speed in m/s. |
+| turnSpeed, t           | Float   | 20.0               | Angular speed in degree/s. |
+| irDetectionDist, i     | Float   | 0.05               | Maximal distance for command detection by the proximity sensors in m. |
+| edgeMaxDist, d         | Float   | 0.055              | Distance for edge detection in m. |
+| edgeDistVariance, v    | Float   | 0.005              | Maximal variance between the proximity sensors for edge orientation in m. |
+| tableEdgeDistance, e   | Float   | 0.05               | Distance between robot and table edge for grasping and setting objects onto the robot in m. |
+| bufferStart, b         | Integer | 5                  | Buffer between command recognition and start in seconds. |
+| commandsRSBOnly, r     | -       | -                  | Flag, if the commands shall only given via RSB. |
+| host                   | String  | localhost          | Host of external spread. |
+| port                   | String  | 4823               | Port of external spread. |
+

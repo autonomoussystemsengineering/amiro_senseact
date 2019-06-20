@@ -1,0 +1,66 @@
+====== State Behavior Description ======
+
+This is the state behavior description of the [[process:statemachines:final2015:start|RoboCup@Home 2015 Final Statemachine]].
+
+===== RSB Connection Types =====
+
+For the communication between the statemachine and the execution program there is used a basic RSB connection. The RSB types, which are used, are different for each communication.
+
+The RSB connection between the statemachine and the external command program is based on the type String. Additionally every command or information (except waypoint status changes due to possible high frequency) has to be repeated until a recognition notice has been received, due to possible lost information via wireless connection.
+
+The commands are simply structured. Each behavior can be started by an "init" and be stopped by a "stop" command. For switching between two behaviors it isn't necessary to send a stop command.
+
+===== State Behaviors =====
+
+At first the statemachine starts with an initial behavior, which just includes initializing the communication flags. Afterwards the follow or waypoint command can be given by the external command program.
+
+^ Symbol ^ Description ^
+| D | Polling RSB connection |
+| RS | RSB Answer to polling connection (D) |
+| -> | Connection direction |
+| -?-> | Expected connection direction |
+
+==== Initial Behavior ====
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | | idle | | |
+| | | init | | |
+| | -?-> | stopped | | |
+
+==== Following Behavior ====
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | -?-> | stopped | | |
+| "initfollow"(D) | -> | stopped | | |
+| "initfollowrec"(RS) | <- | stopped | -> | "init" (follow scope) |
+| | -?-> | following | | |
+| "stopfollow"(D) | -> | following | -> | "stop" (follow scope) |
+| "stopfollowrec"(RS) | <- | following | | |
+| | -?-> | stopped | | |
+
+==== Waypoint Behavior ====
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | -?-> | stopped | | |
+| "initwaypoint"(D) | -> | stopped | | |
+| "initwaypointrec"(RS) | <- | stopped | -> | "init" (waypoint scope) |
+| | -?-> | waypoint | <-?- | |
+| "entered" (if status changed!) | <- | waypoint | <- | "entered" (waypoint scope) |
+| | -?-> | waypoint | <-?- | |
+| "left" (if status changed!) | <- | waypoint | <- | "left" (waypoint scope) |
+| | -?-> | waypoint | <-?- | | 
+| "stopwaypoint"(D) | -> | waypoint | -> | "stop" (waypoint scope) |
+| "stopwaypointrec"(RS) | <- | waypoint | | |
+| | -?-> | stopped | | |
+
+==== Direct Switch between the Behaviors ====
+
+The behaviors can be switched without sending a stop command. An example for switching directly from following to waypoint:
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | -?-> | following | | |
+| "initwaypoint"(D) | -> | following | -> | "stop" (follow scope) |
+| "initwaypointrec"(RS) | <- | following | -> | "init" (waypoint scope) |
+| | -?-> | waypoint | <-?- | |
+
+

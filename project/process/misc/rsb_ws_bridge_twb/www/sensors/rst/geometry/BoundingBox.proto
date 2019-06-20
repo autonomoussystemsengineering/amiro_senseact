@@ -1,0 +1,66 @@
+package rst.geometry;
+
+import "rst/math/Vec2DInt.proto";
+
+option java_outer_classname = "BoundingBoxType";
+
+/**
+ * A bounding box, which is associated to a raster image.
+ *
+ * .. parsed-literal::
+ *
+ *    (0,0)           Image
+ *    +----------------------------------+ ^
+ *    |                                  |
+ *    |    @ref .top_left                    |
+ *    |    +---------------+ ^           |
+ *    |    |               |             |
+ *    |    |               | @ref .height    | @ref .image_height
+ *    |    |               |             |
+ *    |    +---------------+ v           |
+ *    |    <    @ref .width     >            |
+ *    |                                  |
+ *    +----------------------------------+ v
+ *    <         @ref .image_width            >
+ *
+ * All values are in pixels and refer to the associated image.
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+// @constraint(.top_left.x < .image_width)
+// @constraint(.top_left.x + .width <= .image_width)
+// @constraint(.top_left.y < .image_height)
+// @constraint(.top_left.y + .height <= .image_height)
+message BoundingBox {
+
+    /**
+     * Coordinates of the top left corner.
+     */
+    // @unit(pixel)
+    required math.Vec2DInt top_left = 1;
+
+    /**
+     * Width of the bounding box.
+     */
+    // @unit(pixel)
+    required uint32 width = 2;
+
+    /**
+     * Height of the bounding box.
+     */
+    // @unit(pixel)
+    required uint32 height = 3;
+
+    /**
+     * Width of the image the bounding box is based on.
+     */
+    // @unit(pixel)
+    optional uint32 image_width = 4;
+
+    /**
+     * Height of the image the bounding box is based on.
+     */
+    // @unit(pixel)
+    optional uint32 image_height = 5;
+
+}

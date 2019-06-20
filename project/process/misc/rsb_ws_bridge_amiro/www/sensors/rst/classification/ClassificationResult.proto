@@ -1,0 +1,54 @@
+package rst.classification;
+
+option java_outer_classname = "ClassificationResultType";
+
+/**
+ * A class representing the result of a classification process.
+ *
+ * An example of such a result could be the output of an SVM-based
+ * classifier.
+ *
+ * In the simplest form, only the name of a decided class is
+ * given. However, it is also possible to give the whole vector of
+ * possible classes with their probabilities.
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message ClassificationResult {
+
+    /**
+     * A shortcut to get the most likely class easily.
+     *
+     * This needs to be an ASCII string.
+     */
+    required bytes decided_class = 1;
+
+    /**
+     * TODO
+     */
+    message ClassWithProbability {
+
+        /**
+         * Name of the class (ASCII string).
+         */
+        required bytes name = 1;
+
+        /**
+         * Some kind of confidence, values are application dependent.
+         *
+         * However, values summing up to 1 are preferred.
+         */
+        // @unit(TODO)
+        required float confidence = 2;
+    }
+
+    /**
+     * The complete vector of classes with their probabilities if
+     * suitable.
+     *
+     * The results in this vector should of cause not contradict
+     * decided_class.
+     */
+    repeated ClassWithProbability classes = 2;
+
+}

@@ -1,0 +1,18 @@
+====== Local Planner ======
+
+The Local Planner receives paths and steers the robot along these. For this purpose only the current robot position received from localization is used. It sends a rsb signal when a path is finished.
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Localization | /localization | Scope for receiving localization data. |
+| Local Planner Command | /path | Scope for receiving path requests. |
+| Local Planner Response | /pathResponse | Scope for sending responses whenever a path is finished. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --posin, -p | String | "/localization" | Inscope for position data. |
+| --pathIn, -i | String | "/path" | Inscope for the path. |
+| --pathRe, -r | String | "/pathResponse" | Outscope for path responses. |
+| --meterPerPixel | Float | 0.0025 | Meter per Pixel. |

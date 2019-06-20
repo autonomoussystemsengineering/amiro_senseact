@@ -1,0 +1,26 @@
+package rst.generic;
+
+option java_outer_classname = "MethodCallType";
+
+import "rst/generic/Value.proto";
+
+/**
+ * Represents a call to a named method with multiple @ref Value as arguments.
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message MethodCall {
+
+    /**
+     * Name of the method to call.
+     *
+     * ASCII string.
+     */
+    required bytes name = 1;
+
+    /**
+     * The method arguments.
+     */
+    repeated Value arguments = 2;
+
+}

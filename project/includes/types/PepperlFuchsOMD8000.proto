@@ -1,0 +1,13 @@
+package rst.claas;
+
+import "PoseEuler.proto";
+
+option java_outer_classname = "PepperlFuchsOMD8000Type";
+
+message PepperlFuchsOMD8000 {
+repeated uint32 distance_mm = 1; // Distance in mm
+repeated uint32     echo    = 2; // Echo
+repeated bool   noTarget    = 3; // No target detected
+
+optional geometry.PoseEuler pose = 4;
+}

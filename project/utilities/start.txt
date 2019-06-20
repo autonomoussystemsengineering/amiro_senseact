@@ -1,0 +1,21 @@
+====== Utilities ======
+
+The **utilities** folder contains scripts and tools which help you working with the MuRoX environment.
+
+{{ :utilities:utilities.png?300 |}}
+
+===== Initialize =====
+
+  - Run the ''./initMurox'' command in this folder. It will add this folder to the ''PATH'' variable in your ''~/.bashrc''.
+  - Create protobuffer files as described in [[includes:types:start]].
+
+
+===== Tools =====
+
+  * **cr** This is the Copy & Run script which copies the executable to the given IP suffix and then runs it over ssh
+  * **createProject** Creates a project with a proper ''.gitignore'' and a ''start.txt'' for the DokuWiki
+  * **initMurox** Adds the utilities folder to the ''PATH'' variable
+  * **makeVecConverter** Creates new vector converter for a given type
+  * **mc** This is the Make & Copy & Run script which build the project and copies the executable to the given IP suffix
+  * **mcr** This is the Make & Copy & Run script which build the project, copies the executable to the given IP suffix and then runs it over ssh
+  * **rmcmake** Removes ''CMakeFiles/ CMakeCache.txt cmake_install.cmake Makefile lib/'' and the executable in the current folder

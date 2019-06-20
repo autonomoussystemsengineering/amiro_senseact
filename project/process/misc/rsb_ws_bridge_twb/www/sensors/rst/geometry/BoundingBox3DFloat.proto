@@ -1,0 +1,48 @@
+package rst.geometry;
+
+option java_outer_classname = "BoundingBox3DFloatType";
+
+import "rst/geometry/AxisAlignedBoundingBox3DFloat.proto";
+import "rst/geometry/Pose.proto";
+
+/**
+ * Bounding-box in 3D in general position and orientation.
+ *
+ * The general bounding-box with dimensions @ref .width x @ref .depth
+ * x @ref .height is constructed by translating and rotating (via @ref
+ * .transformation) an axis-aligned bounding-box around its center of
+ * mass.
+ *
+ * For an axis-aligned version, see @ref
+ * .AxisAlignedBoundingBox3DFloat.
+ *
+ * @author Christian Emmerich <cemmeric@cor-lab.de>
+ * @author Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+ */
+message BoundingBox3DFloat {
+
+    /**
+     * Transformation, consisting of translation and orientation, of
+     * the center of mass of the bounding-box.
+     */
+    required geometry.Pose transformation = 1;
+
+    /**
+     * The width (along the X axis) of the box.
+     */
+    // @unit(meter)
+    required float width = 2;
+
+    /**
+     * The depth (along the Y axis) of the box.
+     */
+    // @unit(meter)
+    required float depth = 3;
+
+    /**
+     * The height (along the Z axis) of the box.
+     */
+    // @unit(meter)
+    required float height = 4;
+
+}

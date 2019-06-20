@@ -1,0 +1,28 @@
+====== final2015 ======
+
+This is the basic state machine for the RoboCup@Home 2015 Final project. Please use the [[demo:final2015:start|Final 2015 Demo]]. It also includes scripts for testing and giving commands.
+
+===== States =====
+
+^ State ^ Description ^ Transitions ^
+| idle | Starting the statemachine. | __init:__ directly |
+| turn | Turns the robot. | __stopped:__ directly |
+| init | Initializes all flags. | __stopped:__ directly; __following:__ if follow command has been received; __waypoint:__ if waypoint command has been received |
+| following | Following the next object. | __stopped:__ if stop command for following has been received; __waypoint:__ if waypoint command has been received; __turn:__ if turn command has been received |
+| waypoint | Serving as waypoint. | __stopped:__ if stop command for waypoint has been received; __following:__ if follow command has been received; __turn:__ if turn command has been received |
+| stopped | Waiting for commands. | __following:__ if follow command has been received; __waypoint:__ if waypoint command has been received; __turn:__ if turn command has been received |
+
+The state behaviors are descripted more in detail in the [[process:statemachines:final2015:StateDescriptions|State Behavior Description]].
+
+===== Application Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --spread, -s | String | "localhost" | IP of remote spread server. |
+| --spreadPort | String | "4823" | Port of remote spread server. |
+| --outscopeStateTobi | String | "/amiro" | Scope for sending the current state to Tobi. |
+| --inscopeTobi, -i | String | "/tobiamiro" | Scope for receiving Tobi's messages. |
+| --id | String | "0" | ID of AMiRo. |
+| --turn | Integer | 180 | Angle to turn in turning state. |
+| --turnAfterFollow | Integer | 0 | Angle to turn after following (in grad, positiv: counter clockwise). |
+| --moveAfterFollow | Integer | 0 | Distance to move after following after turning (in mm, positiv: forward). |
+

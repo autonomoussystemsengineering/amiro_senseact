@@ -1,0 +1,29 @@
+package rst.kinematics;
+
+import "rst/kinematics/CollisionGeometry.proto";
+
+option java_outer_classname = "ObjectCollisionType";
+
+/**
+ * Holds information about a collision between two objects.
+ *
+ * @author Daniel Seidel <dseidel@techfak.uni-bielefeld.de>
+ */
+message ObjectCollision {
+
+    /**
+     * Geometry of the collision, such as list of contact points.
+     */
+    optional CollisionGeometry geometry = 1;
+
+    /**
+     * Name of the first object involved in the collision.
+     */
+    optional string object_1 = 2;
+
+    /**
+     * Name of the second object involved in the collision.
+     */
+    optional string object_2 = 3;
+
+}

@@ -1,0 +1,20 @@
+<package>
+  <name>kfc</name>
+  <description>
+    kinect floor calib
+  </description>
+  <author>lziegler, prenner, pdressel</author>
+  <maintainer email="lziegler@techfak.uni-bielefeld.de">Leon Ziegler</maintainer>
+  <license>BSD</license>
+  <version>1.0.0</version>
+
+
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>message_runtime</run_depend>
+
+  <run_depend>roslib</run_depend>
+  
+</package>
+

@@ -1,0 +1,5 @@
+/**
+ * This package contains data type definitions that describe
+ * arrangements and properties of objects in three dimensional scenes.
+ */
+package rst.scene;

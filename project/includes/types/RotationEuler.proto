@@ -1,0 +1,34 @@
+package rst.geometry;
+
+option java_outer_classname = "RotationEulerType";
+
+/**
+ * Cartesian 3-dimensional rotatory displacement or orientation.
+ *
+ * The displacement or orientation (orientation being a rotation from
+ * an origin) is in world coordinates and expressed as euler angles.
+ *
+ * @author Timo Korthals <tkorthals@cor-lab.uni-bielefeld.de>
+ */
+message RotationEuler {
+
+    /**
+     * TODO
+     */
+    required double roll = 1;
+
+    /**
+     * TODO
+     */
+    required double pitch = 2;
+
+    /**
+     * TODO
+     */
+    required double yaw = 3;
+
+    /**
+     * Identifier for the coordinate frame of the rotation.
+     */
+    optional string frame_id = 8;
+}

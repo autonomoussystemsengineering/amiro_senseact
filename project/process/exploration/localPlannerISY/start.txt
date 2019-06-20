@@ -1,0 +1,22 @@
+====== Local Planner of GEPTRO Table Application ======
+
+The Local Planner receives paths and steers the robot along these. For this purpose only the current robot position received from tracking is used.
+It sends a rsb signal when a path is finished.
+
+===== RSB Scopes =====
+
+^ Scope (default name)      ^ Description ^
+|/murox/roboterlocation | Inscope for the tracking data ("in program spread" --port, --host; id: --id)|
+|/path | Inscope for the paths |
+|/pathResponse | Outscope for path responses (whenever a path is finished)|
+|/motor/05 | Outscope for steering signals|
+|/pathUpdate/[makerID] | Outscope for path updates (used for visualization in [[tools:hmi:showMapGeptro:start|showMap]])
+
+
+===== Important Command-Line Options =====
+^ Option      ^ Description ^
+| -h, --help | Display a help message |
+| --id | ID of the tracking marker |
+| --host | Spread host |
+| --port | Spread port |
+| --meterPerPixel | Camera scaling |

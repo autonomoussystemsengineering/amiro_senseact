@@ -1,0 +1,50 @@
+====== Light Model ======
+
+The Light Model contains all constants, which are used for lighting the LEDs. This includes the initial color set and the commands for the [[act:setLights:start|setLights tool]].
+
+Notice: In the ''CMakeLists.txt'' of your project the reference to the Color Source (''Color.cpp'') has to be given to use this interface!
+
+===== Initial Colors =====
+
+When the AMiRo starts, it has an initial color set. By using the vector ''initColors'' the LEDs can be reset to their initial value.
+
+===== Commands and Periods =====
+
+By using the tool [[act:setLights:start|setLights]] the LEDs' colors and lighting type can be set. There are lighting types for setting one color (for all or for each LEDs), which have the prefix SINGLE, and for setting a color set for changing the color in different ways, which have the prefix CHANGE.
+
+If there is used a lighting type as SINGLE, there can be given one color for all or 8 colors for each LEDs. The lighting type uses the only color for the LED. The LEDs' colors won't change. If there is used a lighting type as CHANGE, there can be given a color set of the size greater or equal than 1. One color will be always set for all LEDs. Specified by the lighting type all LEDs will change their colors at once.
+
+The different lighting types are listed in the lighting type enumeration ''LightType''. If the names are needed (e.g. for debugging information), the string array ''LightTypeName'' can be used, which contains the lighting type names. Additionally each lighting type has its minimal period time due to CAN communication, which is listed in the integer array ''LightTypeMinPeriodTime'' (period times are in milliseconds). Of course, in the arrays ''LightTypeName'' and ''LightTypeMinPeriodTime'' the data is stored in the same order as the lighting type enumeration.
+
+==== Lighting Types SINGLE ====
+
+There are 7 different lighting types as SINGLE:
+
+^ Type ^ Period Time ^ Color Count ^ Description ^
+| SINGLE_INIT        | 0 ms   | 0+     | Sets the initial colors (see vector ''initColors''). |
+| SINGLE_SHINE       | 0 ms   | 1 or 8 | Sets the given color(s) and lets it just shine. |
+| SINGLE_BLINK       | 200 ms | 1 or 8 | Sets the given color(s) and blinks with all LEDs turned on or off. |
+| SINGLE_WARNING     | 400 ms | 1 or 8 | Sets the given color(s) and blinks with always the left or right half turned on or off. |
+| SINGLE_CROSSED     | 400 ms | 1 or 8 | Sets the given color(s) and blinks with only 4 crossed LEDs at once turned on. |
+| SINGLE_CIRCLELEFT  | 800 ms | 1 or 8 | Sets the given color(s) and lets circle two LEDs turned on to the left (counter clockwise). |
+| SINGLE_CIRCLERIGHT | 800 ms | 1 or 8 | Sets the given color(s) and lets circle two LEDs turned on to the right (clockwise). |
+
+==== Lighting Types CHANGE ====
+
+There are 3 different lighting types as CHANGE:
+
+^ Type ^ Period Time per Color ^ Color Count ^ Description ^
+| CHANGE_INIT  | 100 ms | 0+ | Changes the colors without turning off the LEDs. The color set equals the initial colors (see vector ''initColors''). |
+| CHANGE_SHINE | 100 ms | 1+ | Changes the given colors without turning off the LEDs. |
+| CHANGE_BLINK | 200 ms | 1+ | Changes the given colors and blinks with all LEDs turned on or off. |
+
+===== Functions =====
+
+There are two functions, which check for lighting type characteristics, and two functions, which build the integer vector for the [[act:setLights:start|setLights tool]] out of the lighting type, the period time and out of the colors:
+
+^ Function ^ Return Value ^ Description ^
+| lightTypeIsKnown  | boolean        | Checks, if the lighting type is known. |
+| lightTypeIsInit   | boolean        | Checks, if the given lighting type is a lighting type with initial colors. |
+| lightTypeIsChange | boolean        | Checks, if the given lighting type is a lighting type as CHANGE. |
+| setLight2Vec      | integer vector | Creates integer vector for [[act:setLights:start|setLights tool]] with only one color. |
+| setLights2Vec     | integer vector | Creates integer vector for [[act:setLights:start|setLights tool]] with colors (color count depends on lighting type). |

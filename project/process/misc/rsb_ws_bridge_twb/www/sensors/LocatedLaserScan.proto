@@ -1,0 +1,67 @@
+package rst.vision;
+
+import "rst/geometry/Pose.proto";
+
+option java_outer_classname = "LocatedLaserScanType";
+
+/**
+ * An object of this type represents a single laser scan carried out by an
+ * appropriate planar laser range-finder.
+ *
+ * @author "Leon Ziegler" <lziegler@techfak.uni-bielefeld.de>
+ */
+message LocatedLaserScan {
+
+    /**
+     * A set of values coming from the laserscanning device.
+     */
+    // @unit(meter)
+    repeated float scan_values = 1;
+
+    /**
+     * The angular range that is covered by the scan.
+     *
+     * This value depends on the used hardware and equals the sensor's
+     * one-dimensional field of view. The values from @ref
+     * .scan_values are evenly distributed over this angular range.
+     */
+    // @unit(radian)
+    required float scan_angle = 2;
+
+    /**
+     * Minimal allowed value which is coming from the laserscanning device.
+     */
+    // @unit(meter)
+    optional float scan_values_min = 3;
+
+    /**
+     * Maximal allowed value which is coming from the laserscanning device.
+     */
+    // @unit(meter)
+    optional float scan_values_max = 4;
+
+    /**
+     * Starting angle of the scan.
+     */
+    // @unit(radian)
+    optional float scan_angle_start = 5;
+
+    /**
+     * Ending angle of the scan.
+     */
+    // @unit(radian)
+    optional float scan_angle_end = 6;
+
+    /**
+     * Increment angle of the scan.
+     */
+    // @unit(radian)
+    optional float scan_angle_increment = 7;
+
+    /**
+     * The pose of the scaner's coordinate system in 3d space relative
+     * to a given parent coordinate system.
+     */
+    optional geometry.Pose pose = 8;
+
+}

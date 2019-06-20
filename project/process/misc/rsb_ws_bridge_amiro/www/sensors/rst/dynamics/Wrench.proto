@@ -1,0 +1,25 @@
+package rst.dynamics;
+
+import "rst/dynamics/Forces.proto";
+import "rst/dynamics/Torques.proto";
+
+option java_outer_classname = "WrenchType";
+
+/**
+ * Interaction force, composed of Cartesian translational forces and Cartesian rotational forces.
+ *
+ * @author Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>
+ */
+message Wrench {
+
+    /**
+     * 3-dimensional translatory forces.
+     */
+    required Forces forces = 1;
+
+    /**
+     * 3-dimensional rotatory forces (moment).
+     */
+    required Torques torques = 2;
+
+}

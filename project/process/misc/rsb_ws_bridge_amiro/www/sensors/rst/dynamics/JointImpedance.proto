@@ -1,0 +1,29 @@
+package rst.dynamics;
+
+option java_outer_classname = "JointImpedanceType";
+
+/**
+ * Stiffness and damping values of multiple joints.
+ *
+ * @author Christian Emmerich <cemmeric@techfak.uni-bielefeld.de>
+ * @todo "what is SI unit of rotatory damping?"
+ */
+// @constraint(len(.stiffness) == len(.damping))
+message JointImpedance {
+
+    /**
+     * Stiffness values of multiple joints.
+     *
+     * (Same joints and same order as @ref .damping)
+     */
+    // @unit(TODO)
+    repeated float stiffness = 1;
+
+    /**
+     * Damping values of multiple joints
+     *
+     * (Same joints and same order as @ref .stiffness)
+     */
+    // @unit(newton-meter / rad)
+    repeated float damping = 2;
+}

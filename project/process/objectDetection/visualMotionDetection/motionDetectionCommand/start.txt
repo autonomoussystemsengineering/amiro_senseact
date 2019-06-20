@@ -1,0 +1,32 @@
+====== Motion Detection Command ======
+
+This application communicates with the [[process:objectDetection:visualMotionDetection:motionDetection:start|Motion Detection Application]] and serves as an interface program between user and roboter. It receives and shows the camera frames and outputs a statement in the console if a motion detection signal has been received. Typing specified keys, the specified commands can be sent. By giving the quit command the application quits itself, too.
+
+===== Command Keys =====
+
+For application interaction there are keys defined for sending commands.
+
+^ Key ^ Description ^
+| enter | Starts the motion detection. |
+| back space | Stops the motion detection. |
+| esc | Quits the motion detection and the application itself. |
+
+===== RSB Scopes =====
+
+For communication there are RSB scopes defined.
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Image scope | String | "/motionDetection/image" | Scope for receiving the camera frame with motion marker (maybe additional the binary motion matrix) which has to be activated. |
+| Detection scope | String | "/motionDetection/detected" | Scope for receiving the detection signal. |
+| Command scope | String | "/motionDetection/command" | Scope for sending commands. |
+
+===== Parameters =====
+
+For parameter information type ''motionDetectionCommand -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --imagescope, -i | String | "/motionDetection/image" | Sets the scope for receiving camera frames. |
+| --inscope, -s | String | "/motionDetection/detected" | Sets the scope for receiving detection signal. |
+| --outscope, -c | String | "/motionDetection/command" | Sets the scope for sending commands. |
+
+

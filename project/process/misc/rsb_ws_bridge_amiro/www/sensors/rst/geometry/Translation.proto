@@ -1,0 +1,37 @@
+package rst.geometry;
+
+option java_outer_classname = "TranslationType";
+
+/**
+ * Cartesian 3-dimensional translatory displacement or position.
+ *
+ * The displacement or position (position being translation from an
+ * origin) is expressed in world coordinates.
+ *
+ * @author Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>
+ */
+message Translation {
+
+    /**
+     * Cartesian displacement along the x axis
+     */
+    // @unit(meter)
+    required double x = 1;
+
+    /**
+     * Cartesian displacement along the y axis
+     */
+    // @unit(meter)
+    required double y = 2;
+
+    /**
+     * Cartesian displacement along the z axis
+     */
+    // @unit(meter)
+    required double z = 3;
+
+    /**
+     * Identifier for the coordinate frame of the rotation.
+     */
+    optional string frame_id = 8;
+}

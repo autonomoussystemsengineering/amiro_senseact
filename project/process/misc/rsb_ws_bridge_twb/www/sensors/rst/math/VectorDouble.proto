@@ -1,0 +1,19 @@
+package rst.math;
+
+option java_outer_classname = "VectorDoubleType";
+
+/**
+ * A vector of double entries.
+ *
+ * Use fixed-dimensions data-types whenever possible.
+ *
+ * @author Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>
+ */
+message VectorDouble {
+
+    /**
+     * Vector elements.
+     */
+    repeated double data = 2 [packed=true];
+
+}

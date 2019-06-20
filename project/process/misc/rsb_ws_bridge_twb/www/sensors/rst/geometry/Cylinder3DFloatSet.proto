@@ -1,0 +1,20 @@
+package rst.geometry;
+
+option java_outer_classname = "Cylinder3DFloatSetType";
+
+import "rst/geometry/Cylinder3DFloat.proto";
+
+/**
+ * A set of @ref .Cylinder3DFloat objects.
+ *
+ * @author Christian Emmerich <cemmeric@cor-lab.de>
+ */
+message Cylinder3DFloatSet {
+
+    /**
+     * Empty collection of cylinders is allowed.
+     * The order of cylinders is not significant.
+     */
+    repeated geometry.Cylinder3DFloat cylinders = 1;
+
+}

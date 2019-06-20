@@ -1,0 +1,34 @@
+====== Mapgenerator ======
+
+This program takes the position and the current ring proximity values and builds a map from them.
+It also receives signals from the frontier exploration to add the edges of the table to the map.
+During mapbuilding MapUpdates are published to update the map of other robots participating in the exploration and to update showMap.
+The Mapgenerator also sets up a rsb-server to which other programs can send requests to get the map or to plan paths in the map.
+
+
+An initial map can be loaded with the ''-l [filename]'' command line option.
+
+===== RSB Scopes =====
+
+^ Scope (default name)      ^ Description ^
+|/rir_prox | Inscope for the ring proximity data|
+|/murox/roboterlocation | Inscope for the tracking data ("in program spread" --port, --host; id: --id)|
+|/edgePose | Inscope for edge positions relative to the robot|
+|/enableMapGenerator | Inscope (boolean) to pause/unpause mapbuilding |
+|/saveMap | Inscope for receiving filenames to save the obstacle map |
+|/saveEdgeMap | Inscope for receiving filenames to save the edge map |
+|/mapUpdate | Scope for receiving and sending MapUpdates |
+|/mapGenerator | Scope of the rsb-server. Methods: getMap, getObstacleMap, getFrontierPath, getPath, getPushingPath|
+
+===== Important Command-Line Options =====
+^ Option      ^ Description ^
+| -h, --help | Display a help message |
+| -v, --verbose | Print the robots pose and received sensorvalues |
+| -s, --single | Single robot map building, without sending map updates|
+| -r, --repel | Enable the repel effect for multi robot exploration |
+| --id | ID of the tracking marker |
+| --host | Spread host |
+| --port | Spread port |
+| --meterPerPixel | Camera scaling |
+| --loadMap, -l | Load the given map |
+| --loadEdgeMap, -e | Load the given edge map |

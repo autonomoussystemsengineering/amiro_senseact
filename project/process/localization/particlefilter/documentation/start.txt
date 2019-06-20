@@ -1,0 +1,317 @@
+====== Particle filter ======
+
+This is a simple Monte Carlo particle filter. It complies with the sequential importance sampling with resampling (SISR) as presented in [[http://papers.nips.cc/paper/1998-kld-sampling-adaptive-particle-filters.pdf|KLD-Sampling: Adaptive Particle Filters]] by Dieter Fox.
+
+It was developed within the context of the project "Laserscan-based localization for the AMiRo" (Miniroboterentwicklung). This project was supervised by Timo Korthals.
+
+===== Abstract =====
+
+For an autonomous system to be truly autonomous, localization is inevitable. It enables navigation on maps and planned behaviour for more complex tasks. The AMiRo with its limited resources poses a challenge to this task. This project explores the possibilities of implementing localization algorithms on the AMiRos Cognition board. First, an adaption to the existing CoreSLAM algorithm is made to make it suitable for localization on pre-recorded maps. Second, the common Monte Carlo (MC) localization technique is implemented. To further boost the localizations quality and simultaneously lower the resource demands of the MC algorithm, implementation of the algorithm "KLD-Sampling: Adaptive Particle Filters" presented by Dieter Fox is intended. All implementations will be evaluated by their localization quality using the TeleWorkBench, and resource efficiency.
+
+===== Sequential importance sampling with resampling =====
+
+In the following section a form of the particle filter, sequential importance sampling with resampling, is introduced. The subsequent subsections present the individual steps in detail and their specific implementation on the AMiRo.
+
+Sequential importance sampling with resampling, as recapped by Dieter Fox, consists of the following three steps:
+
+  - **[[process:localization:particlefilter:documentation:start#Resampling|Resampling]]**: Draw a random particle from the sample set with respect to its importance weight. This is done by roulette wheel selection.
+  - **[[process:localization:particlefilter:documentation:start#Sampling|Sampling]]**: Now update the chosen particle with the new odometry data and sample from a multivariate Gaussian around this new particle. This takes into account the errors in the odometry.
+  - **[[process:localization:particlefilter:documentation:start#Importance_sampling|Importance sampling]]**: Update the importance weight by correlating the measured laser scan and the expected/simulated/predicted laser scan at the particle pose in the map.
+
+This is done $n$ times. After this the importance weights are normalized to one.
+
+==== Resampling ====
+
+In the resampling step samples are drawn from the sample set according to their importance weights.
+This process is often visualized by a roulette wheel selection, where each particle corresponds to a segment of a roulette wheel, but the segments are scaled with respect to their importance weight. Now the roulette wheel is turned $n$ times, this way $n$ samples are obtained.
+This procedure is outlined in the following pseudo code:
+
+<code>
+Given: samples with normalized weights [0.0; 1.0]
+
+r = random number between 0.0 and 1.0
+sum = 0
+for each sample
+  sum += sample's weight
+  if sum >= r
+    return current sample
+
+return last sample
+</code>
+
+The last line is only necessary to catch rounding errors.
+This naive implementation leaves room for further improvements.
+The above pseudo code computes a cumulative distribution each time a new sample is drawn.
+But this distribution may be precomputed since the old sample set and its respective importance weights do not change:
+
+<code>
+Given: samples with normalized weights [0.0; 1.0]
+
+sum = 0
+i = 0
+for each sample
+  i++
+  sum += sample's weight
+  cumulative distribution[i] = sum
+</code>
+
+Now, new samples can be drawn without recomputing the cumulative distribution:
+
+<code>
+Given: samples set and cumulative distribution
+
+r = random number between 0.0 and 1.0
+for i from 0 to number of samples
+  if cumulative distribution[i] <= r
+    return i-th sample
+
+return last sample
+</code>
+
+The drawback in latter implementation is that still the sample searched for given a random number is determined by linearly iterating over the cumulative distribution.
+But searching for the right sample can be done more efficient than linearly searching in the cumulative distribution. The principle of the [[https://en.wikipedia.org/wiki/Binary_search_algorithm|binary search]] can be applied to this problem. It reduces the worst case computation time from $ \mathcal{O}(n) $ to $ \mathcal{O}(\log n) $. This is possible since the cumulative distribution is an array of sorted numbers. Binary search starts at the middle element of the array. If this value corresponds to the searched value the search is done. If this value is lower than the searched value then the binary search recursively continues searching in the elements left of the middle element. Otherwise search is continued in the elements right of the middle element. This method can be implemented in an iterative manner on the cumulative distribution:
+
+<code>
+Given: samples with normalized weights [0.0; 1.0]
+       a target value T to search for
+
+# Start searching in the whole array
+L = 0
+R = number of samples - 1
+
+# While the lower bound is smaller than the upper bound
+while L <= R
+  m = (L + R) / 2
+  if cumulative distribution[m] < T
+    # Continue searching in the upper part
+    L = m + 1
+  else if cumulative distribution[m] >= T
+    # Continue searching in the lower part
+    R = m - 1
+  else if cumulative distribution[m] == T
+    # the target value was found
+    return m-th sample
+
+# if this part of the code is reached, the target element was not found
+# this should not be possible given a cumulative distribution
+</code>
+
+Another bottleneck may lie in the generation of random numbers. To avoid this problem low variance sampling is used. Instead of generating $n$ random numbers, only one random number is generated and then increased by $\frac{1}{n}$ each time a a new random sample is needed. When the random number reaches a value greater than one, it overlaps in a circular manner, i.e. is decreased by one. In addition to avoiding querying the entropy source, low variance resampling reduces the risk of loss of diversity in the samples by systematically covering the distribution. ((See https://www.cs.cmu.edu/~16831-f14/notes/F11/16831_lecture04_tianyul.pdf))
+
+All presented algorithms also work for samples which sample weights are not normalized. Instead of generating random numbers in the range of 0 to 1, they must lie between 0 and the total of all importance weights. In fact the implementation on the AMiRo does not use normalized samples. This averts dividing each samples weight by the sum of the samples' weights. Not only does this yield a performance improvement, but hinders that the normalized importance weight drop to zero, when unnormalized importance weights are already small, which may be a problem as described in the [[process:localization:particlefilter:documentation:start#Importance_sampling|importance sampling]] section.
+==== Sampling ====
+
+In the sampling step the poses of the samples are updated according to the change in odometry.
+After applying the odometry to a sample's pose, the final new pose is from a Gaussian distribution with a mean equal to the previous pose. This is done to compensate errors in the odometry.
+
+In order to apply odometry changes to a particle's pose, rotation and translation of the odometry must be expressed as relative values. The difference of two odometry poses is therefore disassembled into two rotations and a translation. First the robot rotates by an angle $ \varphi_1 $, the angle between the old odometry pose and the direct line between old and new odometry pose, $ p_{t-1} $ and $ p_t $, respectively. Then the robot drives forward by the distance $ d $ to the the new odometry pose. Finally, the robot rotates by the angle $ \varphi_2 $, the angle between the direct line connecting old and new odometry pose. 
+
+After those values, $ \varphi_1 $, $ \varphi_2 $ and $ d $, have been calculated from the old odometry data and the new one, they can be applied to the pose of the sample selected in the resampling step.
+
+|  {{ :process:localization:particlefilter:documentation:odometry.png |}}  |
+|  Illustration of a odometry increment. The circles represent robot poses including rotation for timesteps $t$ and $t-1$, respectively.  |
+
+Next, the error in odometry is taken into account. The odometry error is modeled as multivariate Gaussian distribution. The mean of this distribution is the particle's pose after applying the odometry increment. The covariance matrix for a robot with differential kinematics, like the AMiRos is, typically shows a relation between angle and y-coordinate.
+To simplify the computation of the error model, three independent Gaussian distributions are considered with mean zero and a non-zero standard deviation. The standard deviation is an important parameter controlling to which extend the particle cloud inflates.
+
+Now that the particle's pose has changed, the importance of the particle must be updated. This is done in the importance sampling step.
+
+==== Importance sampling ====
+
+In this step the importance of a particle is determined. In case of a laserscan-based localization, this is how well a simulated laser scan at the particle's pose matches the current laser scan.
+Therefore an occupancy map of the current environment is needed. The occupancy map represents a cell-based representation of the environment in two dimensions. Each cell contains information about the state of the respective location. These are occupied, free and unknown.
+
+=== Ray casting ===
+
+A laserscan consists of multiple beams. Each measuring a distance. Therefore, an obvious approach is to first calculate the importance of each beam of the laser scan and then combine them to an importance weight for the complete scan.
+Often these importance factors for each beam are treated as probabilities.
+The first naive approach to compute a beam's probability is to cast a ray and then walk along this ray until an occupied cell in the occupancy map is reached.
+To discretize the points on the line, so they correspond to a single cell in the map, [[https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm|Bresenham's line algorithm]] is used. A major advantage of this algorithm is that it uses integer arithmetic exclusively.
+Unfortunately, ray casting is still a very costly operation. In first tests it became clear that this approach is not feasible on platforms with limited resources. Therefore this approach was abandoned.
+
+=== Likelihood field model ===
+
+Since the main bottleneck of ray casting results from walking along the ray, the likelihood field model offers a solution to this problem.
+Instead only one look-up in a two-dimensional map is made at the endpoint of the beam. This map is called the likelihood field.
+Essentially, it stores the distances to the nearest occupied cell for each cell. If the cell itself is occupied, then this value is zero.
+This map can be precomputed as soon as an occupancy map is available.
+
+|  {{:process:localization:particlefilter:documentation:T-scale-0.5.png?400}}  |  {{:process:localization:particlefilter:documentation:distances.png?400}}  |
+|  Original occupancy map: white are known free cells, black are occupied cells, and grey are unknown cells.  |  Distances: dark areas are low distances to the closest obstacle, light areas are far away from the next obstacle.  |
+
+== Generating the likelihood field ==
+
+A naive implementation of computing the distances loops over all cells and finds the next occupied cell. Finding the next occupied cell also involves looping over all cells. Therefore the complexity of this naive approach lies within $ \mathcal{O}(n^2) $ where $ n $ is the number of cells.
+
+The boost C++ library offers spatial indexes, namely [[http://www.boost.org/doc/libs/1_55_0/libs/geometry/doc/html/geometry/spatial_indexes/introduction.html|R-trees]]. The R-tree is a tree based data structure that facilitates efficient spatial queries.
+First, all occupied cells are collected and then the R-tree is constructed. The advantage of bulk loading the occupied cells is that it enables the R-Tree to be constructed using a packing algorithm. This method yield a better internal structure of the tree, resulting in an increased query performance.
+Using the provided $k$-nearest-neighbors query with $k = 1$ R-trees can be used to search for the closest occupied cell. This query is performed for each cell in the occupancy grid. The complexity can be expressed as $ \mathcal{O}(n \cdot log(n)) $.
+
+=== Combining beam importance ===
+
+Next the single beam probabilities need to be combined to a single importance factor for the whole scan.
+Originating from probability theory the importance of a scan is seen as the joint probability of the probability for each single ray. For further simplification the rays are seen as independent. Therefore the joint probability can simply be computed by multiplying all ray probabilities. The ray probabilities are computed with the Gaussian probability density function (pdf). Strictly seen these aren't probabilities. For a mathematically correct approach the pdf must be integrated at the given point.
+
+The problem of implementing this approach, is that the importance for each ray is small, i.e. below one. Multiplying values below one yields even smaller values and will eventually result in too small values to be represented. To prevent this, the importance weights may be computed in log space. The multiplication in log space becomes an addition. This approach is still based on multiplying the weights of each ray. Once one ray is completely off, e.g. due to a bad map, dynamic obstacles not in the map, the importance will drop to zero. Instead the importance of each ray are summed up to form the importance of the particle. This approach is equivalent to taking the average importance of each ray, but omitting the division by the number of rays. This is justified since the number of rays for each particle are the same. Furthermore, it need to be considered that values drawn from the Gaussian density function are not probabilities. And importance weights do not need to fulfill the properties of probabilities, but simply represent the importance of a particle.
+
+==== KLD-Sampling ====
+
+So far, we discussed how a particle filter works and is implemented in a efficient way. But besides optimizations on code level, the number of particles depict a big optimization potential. The performance of a particle filter is strongly governed by the number of particles used. In order to increase the efficiency of particle filters the number of particles can be adapted over time. This approached is presented in "KLD-Sampling: Adaptive Particle Filters" by Dieter Fox.
+
+The name KLD originates from the Kullback-Leibler Distance. This distance measure is used to determine the error between the maximum likelihood estimate and the true posterior that the particle filter approximates.
+In order to use this distance it must be assumed that the true posterior is described by a discrete, piecewise constant distribution. The basic idea of KLD-Sampling is to determine the number of particles, so that this error is below a given threshold, denoted by $\epsilon$. Therefore, a closed-form equation is derived that determines the number of samples given the current distribution of the particles.
+
+To conclude the derivation of this equation, the number of samples $n$ can be determined by 
+
+$$n = \frac{1}{2 \epsilon} \chi^2_{k-1,1-\delta}$$
+
+where $\epsilon$ is the desired bound of the error between maximum likelihood estimate and true posterior, $\chi$ is the chi-square distribution and $k$ is the number of different bins in the discrete distribution.
+When the number of samples is chosen according to the given equation is is guaranteed that the Kullback-Leibler Distance is less than $\epsilon$ with the probability $1-\delta$.
+
+The last step is to approximate the quantiles of the chi-square distribution, e.g. with the Wilson-Hilferty transformation. This yields
+
+$$ n = \frac{k - 1}{2 \epsilon} \left( 1 - \frac{2}{9(k - 1)} + \sqrt{\frac{2}{9(k-1)}} z_{1-\delta} \right)^3 $$
+
+where $k$ is the number of bins with support, i.e. the number of distinct bins a sample was drawn from, and $z_{1-\delta}$ the upper $1-\delta$ quantile of the standard normal distribution.
+
+The number of bins with support is not known before generating the distribution of particles. But it can be updated after each sampling step of the particle filter.
+Therefore, the implementation has to keep track of the support for each bin, i.e. whether the bin is empty or not. This is done with a simple three-dimensional array of boolean values. A more space-efficient method is to use a tree structure.
+
+Further details on backgrounds of the derivations of equations can be found in the section 3.2 of Dieter Fox' [[http://papers.nips.cc/paper/1998-kld-sampling-adaptive-particle-filters.pdf#page=4|KLD-Sampling]].
+
+|  {{ :process:localization:particlefilter:documentation:kld-1.png |}}  |  {{ :process:localization:particlefilter:documentation:kld-2.png |}}  |  {{ :process:localization:particlefilter:documentation:kld-3.png |}}  |
+|  **a)**  |  **b)**  |  **c)**  |
+|  Illustration of KLD-Sampling: Occupied cells are displayed in black. Particles are shown in blue. Green represents the boundary of histogram bins. **a)** shows the particle filter in an early state. The particles are equally distributed. According to KLD-Sampling more samples are chosen. Next, the particles gather at poses more likely for the current laser scan, as displayed in **b)**. KLD-Sampling reduces the number of samples. Finally, in **c)** the particle filter determined the location of the robot. Only a two bins have support and the sample set size is nearly minimized.  |||
+===== Evaluation and results =====
+
+As part of this project not only a new particle filter was developed for the AMiRo, but the existing CoreSLAM algorithm was adapted so that it is capable to localize the robot on a given map. In the evaluation, the three algorithms, CoreSLAM, particle filters, and particle filter with KLD-sampling are examined with respect to their localization capability and its quality.
+The tracking of the TeleWorkBench was used as a reference system and each algorithm is compared against it.
+
+Navigating by the TeleWorkBench tracking allows an automated testing procedure. The basic approach is outlined as followed:
+
+  - The robot drives to a designated starting pose using the TeleWorkBench tracking.
+  - The robot drives a predefined trajectory based on the localization of the algorithm. The trajectory's end pose is identical to the start pose.
+  - The robot's end and start pose are compared.
+
+This sequence of steps can be repeated arbitrary times. The last step yields a measure of quality of the used localization algorithm. To navigate the robot an additional program is needed. This is the [[:process:actingBehavior:driveWaypoints:|driveWaypoints]] component. It receives the current estimated location from one of the localization algorithms or the TeleWorkBench tracking system. On the command line the waypoints can be supplied. By default the waypoints are treated as global. This is needed to navigate to the start pose. For navigation by a localization algorithm the waypoints are used relative to the start pose.
+The whole evaluation setup is contained in a [[:demo:particlefilterEvaluation:|demo]].
+
+| {{ :process:localization:particlefilter:documentation:evaluation-overview.png?300 |}} |
+|  An overview of the evaluation process in the occupancy map: The robot drives a rectangle. We expect the robot to not exactly the reach the start/end pose. Hence, a cloud of end poses forms around the start pose after several iterations.  |
+
+All localization algorithms need a map to localize in. Typically, this map is created by a simultaneous localization and mapping (SLAM). This SLAM capability is provided by CoreSLAM for the AMiRo. Unfortunately, it yields bad results for this test setup. To obtain a usable map the test setup was measured and reconstructed using camera images of the tracking system. This yields a idealized representation of the environment as seen below.
+
+{{ :process:localization:particlefilter:documentation:visualizationtwb_screenshot_24.08.2016.png?400 |}}
+==== Results ====
+
+In the evaluation the AMiRo the three evaluation steps are repeated 20 times. It is expected that the robot does not return exactly to the start pose. Therefore a point cloud forms around the start pose if the end poses are recorded over time.
+
+In practice a navigation program does not reach its desired navigation goal exactly. Therefore, a tolerance in position and yaw must be supplied. For this evaluation a yaw tolerance of 0.1 radians (~5.73 degrees) and 0.03 meters in position are used.
+
+For the CoreSLAM sampling parameters a standard deviation of 10 millimeters in position and 0.05 radians (~2.86 degrees) are used.
+The resulting deviation from the start pose can be seen below. In red the tolerance of the navigation program is shown.
+So, all arrows within the red circle and with an angle within the red fan are considered perfect.
+
+{{ :process:localization:particlefilter:documentation:coreslam-result.png |}}
+
+As we can see, none of the twenty end positions lies within the tolerance of the navigation algorithm. On average, the position deviates by 0.2960 meter from the start position. The average deviation in angle is 16.2894 degrees.
+
+{{ :process:localization:particlefilter:documentation:particle-filter-result.png |}}
+
+In comparison the result of the particle filter show more end poses within the tolerance. The average deviation in position is roughly nine times smaller than the CoreSLAM's. The angle deviates by six degrees less.
+
+{{ :process:localization:particlefilter:documentation:kld-result.png |}}
+
+Finally, the particle filter with the KLD-Sampling extension is evaluated. It yields not significantly worse results. The deviation in position increased by 0.019 meter and 1.1026 degrees in angle.
+
+|  {{ :process:localization:particlefilter:documentation:coreslam-result.png |}}  |  {{ :process:localization:particlefilter:documentation:particle-filter-result.png |}}  |  {{ :process:localization:particlefilter:documentation:kld-result.png |}}  |
+|  All three results in line for comparison.  |||
+
+^ Algorithm ^ Ø deviation in position (m) ^ Ø deviation in angle (°) ^
+| CoreSLAM  |                      0.2960 |                  16.2894 |
+| Particle filter |                0.0324 |                  10.2899 |
+| KLD-Sampling |                   0.0514 |                  11.3925 |
+|  The allowed deviation by the navigation program is 0.03 meters and 5.73 degrees in both directions.  |||
+
+Besides the localization quality the resource efficiency of the implementations is of major importance. On one hand low computational complexity allows energy savings resulting in a longer run time of the robot. But also allows the localization to be embedded in other complex tasks, since more resources are available for those additional tasks.
+A good indicator for this metric is the duration of a single update step to obtain a new pose estimate.
+
+^ Algorithm ^ Ø duration of an update step (ms) ^ Remarks ^
+| CoreSLAM  |                             54.52 |         |
+| Particle filter |                      127.82 | Ø 0.6391 ms per particle |
+| KLD-Sampling |                          42.71 | Ø 48 particles, Ø 0.8898 ms per particle |
+
+Furthermore, this shows that the overhead of computing the number of samples according to KLD-Sampling does not impact the performance. In contrary due to the reduced number of samples the performance increases while the quality of localization does not degrade. And even falls below the computational time needed by the CoreSLAM.
+
+===== Appendix =====
+
+==== Raw evaluation data ====
+
+^  CoreSLAM  ^^^^^^
+^ Iteration ^ Deviation in x-coordinate (m) ^ Deviation in y-coordinate (m) ^ Deviation in position (m) ^ Deviation in angle (rad) ^ Deviation in (°) ^
+|     1| -0.27807 | 0.14889 | 0.315422 | -0.16772 | -9.60965 |
+|     2| -0.36392 | 0.09316 | 0.375655 | -0.12919 | -7.40204 |
+|     3| -0.32274 | 0.13691 | 0.350579 | 0.55418 | 31.7522 |
+|     4| -0.3824 | 0.24006 | 0.451507 | -0.20043 | -11.4838 |
+|     5| -0.39413 | 0.10337 | 0.40746 | -0.0634 | -3.63255 |
+|     6| -0.27347 | 0.1249 | 0.300642 | -0.00545 | -0.312262 |
+|     7| 0.125181 | -0.20864 | 0.243312 | -0.25056 | -14.356 |
+|     8| -0.2334 | -0.05389 | 0.239541 | -0.23263 | -13.3287 |
+|     9| -0.3122 | 0.18096 | 0.360854 | 1.58927 | 91.0585 |
+|    10| -0.44117 | 0.68202 | 0.81227 | -0.49054 | -28.1059 |
+|    11| -0.10991 | 0.06324 | 0.126805 | 0.02011 | 1.15222 |
+|    12| -0.08643 | 0.13267 | 0.15834 | -0.19397 | -11.1137 |
+|    13| -0.11888 | 0.07997 | 0.143275 | 0.11011 | 6.30884 |
+|    14| -0.2942 | 0.14356 | 0.327358 | -0.52122 | -29.8637 |
+|    15| 0.0001 | -0.14569 | 0.14569 | 0.27918 | 15.9958 |
+|    16| -0.18313 | 0.10176 | 0.209503 | -0.07125 | -4.08232 |
+|    17| -0.25336 | 0.16446 | 0.302057 | -0.05421 | -3.106 |
+|    18| -0.24444 | 0.01865 | 0.24515 | -0.25361 | -14.5308 |
+|    19| -0.01242 | -0.19319 | 0.193589 | 0.27986 | 16.0348 |
+|    20| -0.21007 | 0.01829 | 0.210865 | -0.21918 | -12.5581 |
+
+^  Particle filter  ^^^^^^
+^ Iteration ^ Deviation in x-coordinate (m) ^ Deviation in y-coordinate (m) ^ Deviation in position (m) ^ Deviation in angle (rad) ^ Deviation in (°) ^
+|      1| -0.00471 | 0.00079 | 0.00477579 | -0.16103 | -9.22634 |
+|      2| -0.02371 | -0.00158 | 0.0237626 | 0.16459 | 9.43031 |
+|      3| -0.00582 | -0.0017 | 0.0060632 | -0.0822 | -4.70971 |
+|      4| -0.02717 | 0.00812 | 0.0283574 | -0.22976 | -13.1643 |
+|      5| -0.02757 | 0.02361 | 0.0362979 | -0.11453 | -6.56209 |
+|      6| -0.04592 | 0.02894 | 0.0542786 | 0.25873 | 14.8241 |
+|      7| -0.0243 | 0.00667 | 0.0251988 | -0.07788 | -4.4622 |
+|      8| -0.04022 | 0.02883 | 0.0494855 | 0.28021 | 16.0549 |
+|      9| -0.03054 | 0.01673 | 0.0348222 | 0.25158 | 14.4145 |
+|     10| -0.04559 | 0.03302 | 0.0562918 | 0.14522 | 8.32049 |
+|     11| -0.00969 | 0.01359 | 0.0166908 | -0.25337 | -14.517 |
+|     12| -0.02371 | -0.00158 | 0.0237626 | 0.16459 | 9.43031 |
+|     13| -0.00582 | -0.0017 | 0.0060632 | -0.0822 | -4.70971 |
+|     14| -0.02717 | 0.00812 | 0.0283574 | -0.22976 | -13.1643 |
+|     15| -0.02757 | 0.02361 | 0.0362979 | -0.11453 | -6.56209 |
+|     16| -0.04592 | 0.02894 | 0.0542786 | 0.25873 | 14.8241 |
+|     17| -0.0243 | 0.00667 | 0.0251988 | -0.07788 | -4.4622 |
+|     18| -0.04022 | 0.02883 | 0.0494855 | 0.28021 | 16.0549 |
+|     19| -0.03054 | 0.01673 | 0.0348222 | 0.25158 | 14.4145 |
+|     20| 0.048883 | -0.02232 | 0.0537376 | -0.11327 | -6.48989 |
+
+^  Particle filter with KLD-Sampling  ^^^^^^
+^ Iteration ^ Deviation in x-coordinate (m) ^ Deviation in y-coordinate (m) ^ Deviation in position (m) ^ Deviation in angle (rad) ^ Deviation in (°) ^
+|      1| -0.086539 | 0.0232 | 0.0895949 | -1.53713 | -88.0711 |
+|      2| -0.03462 | -0.01283 | 0.0369209 | -0.04568 | -2.61727 |
+|      3| -0.017 | 0.02586 | 0.0309474 | -0.10329 | -5.91808 |
+|      4| 0.01279 | -0.0305 | 0.0330732 | 0.15544 | 8.90606 |
+|      5| -0.0674 | -0.00676 | 0.0677382 | 0.1009 | 5.78114 |
+|      6| -0.05333 | 0.00561 | 0.0536243 | 0.08148 | 4.66846 |
+|      7| -0.01265 | -0.00301 | 0.0130032 | 0.08317 | 4.76529 |
+|      8| -0.04932 | 0.00897 | 0.0501291 | 0.14692 | 8.4179 |
+|      9| -0.04614 | 0.02144 | 0.050878 | -0.09307 | -5.33252 |
+|     10| -0.02561 | 0.03856 | 0.0462898 | 0.27169 | 15.5667 |
+|     11| 0.00318 | 0.0087 | 0.00926296 | 0.17589 | 10.0778 |
+|     12| -0.10413 | 0.0171 | 0.105525 | -0.02287 | -1.31035 |
+|     13| -0.06489 | 0.00652 | 0.0652167 | 0.11897 | 6.81648 |
+|     14| -0.06388 | 0.03897 | 0.0748286 | 0.15237 | 8.73016 |
+|     15| -0.05662 | 0.00335 | 0.056719 | 0.13362 | 7.65586 |
+|     16| -0.03749 | 0.01884 | 0.0419577 | 0.29486 | 16.8942 |
+|     17| -0.07131 | -0.00102 | 0.0713173 | 0.22213 | 12.7271 |
+|     18| -0.01343 | 0.02088 | 0.0248262 | 0.03954 | 2.26548 |
+|     19| 0.053384 | -0.0121 | 0.0547381 | 0.09579 | 5.48836 |
+|     20| -0.05098 | -0.00427 | 0.0511585 | -0.10192 | -5.83959 |

@@ -1,0 +1,14 @@
+/**
+ * Geometry is a branch of mathematics concerned with questions of
+ * shape, size, relative position of figures, and the properties of
+ * space.
+ *
+ * This package contains data types which represent geometrical
+ * objects.
+ *
+ * @see http://en.wikipedia.org/wiki/Geometry
+ *      "Wikipedia article containing the definition above"
+ * @see http://www.ros.org/wiki/geometry_msgs
+ *      "Corresponding data types in ROS"
+ */
+package rst.geometry;

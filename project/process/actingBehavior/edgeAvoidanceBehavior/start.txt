@@ -1,0 +1,26 @@
+====== edgeAvoidanceBehavior ======
+
+Turns away (for 5 secs) from black edge detected by the front proximity sensors until one of them detects no edge anymore.
+Meant to work with [[act:motorControl:start|motorControl]] as a continously produced behavior with a certain priority (to be set) which might get overwritten by another higher prioritized behavior.
+(Attention: Proximity sensor values are normalized in hard-coded way, check if up-to-date!)
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== RSB Scopes =====
+
+For communication there are RSB scopes defined.
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Motor scope | std::vec<int> | "/motor/[priority]" | Scope for sending motor commands to motorContorl (prio is to be set). |
+
+===== Parameters =====
+
+For parameter information type ''edgeAvoidanceBehavior -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --outscope, -o | String | "/motor/00" | Scope for sending motor commands to motorControl. |
+| --period, -t | Integer | 0 | Update interval (0 for maximum rate). |

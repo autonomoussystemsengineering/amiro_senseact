@@ -1,0 +1,15 @@
+package rst.dynamics;
+
+option java_outer_classname = "PressuresType";
+
+/**
+ * A sequence of pressure measurements (e.g. in pneumatic systems).
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ */
+message Pressures {
+
+    // @unit(pascal)
+    repeated double pressures = 1;
+
+}

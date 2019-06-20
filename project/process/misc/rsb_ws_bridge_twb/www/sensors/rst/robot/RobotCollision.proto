@@ -1,0 +1,58 @@
+package rst.robot;
+
+import "rst/kinematics/ObjectCollision.proto";
+
+option java_outer_classname = "RobotCollisionType";
+
+/**
+ * Holds information about a collision between a robot and an object.
+ *
+ * @author Daniel Seidel <dseidel@techfak.uni-bielefeld.DE>
+ */
+message RobotCollision {
+
+    /**
+     * Possible kinds of collisions.
+     */
+    enum CollisionKind {
+
+        /**
+         * Two parts of the robot collide with each other.
+         */
+        SELF = 1;
+
+        /**
+         * The robot collides with an environment object which is not
+         * part of the robot.
+         */
+        EXTERNAL = 2;
+
+        /**
+         * The kind of the collision is not known.
+         */
+        UNKNOWN  = 3;
+
+    }
+
+    /**
+     * Kind of collision.
+     *
+     * Determines interpretation of @ref .collision_detail.
+     */
+    required CollisionKind kind = 1;
+
+    /**
+     * Object and geometry information for the collision.
+     *
+     * For self collisions (@ref .CollisionKind.SELF), @ref
+     * .collision_detail.object_1 and @ref .collision_detail.object_2
+     * designate the colliding parts of the robot.
+     *
+     * For collisions with environment objects (@ref
+     * .CollisionKind.EXTERNAL), @ref .collision_detail.object_1 and
+     * @ref .collision_detail.object_2 designate the colliding robot
+     * part and the environment object respectively.
+     */
+    required kinematics.ObjectCollision collision_detail = 2;
+
+}

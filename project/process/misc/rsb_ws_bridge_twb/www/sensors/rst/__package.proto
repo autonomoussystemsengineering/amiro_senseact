@@ -1,0 +1,6 @@
+/**
+ * This is the root package of the Robotics Systems Types Repository
+ * (RST) which contains type specifications for robotics and cognitive
+ * systems.
+ */
+package rst;

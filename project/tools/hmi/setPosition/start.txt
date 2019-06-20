@@ -1,0 +1,4 @@
+====== setPosition ======
+
+This application greps compressed JPEGs as byte arrays from a RSB scope and displays them.
+Additionally, when the left mouse button is pressed down the position within the display window is saved. When releasing the mouse button the position is send via RSB. An angle can be set by dragging the mouse while the left mouse button is still hold down.

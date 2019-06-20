@@ -1,0 +1,6 @@
+#!/bin/bash
+SRC_LOC=${1}
+if [[ ${SRC_LOC} == '' ]]; then
+  SRC_LOC="."
+fi
+cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_CXX_FLAGS="${MUROX_CXX_FLAGS}" ${SRC_LOC}

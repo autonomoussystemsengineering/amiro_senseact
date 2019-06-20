@@ -1,0 +1,50 @@
+====== Fetch Nearest Object ======
+
+At first the robot focusses the nearest object, which can be detected with a laser scanner or a RGBD camera. Afterwards it drives around this object and pushs it to the robot's start position. The navigation is only based on odometry.
+
+For (re)starting the fetching procedure, the robot has to be taken from the table and set on any position or the start command has to be given (depends on application parameters).
+
+IMPORTANT: There aren't any edge or object detections! Make sure, that the robot doesn't drive against objects or that it drives from the table!
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Color Interpretation =====
+
+In its states, the robot has different colors for the user's notification:
+^ Step ^ Color ^ Description ^
+| 1 | blue              | Robot isn't on the table and it isn't fetching anything. |
+| 2 | yellow (blinking) | The robot has been set on the table. The fetching will start soon. |
+| 3 | red               | The robot drives around the object. |
+| 4 | yellow            | The robot pushs the object to its start position. |
+| 5 | green             | The robot has fetched the object. It waits for being taken from the table. |
+
+If the robot has been taken from the table after step 5, it will restart from step 1 automatically.
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Scope Type ^ Description ^
+| Proximity Sensors | /rir_prox/obstacle  | std::vector<int>              | Input Scope for the Floor Proximity Sensors for table detection. |
+| Laser Scanner     | /AMiRo_Hokuyo/lidar | rst::vision::LocatedLaserScan | Input Scope for laser data from a laser scanner or a RGBD camera. |
+| Commands          | /delivery/commands  | String                        | Input Scope for commands. |
+
+===== Commands =====
+
+The robot can be given some commands. If the flag 'waitForCommand' is set, then the robot only starts the fetching procedure on the command 'START'. For exiting the application, the command 'QUIT' can be sent, but this command will not be executed directly, if the fetching procedure is running.
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| proximityScope, p      | String  | /rir_prox/obstacle  | Scope for receiving floor proximity sensor values. |
+| lidarScope, l          | String  | /AMiRo_Hokuyo/lidar | Scope for receiving laser scans of the Hokuyo laser scanner. |
+| commandScope, c        | String  | /delivery/commands  | Scope for receiving commands. |
+| floorMinValue, f       | Integer | 15000               | Minimal value, which has to be measured by the floor sensors for detecting the table. |
+| watchAngle, w          | Float   | 30                  | Angular range in degrees for the laser scanner, how far to the sides it shall watch for objects. |
+| objectRadius, r        | Float   | 0.06                | Radius of the object in meters. |
+| amiroRadiusAddition, a | Float   | 0.0                 | Radius addition due to bigger cameras, etc. in meters. |
+| anglePositiveToRight   | -       | -                   | Flag, if the angle is not counted positive left side, but right side. |
+| rgbdLaser, d           | -       | -                   | Flag, if not a laser scanner, but a RGBD camera is used for laser scans. |
+| waitForCommand         | -      | -                   | Flag, if the robot should wait until the start command is given. |

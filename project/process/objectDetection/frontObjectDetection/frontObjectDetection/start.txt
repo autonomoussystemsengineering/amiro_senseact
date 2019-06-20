@@ -1,0 +1,39 @@
+====== frontObjectDetection ======
+
+This application detects the next object in front of the robot. It always uses the actual frame and the actual proximity sensor values from the [[sense:senseRingProximity:start|senseRingProximity program]]. By giving commands the application can start and stop the object detection or can be quit.
+
+The [[process:objectDetection:frontObjectDetection:frontObjectDetectionCommand:start|Front Object Detection Command]] serves as an interface application for users.
+
+===== Commands =====
+
+For external applications it is possible to send string commands.
+
+^ Key ^ Description ^
+| START | Starts the object detection. |
+| STOP | Stops the object detection. |
+| QUIT | Quits the application. |
+
+===== RSB Scopes =====
+
+For communication there are RSB scopes defined.
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Image scope | String | /frontObject/image | Scope for sending the camera frame with motion marker (maybe additional the binary motion matrix) if activated (see paramters for activation). |
+| Obstacle sensor scope | Vector<int> | /rir_prox/obstacle | Scope for receiving the obstacle proximity sensor values. |
+| Command scope | String | /frontObject/command | Scope for receiving commands. |
+
+===== Parameters =====
+
+For parameter information type ''motionDetection -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --imagescope, -i | String | "/frontObject/image" | Sets the scope for sending camera frames. |
+| --proxscope, -p | String | "/rir_prox/obstacle" | Sets the scope for receiving obstacle proximity sensor values. |
+| --commandscope, -c | String | "/motionDetection/command" | Sets the scope for receiving commands. |
+| --device, -d | String | /dev/video6 | Location of camera device. |
+| --quality, -q | Integer | 85 | Quality of the JPEG information [0,100]. |
+| --colorThreshold, -t | Float | 50.0 | Color threshold for region growing. |
+| --continuousSending, -s | - | - | Sends the camera frames continued. |
+| --debug | - | - | Activates debugging which includes sending . |
+
+

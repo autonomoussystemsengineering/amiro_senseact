@@ -1,0 +1,14 @@
+Name:		sensors/<Sensorname>_menu.html
+Seitenname:	<Sensorname>
+Enthält Menü:	ja
+Logo Tab:	it's owl
+
+Aufbau:
+* Informationen		-> Informationsseite mit einfachem Text
+* Daten			-> sensors/<Sensorname>.html
+
+Fragen/Anmerkungen:
+-
+
+Erledigt
+-

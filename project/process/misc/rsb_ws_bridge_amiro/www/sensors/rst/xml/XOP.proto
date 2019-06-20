@@ -1,0 +1,85 @@
+package rst.xml;
+
+option java_outer_classname = "XOPType";
+
+/**
+ * Uniquely identifiable object which is associated to a @ref .XOP.
+ *
+ * The attachment is uniquely identified within the containing @ref
+ * .XOP object by its @ref .url.
+ *
+ * In this implementation, the attached object is stored in a
+ * serialized form in the @ref .wire_schema and @ref .data fields.
+ *
+ * @author Robert Haschke <rhaschke@techfak.uni-bielefeld.de>
+ *
+ * @todo "move to separate file?"
+ */
+message Attachment {
+
+    /**
+     * URL of attachment.
+     *
+     * Within a @ref .XOP object (and possibly beyond), each
+     * attachment should have a unique URL.
+     */
+    optional        string     url         = 1;
+
+    /**
+     * Wire-schema of the serialized object.
+     *
+     * This field and the @ref .data field are intended to be
+     * processed by a (de)serialization mechanism that decodes/encodes
+     * the data blob according to the type information in wireSchema.
+     */
+    optional        bytes      wire_schema = 2;
+
+    /**
+     * Blob data of the serialized object.
+     *
+     * See @ref .wire_schema for details.
+     */
+    optional        bytes      data        = 3;
+}
+
+/**
+ * Objects of this type represent XML with binary attachments.
+ *
+ * Thus, this type can be seen (and used) as an implementation of the
+ * XML-binary Optimized Packaging (XOP) recommendation. (Note that the
+ * draft calls this kind of object "XOP Package").
+ *
+ * @see http://www.w3.org/TR/xop10/
+ *      "XML-binary Optimized Packaging (XOP)"
+ *
+ * @author Robert Haschke <rhaschke@techfak.uni-bielefeld.de>
+ */
+message XOP {
+
+    /**
+     * XML string (UTF-8 encoded).
+     *
+     * Has to be valid XML since parsers and, potentially, validators
+     * might be applied.
+     */
+    optional        string     xml         = 1;
+
+    /**
+     * Set of attachment objects.
+     *
+     * @ref .Attachment objects are uniquely identifiable by means of
+     * their @ref .Attachment.url fields.
+     *
+     * The order of @ref .Attachment objects is not significant as
+     * they are indexed by URLs.
+     */
+    repeated        Attachment attachments = 2;
+
+    /**
+     * An optional document identifier.
+     *
+     * Can be used e.g. to distinguish documents without looking at
+     * their content.
+     */
+    optional        uint64     id          = 3;
+}

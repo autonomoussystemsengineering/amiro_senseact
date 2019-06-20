@@ -1,0 +1,4 @@
+The **sense** folder contains sense models for working with the MuRoX environment.
+Please use the [[start?do=index|Sitemap]] for a complete overview.
+
+{{ :sense:sense.png?300 |}}

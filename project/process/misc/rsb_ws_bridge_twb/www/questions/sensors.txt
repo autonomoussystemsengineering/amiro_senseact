@@ -1,0 +1,16 @@
+Name:		sensors/<Sensorname>.html
+Seitenname:	<Sensorname>
+Enthält Menü:	nein
+Logo Tab:	it's owl
+
+Aufbau:
+* Textfeld für Output
+* Eingabefeld für Scope
+* Bestätigungsbutton
+* Platz nach "unten" für Diagramme
+
+Fragen/Anmerkungen:
+* Bei weiteren Sensoren melden!
+
+Erledigt
+* Menüpunkte: Info, Daten

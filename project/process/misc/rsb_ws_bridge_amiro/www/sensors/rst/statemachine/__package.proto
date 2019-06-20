@@ -1,0 +1,5 @@
+/**
+ * This package contains data type definitions that describe static
+ * and dynamic aspects of state machines.
+ */
+package rst.statemachine;

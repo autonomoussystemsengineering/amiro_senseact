@@ -1,0 +1,21 @@
+====== TWB Tracking Check ======
+
+This program just listens to the tracking server and prints the positions. Based on the parameters, it just focusses on one given marker or on all, which are tracked.
+
+===== Basic Behavior =====
+
+If the tool will be started without any parameters, it just prints the positions of all markers, which are listed in the tracking data.
+
+If the marker ID is given, only the position of the marker will be printed. By activating the variance flag, it will also calculate deviations from the value, which has been received first.
+
+If there wasn't any tracking data (or if there wasn't tracking data containing the marker ID) for a specific time, the tool will quit immediately.
+
+===== RSB Scopes =====
+
+The tracking scope will be automatically loaded from the [[includes:twb:startTwbTracking|TWB Tracking Module]].
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| markerId,i | Integer | NOT GIVEN | ID of the marker for robot detection (if not given, all detected IDs will be shown). |
+| var,v      | -       | -         | Flag, if the variance of all the data of a specific marker shall be shown. |

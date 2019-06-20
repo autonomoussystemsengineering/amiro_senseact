@@ -1,0 +1,28 @@
+package rst.dynamics;
+
+option java_outer_classname = "ForcesType";
+
+/**
+ * Cartesian 3-dimensional translatory force.
+ *
+ * @author Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>
+ */
+message Forces {
+    /**
+     * Translatory force along the x axis.
+     */
+    // @unit(newton)
+    required float x = 1;
+
+    /**
+     * Translatory force along the y axis.
+     */
+    // @unit(newton)
+    required float y = 2;
+
+    /**
+     * Translatory force along the z axis.
+     */
+    // @unit(newton)
+    required float z = 3;
+}

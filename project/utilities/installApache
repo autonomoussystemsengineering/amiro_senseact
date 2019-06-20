@@ -1,0 +1,144 @@
+#!/bin/bash
+set -e
+# This script installs the apache2 server with php in the userspace,
+# so that one can work with the dokuwiki environment even on Debian/Linux
+# The following sites were taken into account to write this script:
+# - http://httpd.apache.org/docs/2.4/install.html
+# - http://php.net/manual/en/install.unix.apache2.php
+# - http://www.web-tech-india.com/articles/php/compiling_php_apache/
+
+TMP_DIR="/tmp/apache2temp"
+APACHE_VERSION="httpd-2.4.10"
+APACHE_SRC="http://download.nextag.com/apache//httpd/${APACHE_VERSION}.tar.gz"
+APR_VERSION="apr-1.5.1"
+APR_SRC="http://apache.cs.utah.edu//apr/${APR_VERSION}.tar.gz"
+APR_UTIL_VERSION="apr-util-1.5.4"
+APR_UTIL_SRC="http://apache.cs.utah.edu//apr/${APR_UTIL_VERSION}.tar.gz"
+PHP_VERSION="php-5.6.4"
+PHP_SRC="http://de1.php.net/get/${PHP_VERSION}.tar.gz/from/this/mirror"
+LIBXML2_VERSION="libxml2-git-snapshot"
+LIBXML2_SRC="ftp://xmlsoft.org/libxml2/${LIBXML2_VERSION}.tar.gz"
+
+USE_PROXY=off
+DO_CONFIGURE=true
+
+
+
+echo -e "\e[42mInstalling apache2 with PHP\e[0m"
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "Usage: ${0} <install directory> <User port>"
+  exit 1
+else
+  if [ "$2" -le 1024 ]; then
+    echo "The server port needs to be an user port greater than 1024"
+    exit 1
+  fi
+  echo "Installing server to ${1}"
+fi
+
+INSTALL_DIR=${1}
+APACHE_PORT=${2}
+if [ ! -e $TMP_DIR ]; then
+  mkdir $TMP_DIR
+fi
+cd $TMP_DIR
+
+# Download
+wget --no-clobber --proxy=${USE_PROXY} $APACHE_SRC
+wget --no-clobber --proxy=${USE_PROXY} $APR_SRC
+wget --no-clobber --proxy=${USE_PROXY} $APR_UTIL_SRC
+wget --no-clobber --proxy=${USE_PROXY} ${LIBXML2_SRC}
+wget --no-clobber --proxy=${USE_PROXY} $PHP_SRC
+mv mirror ${PHP_VERSION}.tar.gz
+
+# Install apache with apr
+cd $TMP_DIR
+tar -xzf ${APACHE_VERSION}.tar.gz
+tar -xzf ${APR_VERSION}.tar.gz
+tar -xzf ${APR_UTIL_VERSION}.tar.gz
+if [ ! -e ${APACHE_VERSION}/srclib/apr ]; then
+  mv ${APR_VERSION} ${APACHE_VERSION}/srclib/apr
+fi
+if [ ! -e ${APACHE_VERSION}/srclib/apr-util ]; then
+  mv ${APR_UTIL_VERSION} ${APACHE_VERSION}/srclib/apr-util
+fi
+cd ${APACHE_VERSION}
+if [ "${DO_CONFIGURE}" == true ]; then
+  ./configure --with-libxml-dir=${INSTALL_DIR} -with-included-apr --prefix=${INSTALL_DIR}  --exec-prefix=${INSTALL_DIR} --enable-so
+fi
+make install
+
+# Install libxml2
+cd $TMP_DIR
+tar -xzf ${LIBXML2_VERSION}.tar.gz
+cd libxml2*
+if [ "${DO_CONFIGURE}" == true ]; then
+  ./configure --prefix=${INSTALL_DIR} --exec-prefix=${INSTALL_DIR} --without-python
+fi
+make install
+
+# Install php
+cd $TMP_DIR
+tar -xzf ${PHP_VERSION}.tar.gz
+cd ${PHP_VERSION}
+if [ "${DO_CONFIGURE}" == true ]; then
+  ./configure --with-libxml-dir=${INSTALL_DIR} --with-apxs2=${INSTALL_DIR}/bin/apxs --prefix=${INSTALL_DIR}/php --exec-prefix=${INSTALL_DIR}/php --with-config-file-path=${INSTALL_DIR}/php
+  #--disable-libxml --disable-dom --disable-simplexml --disable-xml --disable-xmlreader --disable-xmlwriter --without-pear
+  #--without-mysql
+fi
+make install
+# Copy the config file for php
+cp php.ini-development ${INSTALL_DIR}/php/php.ini
+
+
+# Configure the apache server
+cd $TMP_DIR
+cat > httpd.conf.patch <<EOF
+--- /tmp/apache2/conf/httpd.conf.orig   2015-01-09 15:16:40.710095407 +0100
++++ /tmp/apache2/conf/httpd.conf        2015-01-09 16:30:02.358174481 +0100
+@@ -49,7 +49,7 @@
+ # prevent Apache from glomming onto all bound IP addresses.
+ #
+ #Listen 12.34.56.78:80
+-Listen 80
++Listen ${APACHE_PORT}
+ 
+ #
+ # Dynamic Shared Object (DSO) Support
+@@ -146,6 +146,7 @@
+ #LoadModule userdir_module modules/mod_userdir.so
+ LoadModule alias_module modules/mod_alias.so
+ #LoadModule rewrite_module modules/mod_rewrite.so
++LoadModule php5_module modules/libphp5.so
+ 
+ <IfModule unixd_module>
+ #
+@@ -246,6 +247,7 @@
+ #
+ <IfModule dir_module>
+     DirectoryIndex index.html
++    DirectoryIndex index.php
+ </IfModule>
+ 
+ #
+@@ -374,6 +376,7 @@
+     #
+     AddType application/x-compress .Z
+     AddType application/x-gzip .gz .tgz
++    AddType application/x-httpd-php .php
+ 
+     #
+     # AddHandler allows you to map certain file extensions to "handlers":
+EOF
+
+cp ${INSTALL_DIR}/conf/httpd.conf.bak ${INSTALL_DIR}/conf/httpd.conf
+patch ${INSTALL_DIR}/conf/httpd.conf httpd.conf.patch
+
+# Finish output message
+echo -e "\e[42mYou can now use the webserver with '${INSTALL_DIR}/bin/apachectl start|stop|restart'\e[0m"
+echo -e "\e[42mUse the firefox web browser and open the website http://localhost:${APACHE_PORT}\e[0m"
+echo -e "\e[42m'It works!' should appear\e[0m"
+echo -e "\e[44mYou can now just copy the content of the murox_dev folder into ${INSTALL_DIR}/htdocs or create a sym-link with 'rm -rf ${INSTALL_DIR}/htdocs && ln -fs /folder/to/murox_dev ${INSTALL_DIR}/htdocs'\e[0m"
+
+rm -rf ${TMP_DIR}

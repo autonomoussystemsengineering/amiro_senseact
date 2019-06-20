@@ -1,0 +1,4 @@
+====== Sensor Models ======
+
+In this directory there are stored all general sensor models of the murox system:
+  * [[includes:sensorModels:startVCNL4020|Models for VCNL4020 proximity sensors]]

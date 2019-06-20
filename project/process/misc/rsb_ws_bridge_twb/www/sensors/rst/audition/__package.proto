@@ -1,0 +1,11 @@
+/**
+ * Audio signal processing, sometimes referred to as audio processing,
+ * is the intentional alteration of auditory signals, or sound.
+ *
+ * This package contains data type definitions related to audio
+ * processing.
+ *
+ * @see http://en.wikipedia.org/wiki/Audio_signal_processing
+ *      "Wikipedia article containing the definition above"
+ */
+package rst.audition;

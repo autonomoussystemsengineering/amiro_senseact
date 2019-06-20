@@ -1,0 +1,3 @@
+====== actSLAM ======
+
+This program is a the tinySLAM implementation for AMiRo.

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <title>Process List</title>
+  <link rel="icon" type="image/png" href="../media/logo_its-owl_en.png">
+  <link rel="apple-touch-icon" href="../media/logo_its-owl_en.png" />
+  <link rel="stylesheet" href="../iui/iui.css" type="text/css" />
+  <link rel="stylesheet" title="Default" href="../iui/t/default/default-theme.css"  type="text/css"/>
+  <script type="application/x-javascript" src="../iui/iui.js"></script>
+</head>
+
+<body>
+  <div class="toolbar">
+      <h1 id="pageTitle">Process List</h1>
+  </div>
+
+  <div id="home" class="panel" selected="true">
+    <textarea id="log" style="width: 100%; height: 400px" readonly></textarea><br />
+    <button id="button" onclick="getInfo()">Show Processes</button>
+  </div>
+
+  <script>
+    var log = document.getElementById("log");
+    var text = document.getElementById("text");
+    var programs = ["rsb-logger", "test"];
+    var programNames = ["RSB Logger", "Not existing prog"];
+    var addSpace = [0, 0];
+
+    var maxName = 0;
+    for (var prog=0; prog<programNames.length; prog++) {
+         addSpace[prog] = programNames[prog].length;
+         if (addSpace[prog] > maxName) {
+             maxName = addSpace[prog];
+         }
+    }
+    for (var prog=0; prog<programNames.length; prog++) {
+         addSpace[prog] = maxName - addSpace[prog];
+    }
+
+
+    window.onbeforeunload = function () {
+      socket.close();
+    };
+
+    window.onunload = function () {
+      socket.close();
+    };
+
+    window.onpagehide = function() {
+      socket.close();
+    };
+
+    // Connect to our server
+    var socket = new WebSocket("ws://" + location.hostname + (location.port ? ':'+location.port: '') + "/ws");
+    socket.binaryType = "arraybuffer"; // We are talking binary
+
+    function getInfo() {
+        if (socket.readyState == WebSocket.OPEN) {
+//             log.value = ""; // Clear log on new scope setup
+            socket.send("execps");
+            //log.value += "\nRead process list:\n";
+            log.value = "";
+        } else {
+            log.value += "Not connected\n";
+        }
+    }
+
+    socket.onopen = function() {
+        log.value += "Connected\n";
+    };
+
+    socket.onclose = function() {
+        log.value += "Disconnected\n";
+    };
+        
+    socket.onmessage = function(evt) {
+      var input = String.fromCharCode.apply(null, new Uint8Array(evt.data));
+
+      var processes = input.split("\n");
+      for (var prog=0; prog<programs.length; prog++) {
+          var progFound = false;
+          for (var ps=0; ps<processes.length; ps++) {
+              if (processes[ps].search(programs[prog]) >= 0) {
+                  progFound = true;
+                  break;
+              }
+          }
+
+          log.value += programNames[prog] + ":";
+          for (var count=0; count<addSpace[prog]; count++) {
+              log.value += " ";
+          }
+    
+          if (progFound) {
+              log.value += " *running*\n";
+          } else {
+              log.value += "  stopped\n";
+          }
+      }
+      
+      // Scroll to the bottom to keep track of the output
+      var logarea = document.getElementById('log');
+      logarea.scrollTop = logarea.scrollHeight;
+    };
+
+    log.value = ""; // Clear log on reload
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,15 @@
+package rst.timing;
+
+option java_outer_classname = "FrequencyType";
+
+/**
+ * Holds a frequency.
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ */
+message Frequency {
+
+    // @unit(hertz)
+    required double hz = 1;
+
+}

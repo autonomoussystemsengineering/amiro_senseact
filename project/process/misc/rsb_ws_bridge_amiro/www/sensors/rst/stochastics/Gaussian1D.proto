@@ -1,0 +1,26 @@
+package rst.stochastics;
+
+option java_outer_classname = "Gaussian1DType";
+
+/**
+ * TODO
+ *
+ * @author Xavier Alameda-Pineda <xavier.alameda-pineda@inrialpes.fr>
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message Gaussian1D {
+
+    /**
+     * TODO
+     */
+    // @unit(number)
+    required float mean = 1;
+
+    /**
+     * TODO
+     */
+    // @constraint(value >= 0)
+    // @unit(number)
+    required float variance = 2;
+
+}

@@ -1,0 +1,23 @@
+====== MuRoX Converter ======
+
+In this folder, the MuRoX converter which are used to reach minimal overhead, are stored.
+In all other situations, the standard [[includes:types:start|MuRoX Types]] or [[http://docs.cor-lab.de//rst-manual/trunk/html/data-types.html|RST types]] should be used.
+To build the converter, just add them to your ''CMakeLists.txt'' file as follows:
+
+<file CMaKeLists.txt>
+  ...
+  # Add folders to build and run CMakeLists.txt in it
+  if (NOT TARGET vecIntConverter)
+    add_subdirectory (../../includes/converter/vecIntConverter lib/vecIntConverter)
+  endif()
+  ...
+  target_link_libraries (
+    ...
+    vecIntConverter
+  )
+  ...
+)
+</file> 
+
+The usage of such converter can be seen in [[sense:senseCam:start|senseCam]].
+There exist also template converter like the ''vecConverter'', which do not need to be precompiled (See [[tools:misc:sendRandomIntVector:start|sendRandomIntVector]] for an example).

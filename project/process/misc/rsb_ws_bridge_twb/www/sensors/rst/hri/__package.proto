@@ -1,0 +1,11 @@
+/**
+ * Human–robot interaction is the study of interactions between humans
+ * and robots. It is often referred as HRI by researchers.
+ *
+ * This package contains data type definitions related to human-robot
+ * interaction.
+ *
+ * @see http://en.wikipedia.org/wiki/Human-robot_interaction
+ *      "Wikipedia article containing the definition above"
+ */
+package rst.hri;

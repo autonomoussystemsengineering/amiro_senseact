@@ -1,0 +1,46 @@
+====== Object Delivery ======
+
+Given the [[process:mapping:mapGenerator:start|mapGenerator]] and [[process:exploration:localPlanner:start|localPlanner]] programs are running this program makes the robot deliver any object that can be found in the environment (by the mapGenerator program) when it is requested for delivery (e.g. by a state machine) via RSB. This object will be approached and delivered by pushing it to a predefined position (place destination marker before start!). Therefore, a "pushing path" is requested from the mapGenerator and decomposed into its straight segments along which the object is consecutively pushed.
+
+===== Color Codes =====
+
+Yellow: Pushing.
+Green: Delivered.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== RSB Scopes =====
+
+For communication with the state machine the following RSB scopes are defined:
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Command scope | String | "/objectDelivery/command" | Scope for receiving commands. |
+| Answer scope | String | "/objectDelivery/answer" | Scope for sending commands. |
+
+===== Requesting an Object =====
+
+An object is requested by publishing it on the command scope as a twbTracking::proto::Pose2D (x and y position, orientation).
+
+===== Parameters =====
+
+For parameter information type ''objectDelivery -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --robotID | Integer | 0 | ID of robot for communication (default=0). |
+| --id | Integer | 0 | ID of the tracking marker. |
+| --destId | Integer | 4 | ID of the destination marker. |
+| --positionInscope | String | "/localization" | Inscope for position data of SLAM localization. |
+| --pathRe | String | "/pathResponse" | Inscope for path responses. |
+| --pathOut | String | "/path" | Outscope for the robots path. |
+| --mapServer | String | "/mapGenerator" | Scope for the mapGenerator server. |
+| --host | String | "localhost" | Host for Programatik Spread. |
+| --port | String | "4823" | Port for Programatik Spread. |
+| --meterPerPixel, mpp | Float | 1/400 | Camera parameter: Meter per Pixel. |
+| --debugVis | bool | false | Debug mode: object selection via keyboard & visualization. |
+| --bigMap | bool | false | Flag if the map is very big (the pathplanner needs more than 25 seconds). |
+| --mapServerIsRemote | bool | false | Flag, if the map server is a remote server (otherwise it uses local connection). |
+| --useSLAMData | bool | false | Use SLAM Localization Data (PoseEuler) instead of Tracking Data for incomming position data. |

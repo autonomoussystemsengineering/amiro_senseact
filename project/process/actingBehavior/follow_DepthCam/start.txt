@@ -1,0 +1,50 @@
+====== Following Procedure via Depth Camera ======
+
+This program contains a following procedure via depth camera.
+
+===== Basic Procedure =====
+
+The robot is given a sector range, where it should focus on objects in the depth image of the depth camera only. The sector is ranged by a minimal and a maximal distance. Independently of the object's measured distance, the robot tries to get the highest position of the object in the image into the center of the image.
+
+By adjusting the camera angle, very different driving behaviors can be the outcome.
+
+===== Communication =====
+
+By sending commands via RSB, the following procedure can activated and deactivated (it cannot be quit!):
+
+^ Command ^ Scope Name ^ Description ^
+| init | Command Scope | The robot will initialize and start the following procedure. |
+| stop | Command Scope | The robot will stop the following procedure. |
+
+===== RSB Scopes =====
+
+There are different RSB scopes for the following procedure:
+
+^ Scope Name ^ Scope (on default) ^ Description ^
+| Command Scope | /following    | Scope for receiving start and stop commands. |
+| Image Scope   | /images/rgb   | Scope for sending the RGB and depth image of the depth camera. |
+| Light Scope   | /amiro/lights | Scope for sending light commands. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| commandScope       | String  | /following    | Scope for receiving commands. |
+| rgbScope           | String  | /images/rgb   | Scope for sending debug image. |
+| lightScope         | String  | /amiro/lights | Scope for sending light commands. |
+| host               | String  | localhost     | Host name of external spread. |
+| port               | String  | 4823          | Port of external spread. |
+| printTime,t        | -       | -             | Prints the time of single parts. |
+| rgbMode            | Integer | 0             | Mode of RGB Image. |
+| depthMode          | Integer | 0             | Mode of Depth Image. |
+| period             | Integer | 10            | Period between two image fetches in ms. |
+| compression,c      | Integer | 100           | Compression value [0,100]. |
+| sectorCount        | Integer | 9             | Count of sectors per side. |
+| invalidRange,a     | Integer | 350           | Range until it is invalid in mm. |
+| maxRange,b         | Integer | 2000          | Maximal range in mm. |
+| maxVelX,c          | Float   | 0.5           | Maximal forward velocity in m/s. |
+| minVelX,d          | Float   | 0.1           | Minimal forward velocity in m/s. |
+| maxVelW,e          | Float   | 45.0          | Maximal angular velocity in degrees/s. |
+| minVelW,f          | Float   | 20.0          | Minimal angular velocity in degrees/s. |
+| sendImage,s        | -       | -             | Flag if the image shall be converted to OpenCV and send via RSB. |
+| startImmediatley,i | -       | -             | Flag if the following procedure shall start immediately. |
+| printInfo,p        | -       | -             | Flag if just the camera information shall be printed. The tool closes afterwards. |

@@ -1,0 +1,28 @@
+package rst.vision;
+
+import "rst/geometry/BoundingBox.proto";
+
+option java_outer_classname = "FaceType";
+
+/**
+ * An object of this type represents a human face detected in an image.
+ *
+ * The region of the image which corresponds to the face is
+ * represented as a @ref rst.geometry.BoundingBox .
+ *
+ * @author "Johannes Wienke" <jwienke@techfak.uni-bielefeld.de>
+ */
+message Face {
+
+    /**
+     * TODO Bounding box for the detection.
+     */
+    required geometry.BoundingBox region = 1;
+
+    /**
+     * TODO Detection confidence factor.
+     */
+    // @unit(TODO)
+    optional double confidence = 2;
+
+}

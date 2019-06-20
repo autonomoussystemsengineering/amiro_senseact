@@ -1,0 +1,25 @@
+package rst.geometry;
+
+import "rst/geometry/BoundingBox3DFloat.proto";
+
+option java_outer_classname = "Shape3DFloatType";
+
+/**
+ * Description of a 3D shape as a union of geometric primitives.
+ *
+ * New primitive types can be added to this type.
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ * @author Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+ */
+message Shape3DFloat {
+
+    /**
+     * Set of oriented bounding boxes contributing to the described 3D
+     * shape.
+     *
+     * The order of bounding boxes is not significant.
+     */
+    repeated geometry.BoundingBox3DFloat box = 1;
+
+}

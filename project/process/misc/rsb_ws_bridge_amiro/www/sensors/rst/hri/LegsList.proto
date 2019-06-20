@@ -1,0 +1,20 @@
+package rst.hri;
+
+import "rst/hri/Legs.proto";
+
+option java_outer_classname = "LegsListType";
+
+/**
+ * A collection of @ref Legs.
+ *
+ * @author Phillip Luecking <plueckin@techfak.uni-bielefeld.de>
+ */
+message LegsList {
+
+    /**
+     * Empty collection of legs is allowed.
+     * The order of leg objects is not significant.
+     */
+    repeated hri.Legs list = 1;
+
+}

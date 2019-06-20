@@ -1,0 +1,2 @@
+#!/bin/bash
+echo | `echo "$CXX -Wp,-v -x c++ - -fsyntax-only"` |& grep "^\ " | sed "s#\ ##g" | tr "\n" ";"

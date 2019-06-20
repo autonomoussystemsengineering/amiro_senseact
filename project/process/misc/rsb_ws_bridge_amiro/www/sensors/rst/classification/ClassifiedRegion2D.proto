@@ -1,0 +1,27 @@
+package rst.classification;
+
+import "rst/geometry/BoundingBox.proto";
+import "rst/classification/ClassificationResult.proto";
+
+option java_outer_classname = "ClassifiedRegion2DType";
+
+/**
+ * Focus on image coordinate systems (vision-based).
+ *
+ * A image region with a classification result.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+message ClassifiedRegion2D {
+
+    /**
+     * Region in the input image.
+     */
+    optional geometry.BoundingBox region = 1;
+
+    /**
+     * The class represented by the image region.
+     */
+    optional ClassificationResult result = 2;
+
+}

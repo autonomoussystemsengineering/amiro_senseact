@@ -1,0 +1,30 @@
+====== Frontier Exploration ======
+
+This program performs a Frontier Exploration.
+To do this it requests frontier paths from the [[process:mapping:mapGenerator:start|mapGenerator]] and publishes them to the [[process:exploration:localPlannerISY:start|localPlanner]].
+It also implements an edge following. For this purpose steering signals are directly send to [[act:motorControl:start|motorControl]].
+
+===== RSB Scopes =====
+
+^ Scope (default name)      ^ Description ^
+|/rir_prox | Inscope for the ring proximity data|
+|/prox/floor | Inscope for floor proximity data|
+|/murox/roboterlocation | Inscope for the tracking data ("in program spread" --port, --host; id: --id)|
+|/pathResponse | Inscope for path responses from the localPlanner (whenever a path is finished)|
+|/exploration/command | Inscope for commands from the state machine; any signal on this scope will start the exploration |
+|/exploration/answer | Outscope to communicate with the state machine; When the exploration is finished "finish" will be send on this scope |
+|/path | Outscope to send paths to the localPlanner|
+|/motor/04 | Outscope for steering signals|
+|/edgePose | Outscope for edge positions relative to the robot|
+|/mapGenerator | Scope of the rsb-server to request paths with the getFrontierPath method|
+
+===== Important Command-Line Options =====
+^ Option      ^ Description ^
+| -h, --help | Display a help message |
+| --id | ID of the tracking marker |
+| --host | Spread host |
+| --port | Spread port |
+| --meterPerPixel | Camera Scaling |
+
+
+

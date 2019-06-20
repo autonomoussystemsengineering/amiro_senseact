@@ -1,0 +1,20 @@
+package rst.geometry;
+
+option java_outer_classname = "BoundingBox3DFloatSetType";
+
+import "rst/geometry/BoundingBox3DFloat.proto";
+
+/**
+ * A set of @ref .BoundingBox3DFloat objects.
+ *
+ * @author Christian Emmerich <cemmeric@cor-lab.de>
+ */
+message BoundingBox3DFloatSet {
+
+    /**
+     * Empty collection of boxes is allowed.
+     * The order of box objects is not significant.
+     */
+    repeated geometry.BoundingBox3DFloat boxes = 1;
+
+}

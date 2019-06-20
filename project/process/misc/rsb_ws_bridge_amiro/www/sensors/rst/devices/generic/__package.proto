@@ -1,0 +1,8 @@
+/**
+ * This package collects device-independent data types.
+ *
+ * It is only intended for data types which do not make sense outside
+ * the context of a specific device. Try to use generic data types
+ * instead, if possible.
+ */
+package rst.devices.generic;

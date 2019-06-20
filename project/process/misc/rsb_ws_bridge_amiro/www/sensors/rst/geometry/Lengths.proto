@@ -1,0 +1,16 @@
+package rst.geometry;
+
+option java_outer_classname = "LengthsType";
+
+/**
+ * A sequence of length measurements (e.g. length of a link in a
+ * kinematics chain).
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ */
+message Lengths {
+
+    // @unit(meter)
+    repeated double lengths = 1;
+
+}

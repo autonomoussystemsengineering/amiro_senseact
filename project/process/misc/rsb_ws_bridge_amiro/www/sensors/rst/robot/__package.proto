@@ -1,0 +1,6 @@
+/**
+ * This package contains data type definitions that are specific robot
+ * sensing, control etc. and do thus not fit into more general
+ * categories such as dynamics or navigation.
+ */
+package rst.robot;

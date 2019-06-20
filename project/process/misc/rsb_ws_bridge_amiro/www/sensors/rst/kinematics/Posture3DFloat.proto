@@ -1,0 +1,30 @@
+package rst.kinematics;
+
+import "rst/geometry/Translation.proto";
+
+option java_outer_classname = "Posture3DFloatType";
+
+/**
+ * A set of positions forming a posture of an articulated thing.
+ *
+ * The kinematic structure, which in most cases is required for a
+ * useful interpretation, has to be transmitted through other
+ * channels.
+ *
+ * @author Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+ */
+message Posture3DFloat {
+
+    /**
+     * Sequence of joint positions in three-dimensional space.
+     *
+     * Interpretation depends on information transmitted trough other
+     * channels.
+     *
+     * The order of entries is significant since the interpretations
+     * of individual positions depends on their respective position
+     * within the sequence.
+     */
+    repeated geometry.Translation position = 2;
+
+}

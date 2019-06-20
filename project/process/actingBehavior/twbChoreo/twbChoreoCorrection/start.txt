@@ -1,0 +1,27 @@
+====== TWB Choreo Correction ======
+
+This program sends a choreo correction to a choreo executing robot, which uses the [[process:actingBehavior:twbChoreo:twbChoreo:start|TWB Choreo Tool]].
+
+===== Basic Procedure =====
+
+The program just corrects one specific robot. The robot ID and the marker ID of the demanded robot have to be given as parameters. The tool has to be started before the robots start their choreographies.
+
+Each time, the key "enter" is pressed, the tool will save the current goal position via the Goals Scope and the tracking position via the Tracking Data Scope of the robot and calculates a specific movement parallel to the y-axis. Via the Choreo Correction Scope the new positions will be sent to the demanded robot.
+
+Notice: The new positions are absolute ones. The robot can drive to them directly without any additional position calculation.
+
+===== RSB Scopes =====
+
+^ Scope Name ^ Default Scope ^ Scope Type ^ Description ^
+| Goals             | /twbchoreo/goal             | Object     | Inscope for receiving goal position of the current steps. |
+| Choreo Correction | /twbchoreo/choreocorrection | PoseList   | Outscope for sending choreo correction. |
+
+The tracking scope will be automatically loaded from the [[includes:twb:startTwbTracking|TWB Tracking Module]].
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| amiroID,a  | Integer | NOT GIVEN                   | ID of the AMiRo, which has to be unique! Flag must be set! |
+| markerId,m | Integer | NOT GIVEN                   | ID of the marker for robot detection. Flag must be set! |
+| goalIn     | String  | /twbchoreo/goal             | Goal position inscope. |
+| choreoOut  | String  | /twbchoreo/choreocorrection | Choreography correction outscope. |

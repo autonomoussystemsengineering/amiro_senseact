@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "Remove: CMakeFiles/ CMakeCache.txt cmake_install.cmake Makefile *ninja* *project* `basename "$PWD"` lib/"
+# Remove the temp. cmake files
+rm -rf CMakeFiles/ CMakeCache.txt cmake_install.cmake Makefile *.ninja .*ninja* .project .cproject
+# delete the executable
+rm `basename "$PWD"`
+rm -rf lib

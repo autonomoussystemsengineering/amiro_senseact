@@ -1,0 +1,21 @@
+package rst.generic;
+
+option java_outer_classname = "DictionaryType";
+
+import "rst/generic/KeyValuePair.proto";
+
+/**
+ * A list of key-value pairs.
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ */
+message Dictionary {
+
+    /**
+     * The list of key-value pairs.
+     *
+     * Ordering is ignored and duplicated keys must be avoided.
+     */
+    repeated KeyValuePair entries = 1;
+
+}

@@ -1,0 +1,4 @@
+====== Act Models ======
+
+In this directory there are stored all general act models of the murox system:
+  * [[includes:actModels:startLightModel|Model for lighting the LEDs]]

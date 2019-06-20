@@ -1,0 +1,17 @@
+package rst.audition;
+
+option java_outer_classname = "FloatSoundArrayType";
+
+/**
+ * Deinterleaved float array needed by audiocues component
+ * @todo "what is a deinterleaved float array?"
+ *
+ * @author Antoine Deleforge <antoine.deleforge@inrialpes.fr>
+ */
+message FloatSoundArray {
+    /**
+     * TODO
+     */
+    // @unit(TODO)
+    repeated float floatbuffer = 1;
+};

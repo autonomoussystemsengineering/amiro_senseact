@@ -1,0 +1,51 @@
+package rst.vision;
+
+option java_outer_classname = "SimpleXYZImageType";
+
+/**
+ * Saves 3D data (X, Y, Z values) which have a 2D ordering.
+ *
+ * This kind of depth-data is produced by e.g. Kinect or Swissranger
+ * cameras.
+ *
+ * @ref .x, @ref .y, @ref .z are 1D arrays which save separately the
+ * X, Y, Z values of the 3D points.
+ *
+ * @author Agnes Swadzba <aswadzba@techfak.uni-bielefeld.de>
+ */
+// @constraint(.width * .height = len(.x))
+// @constraint(.width * .height = len(.y))
+// @constraint(.width * .height = len(.z))
+message SimpleXYZImage {
+
+    /**
+     * Width of the underlying 2D ordering structure.
+     */
+    // @constraint(value > 0)
+    // @unit(pixel)
+    required uint32 width  = 1;
+
+
+    /**
+     * Height of the underlying 2D ordering structure.
+     */
+    // @constraint(value > 0)
+    // @unit(pixel)
+    required uint32 height = 2;
+
+    /**
+     * The values are ordered by linearizing the underlying 2D structure row-wise.
+     */
+    repeated float x = 3;
+
+    /**
+     * See @ref .x.
+     */
+    repeated float y = 4;
+
+    /**
+     * See @ref .x.
+     */
+    repeated float z = 5;
+
+};

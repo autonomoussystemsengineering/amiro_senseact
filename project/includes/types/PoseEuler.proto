@@ -1,0 +1,26 @@
+package rst.geometry;
+
+import "rst/geometry/Translation.proto";
+import "RotationEuler.proto";
+
+option java_outer_classname = "PoseType";
+
+/**
+ * Pose data (camera, robot, ...).
+ * @todo "extend explanation"
+ *
+ * @author Timo Korthals <tkorthals@techfak.uni-bielefeld.de>
+ */
+message PoseEuler {
+
+    /**
+     * TODO
+     */
+    required Translation translation = 1;
+
+    /**
+     * TODO
+     */
+    required RotationEuler rotation = 2;
+
+}

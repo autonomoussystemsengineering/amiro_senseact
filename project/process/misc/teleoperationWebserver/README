@@ -1,0 +1,4 @@
+source /opt/poky/1.6-20140617/environment-setup-cortexa8hf-vfp-neon-poky-linux-gnueabi
+./clean_up.sh
+cmake .
+make

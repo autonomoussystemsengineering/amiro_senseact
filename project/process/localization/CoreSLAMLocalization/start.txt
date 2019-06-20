@@ -1,0 +1,3 @@
+====== CoreSLAMLocalization ======
+
+This program is a localization based on the tinySLAM (a.k.a. CoreSLAM) implementation for AMiRo.

@@ -1,0 +1,10 @@
+====== Statemachine Programs ======
+
+In this subdirectory there are included all state machines:
+  * [[process:statemachines:choreoStateMachine:start|Choreography]]: Choreography reader for RoboCup@Home 2015 RoboZoo.
+  * [[process:statemachines:coastalNavigationWithDrinkOrder:start|Coastal Navigation (Drink Order)]]: <Description>
+  * [[process:statemachines:drivingObjectDetection:start|Driving Object Detection]]: Driving to every object for detection.
+  * [[process:statemachines:final2015:start|RoboCup@Home 2015 Final]]: Serving as sensor platform.
+  * [[process:statemachines:stateMachineGEPTRO:start|GEPTRO - Main]]: GEPTRO table top application.
+  * [[process:statemachines:stateMachineGEPTRO_AMiRoEnvironmentSimulation:start|GEPTRO - Environment]]: Environment simulation for the GEPTRO table top application.
+  * [[process:statemachines:stateMachineGEPTRO_CommandSimulation:start|GEPTRO - Command]]: Command for the GEPTRO table top application.

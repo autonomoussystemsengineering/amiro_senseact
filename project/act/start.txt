@@ -1,0 +1,4 @@
+The **act** folder contains act models for working with the MuRoX environment.
+Please use the [[start?do=index|Sitemap]] for a complete overview.
+
+{{ :act:act.png?300 |}}

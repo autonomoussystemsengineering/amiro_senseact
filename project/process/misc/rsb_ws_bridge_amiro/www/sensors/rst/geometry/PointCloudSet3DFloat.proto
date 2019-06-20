@@ -1,0 +1,20 @@
+package rst.geometry;
+
+option java_outer_classname = "PointCloudSet3DFloatType";
+
+import "rst/geometry/PointCloud3DFloat.proto";
+
+/**
+ * A set of 3D Point clouds.
+ *
+ * @author Christian Emmerich <cemmeric@cor-lab.de>
+ */
+message PointCloudSet3DFloat {
+
+    /**
+     * Empty collection of clouds is allowed.
+     * The order of cloud objects is not significant.
+     */
+    repeated geometry.PointCloud3DFloat clouds = 1;
+
+}

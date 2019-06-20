@@ -1,0 +1,8 @@
+====== edgeMeasurement ======
+
+This tool prints the measured edge distance.
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --loadOffsets, -l | - | - | Loads offsets from the file "irConfig.conf" and "irEmpty.conf". |

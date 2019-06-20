@@ -1,0 +1,7 @@
+/**
+ * Message which are capable of handling dynamic data types.
+ *
+ * This is not the preferred way of using RST, but cannot be avoided in certain
+ * cases. If possible, use semantically-defined data types.
+ */
+ package rst.generic;

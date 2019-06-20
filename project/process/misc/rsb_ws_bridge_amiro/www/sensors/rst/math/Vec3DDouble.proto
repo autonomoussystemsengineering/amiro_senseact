@@ -1,0 +1,27 @@
+package rst.math;
+
+option java_outer_classname = "Vec3DDoubleType";
+
+/**
+ * A 3D vector with double entries.
+ *
+ * @author TODO
+ */
+message Vec3DDouble {
+
+    /**
+     * TODO
+     */
+    required double x = 1 [default = 0];
+
+    /**
+     * TODO
+     */
+    required double y = 2 [default = 0];
+
+    /**
+     * TODO
+     */
+    required double z = 3 [default = 0];
+
+}

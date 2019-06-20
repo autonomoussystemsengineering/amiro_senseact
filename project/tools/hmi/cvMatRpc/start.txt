@@ -1,0 +1,6 @@
+====== cvMatRpc ======
+
+==== Program description ====
+
+You can send a empty PRC which replies with an cv::Mat image.
+This image is then shown.

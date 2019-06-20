@@ -1,0 +1,4 @@
+====== showCamJpg ======
+
+This application greps compress JPEGs as byte arrays from a RSB scope and displays them.
+See the demo [[demo:cameraJpeg:start|Sending and displaying of camera images]] for a hands-on.

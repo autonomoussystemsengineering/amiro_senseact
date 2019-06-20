@@ -1,0 +1,36 @@
+package rst.devices.generic;
+
+option java_outer_classname = "BatteryStateType";
+
+/**
+ * Provides information about the state of a single battery.
+ *
+ * @author Jens-Christian Seele <jseele@techfak.uni-bielefeld.de>
+ */
+message BatteryState {
+
+    /**
+     * Indicates the electrical current draining or charging the battery at the
+     * moment.
+     *
+     * Negative currents indicate discharging of the battery, positive ones
+     * indicate an attached charger.
+     */
+    // @unit(ampere)
+    optional float current = 1;
+
+    /**
+     * Indicates the current charging level of the battery, where 1 means full
+     * and 0 indicates completely empty.
+     */
+    // @unit(number)
+    // @constraint(0<=value<=1)
+    required float charge_level = 2;
+
+    /**
+     * The temperature of the battery.
+     */
+    // @unit(degree-celsius)
+    optional float battery_temperature = 3;
+
+}

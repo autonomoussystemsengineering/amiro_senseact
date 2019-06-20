@@ -1,0 +1,29 @@
+====== Send Lights ======
+
+This is an example tool, how to send the light command to the [[act:setLights:start|setLights tool]]. Please have a look into the ''main.cxx'' and the ''CMakeLists.txt'' (due to includes of the integer vector registration and the usage of ''Color.cpp''). Please check also the [[includes:actModels:startLightModel|Light Model]].
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+==== RSB Scopes ====
+
+^ Name ^ Default Scope ^ Scope Type ^ Description ^
+| Command | /amiro/lights | String | Outscope for light command. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| commandScope, c | String  | /amiro/lights | Inscope for commands. |
+| host, h         | String  | 127.0.0.1     | Host for Programatik Spread. |
+| port, p         | String  | 4803          | Port for Programatik Spread. |
+| type, t         | Integer | -             | Command type. |
+| red, r          | Integer | -             | Color channel red in [0,255]. |
+| green, g        | Integer | -             | Color channel green in [0,255]. |
+| blue, b         | Integer | -             | Color channel blue in [0,255]. |
+| init, i         | -       | -             | Set initial colors. |
+| period, d       | Integer | -             | Period time. |
+
+Important: The command type (-t) and the period time (-d) have to be given. In the case of colors the red, green and blue channels (-r, -g, -b) must be given or the initial color flag (-i) must be set.

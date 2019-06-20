@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <title>Sick LD MRS400102</title>
+  <link rel="icon" type="image/png" href="../media/logo_its-owl_en.png">
+  <link rel="apple-touch-icon" href="../media/logo_its-owl_en.png" />
+  <link rel="stylesheet" href="../iui/iui.css" type="text/css" />
+  <link rel="stylesheet" title="Default" href="../iui/t/default/default-theme.css"  type="text/css"/>
+  <script type="application/x-javascript" src="../iui/iui.js"></script>
+  
+  <!-- Handle ProtoBuffer -->
+  <script src="../Long.min.js"></script>         <!-- https://raw.github.com/dcodeIO/Long.js/master/dist/Long.min.js -->
+  <script src="../ByteBufferAB.min.js"></script> <!-- https://raw.github.com/dcodeIO/ByteBuffer.js/master/dist/ByteBufferAB.min.js -->
+  <script src="../ProtoBuf.min.js"></script>     <!-- https://raw.github.com/dcodeIO/ProtoBuf.js/master/dist/ProtoBuf.min.js -->
+  <script src="../d3.v3.min.js"></script>        <!-- http://d3js.org/d3.v3.min.js -->
+  <script>
+  if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+      throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+  }
+  // Initialize ProtoBuf.js
+  var ProtoBuf = dcodeIO.ProtoBuf;
+  var filename = {root:"../types", file: "SickLdMRS4002.proto"};
+  var fileContent = ProtoBuf.Util.fetch(typeof filename === 'object' ? filename["root"]+"/"+filename["file"] : filename);
+  var msg_proto = ProtoBuf.loadProto(fileContent, null, "SickLdMRS4002.proto").build("rst.claas.SickLdMRS400102");
+
+  </script>
+</head>
+
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+</style>
+
+<body>
+    <div class="toolbar">
+        <h1 id="pageTitle">Sick LD-MRS400102-600</h1>
+        <!--img src="../media/LD-MRS400102-600.jpg" height=118-->
+        <a id="backButton" class="button" href="#"></a>
+    </div>
+
+  <div id="home" class="panel" selected="true">
+    <textarea id="log" style="width: 100%; height: 200px"></textarea><br />
+    <input type="text" id="text" value="/Sick" /> <button onclick="send()">Set Scope</button>
+  </div>
+  
+  
+  <script>
+    var log = document.getElementById("log");
+    var text = document.getElementById("text");
+
+    window.onbeforeunload = function () {
+      socket.close();
+    };
+
+    window.onunload = function () {
+      socket.close();
+    };
+
+    window.onpagehide = function() {
+      socket.close();
+    };
+
+    // Connect to our server
+    var socket = new WebSocket("ws://" + location.hostname + (location.port ? ':'+location.port: '') + "/ws");
+    socket.binaryType = "arraybuffer"; // We are talking binary
+
+    function send() {
+        if (socket.readyState == WebSocket.OPEN) {
+            log.value = ""; // Clear log on new scope setup
+            socket.send(text.value);
+            log.value += "Receive scope: " + text.value +"\n";
+        } else {
+            log.value += "Not connected\n";
+        }
+    }
+
+    socket.onopen = function() {
+        log.value += "Connected\n";
+    };
+
+    socket.onclose = function() {
+        log.value += "Disconnected\n";
+    };
+        
+    socket.onmessage = function(evt) {
+        try {
+            // Decode the message
+            var msg = msg_proto.decode(evt.data);
+            log.value = "Receive data:\n";
+            log.value += "measureNumber: "        + msg.get("measureNumber") + "\n";
+            log.value += "sensorStatus: "         + msg.get("sensorStatus") + "\n";
+            log.value += "synchroPhase: "         + msg.get("synchroPhase") + "\n";
+            log.value += "timestartMeasure: "         + msg.get("timestartMeasure") + "\n";
+            log.value += "timeendMeasure: "         + msg.get("timeendMeasure") + "\n";
+            log.value += "angularStepsPerRotation: "         + msg.get("angularStepsPerRotation") + "\n";
+            log.value += "startAngle: "         + msg.get("startAngle") + "\n";
+            log.value += "endAngle: "         + msg.get("endAngle") + "\n";
+            log.value += "numberMeasuredPoints: "         + msg.get("numberMeasuredPoints") + "\n";
+            log.value += "layer: \n";
+            msg.get("layer").forEach(function(d) {log.value += " " + d;});
+            log.value += "\n";
+            log.value += "echo: \n";
+            msg.get("echo").forEach(function(d) {log.value += " " + d;});
+            log.value += "\n";
+            log.value += "flags: \n";
+            msg.get("flags").forEach(function(d) {log.value += " " + d;});
+            log.value += "\n";
+            log.value += "horizontalAngle: \n";
+            msg.get("horizontalAngle").forEach(function(d) {log.value += " " + d;});
+            log.value += "\n";
+            log.value += "radialDistance: \n";
+            msg.get("radialDistance").forEach(function(d) {log.value += " " + d;});
+            log.value += "\n";
+            log.value += "echoPulseWidth: \n";
+            msg.get("echoPulseWidth").forEach(function(d) {log.value += " " + d;});
+            
+            // Print a svg graphic with the received data
+            
+            // Remove any section with name "svg" in the document
+            d3.selectAll("svg").remove();
+            
+            // Plot the data
+            var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+            var x = d3.scale.linear()
+                .range([0, width]);
+
+            var y = d3.scale.linear()
+                .range([height, 0]);
+
+            var color = d3.scale.category10();
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+            // Apply a SVG section to the document for the distances
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Get the data in the proper format
+            var dataPlot = new Array();        
+            var data = msg.get("radialDistance");
+            data.forEach(function(d, rank) {dataPlot.push( { idx: rank, val: d }); /*log.value += rank+" ";*/});
+
+            dataPlot = dataPlot.slice(0, dataPlot.length);
+            
+            // Set the limitations of the graph
+              x.domain([1, dataPlot.length]).nice();  // 0 .. 999
+              y.domain([0, 2000]).nice();        // We set these values fixed
+    //           y.domain(d3.extent(dataPlot, function(d) { return d.val; })).nice();
+
+              svg.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis)
+                  .append("text")
+                  .attr("class", "label")
+                  .attr("x", width)
+                  .attr("y", -6)
+                  .style("text-anchor", "end")
+                  .text("Index");
+
+              svg.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis)
+                  .append("text")
+                  .attr("class", "label")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 6)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text("Distance [1/10 mm]")
+
+              svg.selectAll(".dot")
+                  .data(dataPlot)
+                  .enter().append("circle")
+                  .attr("class", "dot")
+                  .attr("r", 3.5)
+                  .attr("cx", function(d) { return x(d.idx); })
+                  .attr("cy", function(d) { return y(d.val); })
+
+              var legend = svg.selectAll(".legend")
+                  .data(color.domain())
+                  .enter().append("g")
+                  .attr("class", "legend")
+                  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+              legend.append("rect")
+                  .attr("x", width - 18)
+                  .attr("width", 18)
+                  .attr("height", 18)
+                  .style("fill", color);
+
+              legend.append("text")
+                  .attr("x", width - 24)
+                  .attr("y", 9)
+                  .attr("dy", ".35em")
+                  .style("text-anchor", "end")
+                  .text(function(d) { return d; });
+
+
+
+            // Apply a SVG section to the document for the pulsewidth
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Get the data in the proper format
+            var dataPlot = new Array();        
+            var data = msg.get("echoPulseWidth");
+            data.forEach(function(d, rank) {dataPlot.push( { idx: rank, val: d }); /*log.value += rank+" ";*/});
+
+            dataPlot = dataPlot.slice(0, dataPlot.length);
+            
+            // Set the limitations of the graph
+              x.domain([1, dataPlot.length]).nice();  // 0 .. 999
+              y.domain([0, 256]).nice();        // We set these values fixed
+    //           y.domain(d3.extent(dataPlot, function(d) { return d.val; })).nice();
+
+              svg.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis)
+                  .append("text")
+                  .attr("class", "label")
+                  .attr("x", width)
+                  .attr("y", -6)
+                  .style("text-anchor", "end")
+                  .text("Index");
+
+              svg.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis)
+                  .append("text")
+                  .attr("class", "label")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 6)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text("Pulsewidth [ps]")
+
+              svg.selectAll(".dot")
+                  .data(dataPlot)
+                  .enter().append("circle")
+                  .attr("class", "dot")
+                  .attr("r", 3.5)
+                  .attr("cx", function(d) { return x(d.idx); })
+                  .attr("cy", function(d) { return y(d.val); })
+
+              var legend = svg.selectAll(".legend")
+                  .data(color.domain())
+                  .enter().append("g")
+                  .attr("class", "legend")
+                  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+              legend.append("rect")
+                  .attr("x", width - 18)
+                  .attr("width", 18)
+                  .attr("height", 18)
+                  .style("fill", color);
+
+              legend.append("text")
+                  .attr("x", width - 24)
+                  .attr("y", 9)
+                  .attr("dy", ".35em")
+                  .style("text-anchor", "end")
+                  .text(function(d) { return d; });
+
+        } catch (err) {
+            log.value += "Error: "+err+"\n";
+            socket.close();
+        }
+    };
+
+    log.value = ""; // Clear log on reload
+  </script>
+
+
+</body>
+</html>

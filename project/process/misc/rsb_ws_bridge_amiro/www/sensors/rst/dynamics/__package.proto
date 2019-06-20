@@ -1,0 +1,7 @@
+/**
+ * In the field of physics, the study of the causes of motion and
+ * changes in motion is dynamics. In other words the study of forces
+ * and why objects are in motion. Dynamics includes the study of the
+ * effect of torques on motion.
+ */
+package rst.dynamics;

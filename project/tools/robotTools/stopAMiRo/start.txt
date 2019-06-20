@@ -1,0 +1,3 @@
+====== stopAMiRo ======
+
+This program stops the motor and resets the lightring. This settings are done immediately.

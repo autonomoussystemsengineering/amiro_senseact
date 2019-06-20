@@ -1,0 +1,5 @@
+====== Visual Motion Detection ======
+
+For the visual motion detection there are two programs:
+  * [[process:objectDetection:visualMotionDetection:motionDetection:start|Motion Detection]]: The basic visual motion detection for the robot.
+  * [[process:objectDetection:visualMotionDetection:motionDetectionCommand:start|Motion Detection Command]]: The tool for receiving the images of the motion detection.

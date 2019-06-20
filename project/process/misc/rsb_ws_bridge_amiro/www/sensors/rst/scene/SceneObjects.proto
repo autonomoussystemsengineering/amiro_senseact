@@ -1,0 +1,23 @@
+package rst.scene;
+
+import "rst/scene/SceneObject.proto";
+
+option java_outer_classname = "SceneObjectsType";
+
+/**
+ * A set of scene objects.
+ *
+ * @author David Klotz <dklotz@techfak.uni-bielefeld.de>
+ */
+message SceneObjects {
+
+    /**
+     * The set of scene objects.
+     *
+     * Empty collection of scene objects is allowed.
+     *
+     * The order of scene objects is not significant.
+     */
+    repeated SceneObject scene_object = 1;
+
+}

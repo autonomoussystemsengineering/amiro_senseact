@@ -1,0 +1,24 @@
+package rst.geometry;
+
+import "rst/math/Vec2DFloat.proto";
+
+option java_outer_classname = "PointPairType";
+
+/**
+ * A message representing a pair of 2D Points
+ *
+ * @author TODO
+ */
+message PointPair {
+
+    /**
+     * TODO
+     */
+    required math.Vec2DFloat first = 1;
+
+    /**
+     * TODO
+     */
+    required math.Vec2DFloat second = 2;
+
+}

@@ -1,0 +1,22 @@
+package rst.geometry;
+
+option java_outer_classname = "PointCloud2DIntType";
+
+import "rst/math/Vec2DInt.proto";
+
+/**
+ * A collection of points in 2D space.
+ *
+ * @author Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+ */
+message PointCloud2DInt {
+
+    /**
+     * The points.
+     *
+     * Duplicate entries should be avoided.
+     * Order of entries is not significant.
+     */
+    repeated math.Vec2DInt points = 1;
+
+}

@@ -1,0 +1,1 @@
+killall sendOdometryProtoPose senseSickTim motorControl

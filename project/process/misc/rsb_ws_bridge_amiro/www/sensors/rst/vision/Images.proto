@@ -1,0 +1,19 @@
+package rst.vision;
+
+import "rst/vision/Image.proto";
+
+option java_outer_classname = "ImagesType";
+
+/**
+ * TODO A collection of images.
+ *
+ * @author "Johannes Wienke" <jwienke@techfak.uni-bielefeld.de>
+ */
+message Images {
+
+    /**
+     * TODO
+     */
+    repeated Image images = 1;
+
+}

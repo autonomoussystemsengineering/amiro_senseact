@@ -1,0 +1,73 @@
+====== ChoreoStateMachine ======
+
+This program performs a choreography on the AMiRo. 
+For this purpose a xml-File that defines the Choreography is parsed.  
+Based on the choreography movements and settings for the lightring are published via CAN. 
+
+===== RSB Scopes =====
+
+^ Scope (default name)      ^ Description ^
+|/choreo | Inscope for choreo names|
+
+===== Important Command-Line Options =====
+^ Option      ^ Description ^
+| -h, --help | Display a help message |
+| -v, --verbose | Print values that are published via CAN |
+| --delay | Delay between creating the rsb event and starting the choreography in ms (default: 2000ms)|
+| --pos | Position in the formation (from the front: 0=left, 1=middle left, 2=middle, 3=middle right, 4=right) |
+| -s, --homing | The homing will be activated. After finishing the choreography the robot will return to its start position. |
+
+===== Structure of the xml files =====
+
+The filename of a choreography has to be //[songname][position].xml//, where position is a number that indicates the starting position (from the front: 0=left, 1=middle left, 2=middle, 3=middle right, 4=right).
+
+
+<choreo> include the hole Choreo. includes choreoSteps or/and choreoincludes.
+<choreoStep> one Step of the Choreo, have a v, w, time,brightness and Lights(l0-l7)
+<v> speed of the Robot in mm/s
+<w> rotation speed of the Robot
+<time> for the Step in ms
+<brightness> brightness of the Lights Range from [0-255]
+<lX> Colour for each Light with X from 0 to 7
+<lX> blue green red <lX> where each colour have a Range from [0-255]
+
+Example:
+
+<code>
+<!--<?xml version="1.0"> -->
+<choreo> 
+  <choreoStep>
+    <v>0</v>
+    <w>100000</w>
+    <time>200</time>
+    <brightness>100</brightness>
+<!-- blue,green,red -->
+    <l0>1,2,3</l0>
+    <l1>1,2,3</l1>
+    <l2>4,5,6</l2>
+    <l3>7,8,9</l3>
+    <l4>10,11,12</l4>
+    <l5>13,14,15</l5>
+    <l6>16,17,18</l6>
+    <l7>19,20,21</l7>
+  </choreoStep>
+  <choreoStep>
+    <v>100</v>
+    <w>10000</w>
+    <time>300</time>
+    <brightness>100</brightness>
+<!-- blue,green,red -->
+    <l0>11,21,31</l0>
+    <l1>11,21,31</l1>
+    <l2>41,51,61</l2>
+    <l3>71,81,91</l3>
+    <l4>101,111,121</l4>
+    <l5>131,141,151</l5>
+    <l6>161,171,181</l6>
+    <l7>191,201,211</l7>
+  </choreoStep>
+  <choreoinclude>
+    <choreopart>Choreopart.xml</choreopart>
+  </choreoinclude>
+</choreo>
+</code>

@@ -1,0 +1,65 @@
+====== State Behavior Description ======
+
+This is the state behavior description of the [[process:statemachines:stateMachineGEPTRO:start|GEPTRO statemachine]].
+
+===== RSB Connection Types =====
+
+For the communication between the statemachine and the execution program there is used a basic RSB connection. The RSB types, which are used, are different for each communication.
+
+The RSB connection between the statemachine and the external command program is based on the type String. Additionally every command or information has to be repeated until a recognition notice has been received, due to possible lost information via wireless connection.
+
+===== State Behaviors =====
+
+At first the statemachine starts with an initial behavior, which includes exploration and object detection. Afterwards the delivery or transport command can be given by the external command program.
+
+^ Symbol ^ Description ^
+| D | Polling RSB connection |
+| RS | RSB Answer to polling connection (D) |
+| -> | Connection direction |
+| -?-> | Expected connection direction |
+
+==== Initial Behavior ====
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | -?-> | idle | | |
+| "init<Colors>"(D) | -> | idle | | |
+| "init"(RS) | <- | init | | |
+| | | explorationStart | -> | start exploration task |
+| | | exploration | <-?- | do exploration |
+| | | exploration | <- | exploration finished |
+| | | blobDetection | <- | loading blobs |
+| | | objectDetectionStart | -> | start object detection |
+| | | objectDetectionInit | <- | count of objects |
+| "object<x>"(D) | <- | objectDetectionMain | <- | object <x> detected |
+| "object<x>rec"(RS) | -> | objectDetectionMain | | |
+| "initDone" | <- | initDone | | |
+| | -?-> | waiting | | |
+
+
+==== Object Delivery Behavior ====
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | -?-> | waiting | | |
+| "object<Num>"(D) | -> | waiting | | |
+| | | objectDeliveryStart | -> | start object delivery |
+| "object<Num>start"(RS) | <- | objectDelivery | | |
+| | | objectDelivery | <-?- | do delivery |
+| | | objectDelivery | <- | object delivery finished |
+| "object<Num>finish"(D) | <- | objectDeliveryFinish | <- | object delivery finished |
+| "object<Num>finishrec"(RS) | -> | objectDeliveryFinish | | |
+| | -?-> | waiting | | |
+
+==== Object Transport Behavior ====
+
+^ External Command Program ^ ^ Statemachine ^ ^ Execution Program ^
+| | -?-> | waiting | | |
+| "transport"(D) | -> | waiting | | |
+| | | objectTransportStart | -> | start object transport |
+| "transportstart"(RS) | <- | objectTransport | | |
+| | | objectTransport | <-?- | transporting |
+| | | objectTransport | <- | object transport finished |
+| "transportfinish"(D) | <- | objectTransportFinish | | |
+| "transportfinishrec"(RS) | -> | objectTransportFinish | | |
+| | -?-> | waiting | | |
+
+

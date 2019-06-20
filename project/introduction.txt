@@ -1,0 +1,150 @@
+====== Introduction ======
+
+MuRoX and all its infrastructure uses the [[http://docs.cor-lab.de//rsb-manual/trunk/html/index.html|Robotics Service Bus]] (RSB) for inter and intra process communication.
+The RSB is a message-oriented, event-driven middleware aiming at scalable integration of robotics systems in diverse environments. Being fundamentally a bus architecture, RSB structures heterogeneous systems of service providers and consumers using broadcast communication over a hierarchy of logically unified channels instead of a large number of point-to-point connections. Nevertheless RSB comes with a collection of communication patterns and other tools for structuring communication, but does not require a particular functional or decomposition style.
+
+RSB is implemented as a flexible, lightweight toolkit. Based on previous experiences, the design and implementation try to avoid centralization and complicated dependency structures. Instead, functionality is organized in layers with minimal, clearly stated dependencies. The core library merely supplies the abstractions and machinery for building communication systems subject to varying requirements. This core is implemented in multiple programming languages with implementations trying to be in the spirit of the respective language as much as possible. As a result, RSB is not tied to a particular network transport, serialization mechanism or programming language. In addition, much effort is put into systematic testing and continuous integration.
+
+These conceptual and implementation properties hopefully allow RSB to scale across a wider range of diverse functional requirements, heterogeneous hardware platforms and varying reliability and timing requirements than other robotics middlewares. Additionally, RSB‘s open architecture and project structure and lightweight implementation enable its use with small entry barriers and little framework lock-in.
+
+====== Installation ======
+
+To use RSB on your own Debian based machine, you need to follow the instruction for the [[http://docs.cor-lab.de//rsb-manual/trunk/html/install-binary.html|pre-generated packages]]. To use the [[http://docs.cor-lab.de//rst-manual/trunk/html/index.html|Robotic System Types]], which enhance the RSB installation with numerous extra datatypes which can be send, you also have to install these [[http://docs.cor-lab.de//rst-manual/trunk/html/install.html#debian-packages|pre-generated packages]].
+
+As an alternative you can also build the whole system from source with the following bash script:
+
+  #!/bin/bash
+  echo "Installing rsb"
+  # Folder where the repositories are cloned into
+  REP_FOLDER=~/repositoriesRSB
+  # Spread location of "spread-src-4.4.0.tar.gz" aka "spread 3.0"
+  SPREAD_FOLDER=~/Downloads
+  # Installing location
+  PREFIX=/usr
+  # Branch of the repositories
+  BRANCH=0.11
+  
+  # Install missing  packages
+  
+  sudo apt-get install libboost-all-dev libprotobuf-dev protobuf-compiler build-essential libboost-dev pkg-config libeigen2-dev libeigen3-dev
+  
+  # Get the repositories
+  
+  cd $REP_FOLDER
+  git clone https://code.cor-lab.org/git/rsc.git
+  git clone https://code.cor-lab.org/git/rsb.git.protocol
+  git clone https://code.cor-lab.org/git/rsb.git.cpp
+  git clone https://code.cor-lab.org/git/rsb.git.tools-cpp
+  git clone https://code.cor-lab.org/git/rsb.git.spread-cpp
+  git clone --recursive https://code.cor-lab.org/git/rst.git
+  git clone https://code.cor-lab.de/git/rst.git.proto.git
+  git clone https://code.cor-lab.de/git/rst.git.converters.git
+  
+  # Install spread
+  # cd $REP_FOLDER
+  # tar -xvzf ${SPREAD_FOLDER}/spread-src-4.4.0.tar.gz
+  # cd spread-src-4.4.0
+  # ./configure --prefix=${PREFIX}
+  # make
+  # make install
+  
+  # Compile and install
+  
+  ## rsc
+  cd $REP_FOLDER && cd rsc && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} ..
+  make install
+  
+  ## rsb-protocols (Dep: rsc)
+  cd $REP_FOLDER && cd rsb.git.protocol && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/${BRANCH} ..
+  make install
+  
+  ## rsb (Dep: rsc, protocols)
+  cd $REP_FOLDER && cd rsb.git.cpp && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/${BRANCH} ..
+  make install
+  
+  ## tools (Dep: rsc, rsb)
+  cd $REP_FOLDER && cd rsb.git.tools-cpp && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/rsc${BRANCH} -DRSB_DIR=${PREFIX}/share/rsb${BRANCH} ..
+  make install
+  
+  ## rsbspread (Dep: rsc, rsb, spread)
+  cd $REP_FOLDER && cd rsb.git.spread-cpp && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/rsc${BRANCH} -DRSB_DIR=${PREFIX}/share/rsb${BRANCH} ..
+  make install
+  
+  ## rst-proto (Dep: rsc)
+  cd $REP_FOLDER && cd rst.git.proto && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/rsc${BRANCH} ..
+  make install
+  
+  ## NemoMath (Dep: eig2, eig3)
+  cd $REP_FOLDER
+  svn co https://code.cor-lab.de/svn/nemomath
+  cd $REP_FOLDER && cd nemomath/trunk/nemomath && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} ..
+  make install
+  
+  ## rci (Dep: rsc, nemoMath)
+  cd $REP_FOLDER
+  svn co https://redmine.amarsi-project.eu/svn/rci/trunk/rci
+  cd $REP_FOLDER && cd rci && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/rsc${BRANCH} ..
+  make install
+  
+  ## rst-converters (Dep: rsc, rsb, rci)
+  cd $REP_FOLDER && cd rst.git.converters && mkdir build && cd build/
+  cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} -DRSC_DIR=${PREFIX}/share/rsc${BRANCH} -DRSB_DIR=${PREFIX}/share/rsb${BRANCH} ..
+  make install
+  
+  # Add the system variables to the .bashrc
+  echo '## rsb' >> ~/.bashrc
+  echo "export PATH=${PREFIX}/bin:\$PATH" >> ~/.bashrc
+  echo "export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:\$PKG_CONFIG_PATH" >> ~/.bashrc
+
+====== First Steps ======
+
+After installation you have to make yourself familiar with the common [[http://docs.cor-lab.de//rsb-manual/trunk/html/examples.html|examples]].
+Below you'll find a list of links to become familiar with the RSB habitat: 
+
+   * [[http://docs.cor-lab.de/|Project overview]]
+   * [[http://docs.cor-lab.de//rsb-manual/trunk/html/index.html|RSB Project page]]
+
+How to go on:
+  - **Installation** of [[http://docs.cor-lab.de//rsb-manual/trunk/html/install-binary.html#debian-packages|Precompiled Debian packages]] and cloning of the [[http://docs.cor-lab.de//rsb-manual/trunk/html/install-source.html|RSB Sources]]
+  - Work through the [[http://docs.cor-lab.de//rsb-manual/trunk/html/examples.html|RSB Tutorials]]
+  - Check the **examples** in the source folder: <c++ source folder of RSB>/examples 
+  - To send self defined messages, check out the http://docs.cor-lab.de//rsb-manual/trunk/html/examples-writing-converters.html and [[https://developers.google.com/protocol-buffers/docs/cpptutorial|Protobuffer Examples]] or [[https://developers.google.com/protocol-buffers/docs/proto|Protocol Buffer Language Guide]]
+  - Check the **tutorials** on the [[http://docs.cor-lab.de/|Project overview]] site
+
+===== Introduction to MuRoX converter & types =====
+
+In the MuRoX environment own converter and types beside the [[http://docs.cor-lab.de//rst-manual/trunk/html/index.html|RST project]] ([[https://code.cor-lab.de/projects/rst|RST code]]) are used.
+
+==== Converter ====
+
+The converter are hard coded serializer/deserializer to reach full optimization with minimal overhead.  There exist already some converter in the [[http://docs.cor-lab.de//rst-manual/trunk/html/converters.html|RST project]]. Source code the converter can be found in [[https://code.cor-lab.de/projects/rsb/repository/rsb-cpp|RSB source folder]], and also in the [[https://code.cor-lab.de/projects/rst|RST converter project]].
+
+[[includes:converter:start|MuRoX converter]]
+
+==== Types ====
+
+The types are protobuffer generic code files, which produce serializer/deserializer out of ''.proto'' description files. Besides the already existing [[http://docs.cor-lab.de//rst-manual/trunk/html/data-types.html|RST types]], these own written types does often match better the demands of the MuRoX environment.
+
+[[includes:types:start|MuRoX types]]
+
+====== Coding Agreements ======
+
+We us in all our projects the [[http://google-styleguide.googlecode.com/svn/trunk/cppguide.html|Google Code Style]].
+To check whether your code meets the Google conventions, check out the [[http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint|cpplint.py]] tool.
+
+For commenting we consider the doxygen JavaDoc style which can be found [[http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html|here]] in the first section.
+
+**NOTE**: We use camel case for naming the variables.
+
+====== Initialization and Usage of the MuRox Environment ======
+
+  - Initialize the environment as described in [[utilities:start#Initialize|Initialize]]
+  - Use the tools in [[utilities:start|Utilities]]

@@ -1,0 +1,61 @@
+====== DokuWiki Setup ======
+
+On a Linux system you need to install at least apache2 and php5.
+There are two ways.
+You can either install it via apt-get, or use local install script.
+
+===== Script =====
+
+Execute the install script with the install path and port number, where the Server is running:
+  $ project/utilities/installApache /tmp/apache2 1234
+
+This will take a while, because apache2 is build from source.
+Take a look on the coloerd comments, they should tell you what to do.
+
+===== apt-get =====
+
+  $ sudo su
+  # apt-get install apache2 libapache2-mod-php5
+
+Add your user to the www-data group and vice versa
+  $ sudo su
+  # usermod -a -G www-data <yourUserName>
+  # usermod -a -G <yourGroupName> www-data
+
+Link the html folder to the repository folder ''murox_dev''
+  $ sudo su
+  # rm -rf /var/www/html
+  # ln -s <your/repository/root> /var/www/html
+  
+Setting the rights right, if DokuWiki does not work properly:
+  $ cd <your/repository/root>/project
+  $ # Setting the rights of the files
+  $ chmod -R u+rw g+rw *
+  $ # Setting the rights of the folder correct
+  $ find <your/repository/root>/project -type d -exec chmod +x {} \;
+  
+  
+===== Make the Plugins Work =====
+
+In this Dokuwiki, certain plugins are used.
+The following instruction tells you, how to setup their environment.
+
+==== latex ====
+
+For writing LaTeX code in the wiki, the [[https://www.dokuwiki.org/plugin:latex|DokuWiki latex plugin]] is used. For the environment installation manual, to make the plugin work in your DokuWiki.
+
+\begin{eqnarray*}
+& & \frac{3}{4 \pi}   \sqrt{4 \cdot x^2   12}\\
+& & \lim_{n \to \infty}
+  \sum_{k=1}^n \frac{1}{k^2} = \frac{\pi^2}{6}\\
+& & {\it f}(x) = \frac{1}{\sqrt{x} x^2}\\
+& & e^{i \pi} + 1 = 0\;
+\end{eqnarray*}
+=== source ===
+
+The [[https://www.dokuwiki.org/plugin:source|DokuWiki source plugin]] is used for displaying file content in the wiki. No special installations are needed.
+All pathes to the files have to given relative to the ''project'' folder.
+If you host the dokuwiki somewhere wlse then localhost, you have to change the preamble ''$conf['location'] = 'http://localhost/project/';'' of the plugin in ''<repository_folder>/dokuwiki/lib/plugins/source/conf/default.php''.
+
+
+<source includes/types/twbTracking.proto #7-11 c|twbTracking.proto>

@@ -1,0 +1,36 @@
+====== Object Detection Command ======
+
+This application communicates with the [[process:objectDetection:objectDetection:objectDetection:start|Object Detection Application]] and serves as an interface program between user and roboter. It receives and shows the camera frames and outputs the detection results. Typing specified keys, the specified commands can be sent. By giving the quit command the application quits itself, too.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Command Keys =====
+
+For application interaction there are keys defined for sending commands.
+
+^ Key ^ Description ^
+| s | Sending the save command. |
+| o | Sending the delete command. |
+| space | Sending the detection command. |
+| l | Sending the load command. |
+| esc | Quits the object detection and the application itself. |
+
+===== RSB Scopes =====
+
+For communication there are RSB scopes defined.
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Image scope | String | "/objectDetection/image" | Scope for receiving the camera frame. |
+| Detection scope | String | "/objectDetection/detected" | Scope for receiving the detection result. |
+| Command scope | String | "/objectDetection/command" | Scope for sending commands. |
+
+===== Parameters =====
+
+For parameter information type ''objectDetectionCommand -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --inscope, -s | String | "/objectDetection/detected" | Sets the scope for receiving detection signal. |

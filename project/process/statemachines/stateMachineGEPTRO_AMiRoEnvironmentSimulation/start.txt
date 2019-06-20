@@ -1,0 +1,15 @@
+====== AMiRo Environment Simulation of GEPTRO State Machine ======
+
+This is the state machine with opposite communication to the [[process:statemachines:stateMachineGEPTRO:start|final GEPTRO state machine]]. It can simulate all functions of the AMiRo, which are used by the GEPTRO state machine.
+
+On default every simulation is activated. For deactivation the following parameters have to be typed:
+
+^ Parameter              ^ Description                                                                    ^
+| ''--skipExploration''  | the exploration will not be simulated by the answerer                          |
+| ''--skipBlobbing''     | the object detection in the obstacle map will not be simulated by the answerer |
+| ''--skipLocalPlanner'' | the local planner will not be simulated by the answerer                        |
+| ''--skipDetecting''    | the object detection will not be simulated by the answerer                     |
+| ''--skipTransport''    | the transport behavior will not be simulated by the answerer                   |
+| ''--skipDelivery''     | the object delivery will not be simulated by the answerer                      |
+
+For additional parameter information type ''answerer -h''.

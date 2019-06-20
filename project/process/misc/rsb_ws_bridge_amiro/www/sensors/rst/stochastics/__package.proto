@@ -1,0 +1,8 @@
+/**
+ * The use of the term stochastic to mean based on the theory of
+ * probability.
+ *
+ * @see http://en.wikipedia.org/wiki/Stochastic
+ *      "Wikipedia article containing the definition above"
+ */
+package rst.stochastics;

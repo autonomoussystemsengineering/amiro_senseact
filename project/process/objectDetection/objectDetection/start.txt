@@ -1,0 +1,5 @@
+====== Object Detection ======
+
+For the object detection there are two programs:
+  * [[process:objectDetection:objectDetection:objectDetection:start|Object Detection]]: The basic object detection for the robot.
+  * [[process:objectDetection:objectDetection:objectDetectionCommand:start|Object Detection Command]]: The tool for receiving the images of the object detection.

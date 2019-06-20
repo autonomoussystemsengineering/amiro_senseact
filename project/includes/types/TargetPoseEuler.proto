@@ -1,0 +1,24 @@
+package rst.geometry;
+
+import "PoseEuler.proto";
+
+option java_outer_classname = "TargetPoseEulerType";
+
+/**
+ * Target pose data for local planer.
+ * @todo "extend explanation"
+ *
+ * @author Timo Korthals <tkorthals@techfak.uni-bielefeld.de>
+ */
+message TargetPoseEuler {
+
+    /**
+     * TODO
+     */
+    required PoseEuler target_pose = 1;
+
+    /**
+     * Time in milli seconds to get into the given position
+     */
+    optional sfixed32 target_time = 2;
+}

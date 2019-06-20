@@ -1,0 +1,163 @@
+====== TWB Choreo ======
+
+This program performs a choreography on the AMiRo. For this purpose a xml file, that defines the choreography, is parsed. Additionally several robots can communicate and cooperate with each other and adapt their movements.
+
+===== Choreo Procedure =====
+
+At first the robots have to know of each other, so they are publishing their names and saving the names of the others. If they have recognized each other, the user can send the command 'init' via the Commands Scope.
+
+Now they are waiting for the start command. In this moment, the choreography can be changed via the Choreo Scope. By sending the command 'start' via the Commands Scope, all robots will start the chosen choreography. After that, the robots are waiting for the start command again.
+
+Each robot does its choreo steps on its own. But if a step has a brake (have a look into the XML description), the robot waits until every robot reaches a brake. Afterwards they all continue based on their time delays.
+
+If a robot doesn't get any tracking data in a specific time (defined by the [[includes:twb:startTwbTracking|Tracking Module]]), it will automatically stop and inform the other robots. The robot only continues by restarting the program! If other robots are waiting for it, they will get a logout from the stopped robot and will continue without it. If the stopped robot shall be reintegrated, the program has to be restarted for all robots due to the initialization at the very beginning.
+
+By giving the command 'stop' via the Commands Scope, the robots will stop the choreography or (in waiting state) exit the application.
+
+By using the delay parameters of the application, the robots can be given start delays (as for example harvesters) depending on their given ID:
+
+^ Name ^ Parameter ^ Default Value ^ Description ^
+| Choreo Delay | choreoDelay | 2000 ms | Delay between receiving the start command and starting the choreography. |
+| Step Delay   | stepDelay   | 1000 ms | Delay between receiving the last finish recognition of a robot and starting the ID delay. |
+| ID Delay     | idDelay     | 1000 ms | Delay between step delay and continuing with the next step (multiplied with robot ID). |
+
+===== Correcting Choreography at Runtime =====
+
+While executing a choreography, the robots are able to correct their choreography individually. This is useful, if for example there is an object in the robot's way and the robot has to drive around it.
+
+In this case it is nessecary to send a list of new positions (with the suited robot ID) via the Choreo Correction Scope. The demanded robot will immediately stop its current step and include the new positions as steps, which have to be executed before the current one. The execution starts directly.
+
+It is important, that the new positions have to be absolute positions (in contrast to the positions in the XML files of the choreographies, which have to be relative). The robot will drive directly to the position (as nearly straight line) and without a brake at the end.
+
+For exampe the [[process:actingBehavior:twbChoreo:twbChoreoCorrection:start|ChoreoCorrection Tool]] sends choreo corrections as a demonstration of this flexibility.
+
+===== RSB Scopes =====
+
+^ Scope Name ^ Default Scope ^ Scope Type ^ Description ^
+| Choreo            | /twbchoreo/choreo           | String         | Input Scope for choreo file names. |
+| Commands          | /twbchoreo/command          | String         | Input Scope for receiving commands. |
+| Choreo Correction | /twbchoreo/choreocorrection | PoseList       | Input Scope for choreo corrections. |
+| AMiRo Cooperation | /twbchoreo/amiros           | String         | Scope for cooperating with other AMiRos. |
+| AMiRo Logout      | /twbchoreo/logout           | String         | Scope for logouts, if a robot doesn't get any tracking data anymore. |
+| Goals             | /twbchoreo/goal             | Object         | Output Scope for goal position information of one choreo step. |
+| Lights            | /amiro/lights               | Integer Vector | Output Scope for light information. |
+
+The tracking scope will be automatically loaded from the [[includes:twb:startTwbTracking|TWB Tracking Module]].
+
+===== Structure of the xml files =====
+
+The filename of a choreography has to be a xml file.
+
+==== XML Parts ====
+
+^ XML Part ^ Description ^
+| choreo     | Includes the hole Choreo (includes choreoSteps or/and choreoincludes). |
+| choreoStep | This is one Step of the Choreo containing x- and y-corrdinate, position angle, light configuration and some moving flags. |
+| posx       | Relative* x coordinate of the position, which should be driven to (in micro meters). |
+| posy       | Relative* y coordinate of the position, which should be driven to (in micro meters). |
+| postheta   | Relative* orientation at the position, which should be driven to (in micro degrees). |
+| brake      | Flag, if the robot shall stop and wait for the others after this step (integer of [0,1]). |
+| direct     | Flag, if the robot shall drive directly (nearly straight line) to the position (integer of [0,1]). |
+| l<id>      | Color of the LED with given id (id as integer of [0,7], color as integer of [0,255] for blue, green, red). It can be overwritten by 'la' |
+| la         | Color for all LEDs (color as integer of [0,255] for blue, green, red). It overwrittes 'l<id>' |
+
+*) Relative data (x-, y-coordinate or angle) means, that the given data of the position is relative to the position before.
+
+==== Example ====
+
+In this example the robot drives (more or less) an oval, which will not be closed. Afterwards it drives to a specific position in the oval and back to its start position.
+
+<code>
+<!--<?xml version="1.0"> -->
+<choreo>
+  <choreoStep>
+    <brake>0</brake>
+    <posx>1000000</posx>
+    <posy>0</posy>
+    <postheta>0</postheta>
+    <direct>1</direct>
+<!-- blue,green,red -->
+    <l0>255,0,0</l0>
+    <l1>255,0,0</l1>
+    <l2>255,0,0</l2>
+    <l3>255,0,0</l3>
+    <l4>255,0,0</l4>
+    <l5>255,0,0</l5>
+    <l6>255,0,0</l6>
+    <l7>255,0,0</l7>
+  </choreoStep>
+  <choreoStep>
+    <brake>1</brake>
+    <posx>0</posx>
+    <posy>250000</posy>
+    <postheta>180000000</postheta>
+    <direct>0</direct>
+<!-- blue,green,red -->
+    <la>0,255,0</la>
+  </choreoStep>
+  <choreoStep>
+    <brake>0</brake>
+    <posx>-1000000</posx>
+    <posy>0</posy>
+    <postheta>0</postheta>
+    <direct>1</direct>
+<!-- blue,green,red -->
+    <la>0,0,255</la>
+  </choreoStep>
+  <choreoStep>
+    <brake>1</brake>
+    <posx>0</posx>
+    <posy>500000</posy>
+    <postheta>180000000</postheta>
+    <direct>0</direct>
+<!-- blue,green,red -->
+    <la>0,255,0</la>
+  </choreoStep>
+  <choreoStep>
+    <brake>0</brake>
+    <posx>500000</posx>
+    <posy>500000</posy>
+    <postheta>45000000</postheta>
+    <direct>0</direct>
+<!-- blue,green,red -->
+    <la>255,0,0</la>
+  </choreoStep>
+  <choreoStep>
+    <brake>1</brake>
+    <posx>-500000</posx>
+    <posy>-250000</posy>
+    <postheta>-45000000</postheta>
+    <direct>1</direct>
+<!-- blue,green,red -->
+    <la>255,255,255</la>
+  </choreoStep>
+  <choreoinclude>
+    <choreopart>harvestinclude.xml</choreopart>
+  </choreoinclude>
+</choreo>
+</code>
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| verbose, v         | -       | -                           | Print values that are published via CAN. |
+| amiroID, a         | Integer | NOT GIVEN                   | ID of the AMiRo, which has to be unique! Flag must be set! |
+| choreoIn           | String  | /twbchoreo/choreo           | Choreography inscope. |
+| commandsIn         | String  | /twbchoreo/command          | Commands inscope. |
+| choreoCorrectionIn | String  | /twbchoreo/choreocorrection | Choreo Correction inscope. |
+| amiroScope         | String  | /twbchoreo/amiros           | AMiRo Scope. |
+| logoutScope        | String  | /twbchoreo/logout           | AMiRo Logout Scope. |
+| goalOut            | String  | /twbchoreo/goal             | Goal outscope. |
+| lightsOut          | String  | /amiro/lights               | Light outscope. |
+| choreoname, c      | String  | testChoreo.xml              | Initial Choreography name. |
+| printChoreo, p     | -       | -                           | Prints the loaded steps of the choreo. |
+| startX             | Float   | Current x position          | Optional start position on x-axis in meters. |
+| startY             | Float   | Current y position          | Optional start position on y-axis in meters. |
+| startTheta         | Float   | Current position angle      | Optional start position angle in degrees. |
+| choreoDelay        | Integer | 2000                        | Delay between receiving the start command via RSB and starting the choreography in ms. |
+| stepDelay          | Integer | 1000                        | Delay of the brake between two steps of the choreography in ms. |
+| idDelay            | Integer | 1000                        | Delay between the AMiRo starts in ms. |
+| useOdo,o           | -       | -                           | Flag if for navigation just the odometry shall be used. |
+| useTwb,t           | -       | -                           | Flag if for navigation the telework bench shall be used (tracking navigation). |
+| markerId,m         | Integer | NOT GIVEN                   | ID of the marker for robot detection (has to be set if tracking navigation is activated). |
+| mmp                | Float   | NOT GIVEN                   | Meter per pixel of the robot detection (has to be set if tracking navigation is activated). |

@@ -1,0 +1,18 @@
+package rst.claas;
+
+option java_outer_classname = "MachineModelType";
+
+message MachineModel_Odemetrie {
+
+required double Phi_kon = 1;        // '<Root>/Phi_kon'
+required double Y_dis_roi = 2;      // '<Root>/Y_dis_roi'
+required double X_dis_roi = 3;      // '<Root>/X_dis_roi'
+required double center_Dresch = 4;  // '<Root>/center_Dresch'
+required double X_dis_glo = 5;      // '<Root>/X_dis_glo'
+required double Y_dis_glo = 6;      // '<Root>/Y_dis_glo'
+required double X_kon_roi = 7;      // '<Root>/X_kon_roi'
+required double X_kon_glo = 8;      // '<Root>/X_kon_glo'
+required double Y_kon_roi = 9;      // '<Root>/Y_kon_roi'
+required double Y_kon_glo = 10;	// '<Root>/Y_kon_glo'
+}
+

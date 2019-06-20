@@ -1,0 +1,40 @@
+package rst.geometry;
+
+option java_outer_classname = "RotationType";
+
+/**
+ * Cartesian 3-dimensional rotatory displacement or orientation.
+ *
+ * The displacement or orientation (orientation being a rotation from
+ * an origin) is in world coordinates and expressed as unit quaternion
+ * (all-zero quaternion denotes an invalid orientation/rotation).
+ *
+ * @author Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>
+ */
+message Rotation {
+
+    /**
+     * TODO
+     */
+    required double qw = 4;
+
+    /**
+     * TODO
+     */
+    required double qx = 5;
+
+    /**
+     * TODO
+     */
+    required double qy = 6;
+
+    /**
+     * TODO
+     */
+    required double qz = 7;
+
+    /**
+     * Identifier for the coordinate frame of the rotation.
+     */
+    optional string frame_id = 8;
+}

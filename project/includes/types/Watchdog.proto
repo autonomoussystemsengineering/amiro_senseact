@@ -1,0 +1,13 @@
+package rst.claas;
+
+option java_outer_classname = "WatchdogType";
+
+message Watchdog {
+	
+//Measured Data
+required int32 spread = 1;
+required int32 rsb_ws_bridge_claas = 2;
+required int32 rsb_loggercpp_0_11 = 3;
+required int32 bag_record = 4;
+}
+

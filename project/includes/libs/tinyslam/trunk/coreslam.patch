@@ -1,0 +1,227 @@
+Index: CoreSLAM.c
+===================================================================
+--- CoreSLAM.c	(revision 12)
++++ CoreSLAM.c	(working copy)
+@@ -1,13 +1,11 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <math.h>
+-#ifdef _MSC_VER
+-   typedef __int64 int64_t;	// Define it from MSVC's internal type
+-#else
+-   #include <stdint.h>		// Use the C99 official header
+-#endif
++#include <stdint.h>
+ #include "CoreSLAM.h"
+ 
++double TS_MAP_SCALE;
++
+ void 
+ ts_map_init(ts_map_t *map)
+ {
+@@ -21,6 +19,11 @@
+     }
+ }
+ 
++void 
++ts_map_set_scale(double scale){
++    TS_MAP_SCALE = scale;
++}
++
+ int
+ ts_distance_scan_to_map(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos)
+ {
+Index: CoreSLAM_state.c
+===================================================================
+--- CoreSLAM_state.c	(revision 12)
++++ CoreSLAM_state.c	(working copy)
+@@ -3,17 +3,17 @@
+ #include "CoreSLAM.h"
+ 
+ void
+-ts_state_init(ts_state_t *state, ts_map_t *map, ts_robot_parameters_t *params, ts_laser_parameters_t *laser_params, ts_position_t *position, double sigma_xy, double sigma_theta, int hole_width, int direction)
++ts_state_init(ts_state_t *state, ts_map_t *map, /*ts_robot_parameters_t *params,*/ ts_laser_parameters_t *laser_params, ts_position_t *position, double sigma_xy, double sigma_theta, int hole_width, int direction)
+ {
+     ts_random_init(&state->randomizer, 0xdead);
+     state->map = map;
+-    state->params = *params;
++    //state->params = *params;
+     state->laser_params = *laser_params;
+     state->position = *position;
+     state->timestamp = 0; // Indicating start
+     state->distance = 0;
+-    state->q1 = state->q2 = 0;
+-    state->psidot = state->v = 0;
++    //state->q1 = state->q2 = 0;
++    //state->psidot = state->v = 0;
+     state->direction = direction;
+     state->done = 0;
+     state->draw_hole_map = 0;
+@@ -33,20 +33,20 @@
+     for (i = 0; i < state->laser_params.scan_size; i++) {
+         for (j = 0; j != span; j++) {
+             angle_deg = state->laser_params.angle_min + ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1);
+-            angle_deg += sd->psidot / 3600.0 * ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1);
++            //angle_deg += sd->psidot / 3600.0 * ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1);
+ 
+             angle_rad = angle_deg * M_PI / 180;
+             if (i > state->laser_params.detection_margin && i < state->laser_params.scan_size - state->laser_params.detection_margin) {
+-                if (sd->d[i] == 0) {
++                /*if (sd->d[i] == 0) {
+                     scan->x[scan->nb_points] = state->laser_params.distance_no_detection * cos(angle_rad);
+-                    scan->x[scan->nb_points] -= sd->v * 1000 * ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1) / 3600.0;
++                    //scan->x[scan->nb_points] -= sd->v * 1000 * ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1) / 3600.0;
+                     scan->y[scan->nb_points] = state->laser_params.distance_no_detection * sin(angle_rad);
+                     scan->value[scan->nb_points] = TS_NO_OBSTACLE;
+                     scan->nb_points++;
+-                }
+-                if (sd->d[i] > state->hole_width / 2) {
++                }*/
++                if (sd->d[i] > state->hole_width /*/ 2*/ && sd->d[i] < state->laser_params.distance_no_detection) {
+                     scan->x[scan->nb_points] = sd->d[i] * cos(angle_rad);
+-                    scan->x[scan->nb_points] -= sd->v * 1000 * ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1) / 3600.0;
++                    //scan->x[scan->nb_points] -= sd->v * 1000 * ((double)(i * span + j)) * (state->laser_params.angle_max - state->laser_params.angle_min) / (state->laser_params.scan_size * span - 1) / 3600.0;
+                     scan->y[scan->nb_points] = sd->d[i] * sin(angle_rad);
+                     scan->value[scan->nb_points] = TS_OBSTACLE;
+                     scan->nb_points++;
+@@ -58,13 +58,13 @@
+ 
+ void ts_iterative_map_building(ts_sensor_data_t *sd, ts_state_t *state)
+ {
+-    double psidot, v, d;
++    double d; //psidot, v, d;
+     ts_scan_t scan2map;
+     double m, thetarad;
+     ts_position_t position;
+ 
+     // Manage robot position
+-    if (state->timestamp != 0) {
++/*    if (state->timestamp != 0) {
+         m = state->params.r * M_PI / state->params.inc;
+         v = m * (sd->q1 - state->q1 + (sd->q2 - state->q2) * state->params.ratio);
+         thetarad = state->position.theta * M_PI / 180;
+@@ -77,17 +77,17 @@
+         psidot *= 1000000.0 / (sd->timestamp - state->timestamp); 
+     } else {
+         state->psidot = psidot = 0;
+-        state->v = v = 0;
++        state->v = v = 0; */
+         position = state->position;
+         thetarad = state->position.theta * M_PI / 180;
+-    }
++/*    } */
+ 
+     // Change to (x,y) scan
+-    if (state->direction == TS_DIRECTION_FORWARD) {
++/*    if (state->direction == TS_DIRECTION_FORWARD) {
+         // Prepare speed/yawrate correction of scans (with a delay of 1 clock)
+         sd->psidot = state->psidot;
+         sd->v = state->v;
+-    }
++    }*/
+     ts_build_scan(sd, &scan2map, state, 3);
+     ts_build_scan(sd, &state->scan, state, 1);
+ 
+@@ -107,10 +107,10 @@
+ 
+     // Prepare next step
+     state->position = sd->position[state->direction];
+-    state->psidot = psidot;
+-    state->v = v;
+-    state->q1 = sd->q1;
+-    state->q2 = sd->q2;
++    //state->psidot = psidot;
++    //state->v = v;
++    //state->q1 = sd->q1;
++    //state->q2 = sd->q2;
+     state->timestamp = sd->timestamp;
+ }
+ 
+Index: CoreSLAM.h
+===================================================================
+--- CoreSLAM.h	(revision 12)
++++ CoreSLAM.h	(working copy)
+@@ -7,10 +7,12 @@
+ 
+ #define TS_SCAN_SIZE 8192
+ #define TS_MAP_SIZE 2048
+-#define TS_MAP_SCALE 0.1
++//#define TS_MAP_SCALE 0.02
+ #define TS_NO_OBSTACLE 65500
+ #define TS_OBSTACLE 0
+ 
++extern double TS_MAP_SCALE;
++
+ typedef unsigned short ts_map_pixel_t;
+ 
+ typedef struct {
+@@ -30,13 +32,14 @@
+ 
+ typedef struct {
+     unsigned int timestamp;
+-    int q1, q2;                // Odometry information
+-    double v, psidot;          // Used to correct the scans according to the speed of the robot
++//    int q1, q2;                // Odometry information
++//    double v, psidot;          // Used to correct the scans according to the speed of the robot
+     ts_position_t position[3]; // 0 : forward - 1 : backward - 2 : final / closed loop
+     int d[TS_SCAN_SIZE];
+ } ts_sensor_data_t;
+ 
+ void ts_map_init(ts_map_t *map);
++void ts_map_set_scale(double scale);
+ int ts_distance_scan_to_map(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos);
+ void ts_map_update(ts_scan_t *scan, ts_map_t *map, ts_position_t *position, int quality, int hole_width);
+ 
+@@ -66,12 +69,12 @@
+ void ts_draw_scan(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos);
+ void ts_draw_scan_RGB(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos, unsigned char *pixmap, int scale, int reversey);
+ 
+-typedef struct {
++/*typedef struct {
+     double r;	    // length wheels' radius
+     double R;	    // half the wheels' axis length
+     int inc;	    // wheels' counters increments per turn
+     double ratio;   // ratio between left and right wheel
+-} ts_robot_parameters_t;
++} ts_robot_parameters_t;*/
+ 
+ typedef struct {
+     double offset;  // position of the laser wrt center of rotation
+@@ -85,12 +88,12 @@
+ typedef struct {
+     ts_randomizer_t randomizer;
+     ts_map_t *map;
+-    ts_robot_parameters_t params;
++    //ts_robot_parameters_t params;
+     ts_laser_parameters_t laser_params;
+     ts_position_t position;
+-    int q1, q2;
++    //int q1, q2;
+     unsigned int timestamp;
+-    double psidot, v;
++    //double psidot, v;
+     double distance;
+     int hole_width;
+     int direction;
+@@ -104,7 +107,7 @@
+ #define TS_DIRECTION_BACKWARD  1
+ #define TS_FINAL_MAP 2
+ 
+-void ts_state_init(ts_state_t *state, ts_map_t *map, ts_robot_parameters_t *params, ts_laser_parameters_t *laser_params, ts_position_t *position, double sigma_xy, double sigma_theta, int hole_width, int direction);
++void ts_state_init(ts_state_t *state, ts_map_t *map, /*ts_robot_parameters_t *params,*/ ts_laser_parameters_t *laser_params, ts_position_t *position, double sigma_xy, double sigma_theta, int hole_width, int direction);
+ void ts_build_scan(ts_sensor_data_t *sd, ts_scan_t *scan, ts_state_t *state, int span);
+ void ts_iterative_map_building(ts_sensor_data_t *sd, ts_state_t *state);
+ 
+Index: CMakeLists.txt
+===================================================================
+--- CMakeLists.txt	(revision 12)
++++ CMakeLists.txt	(working copy)
+@@ -1,7 +1,7 @@
+ cmake_minimum_required(VERSION 2.6)
+ project(CoreSLAM)
+ 
+-subdirs(test)
++#subdirs(test)
+ 
+ # Packaging info
+ SET(CPACK_PACKAGE_NAME "CoreSLAM")

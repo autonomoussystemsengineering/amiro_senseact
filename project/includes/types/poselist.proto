@@ -1,0 +1,8 @@
+package twbTracking.proto;
+
+import "pose.proto";
+
+message PoseList {
+	repeated Pose pose = 1;
+	optional uint32 id = 2;
+}

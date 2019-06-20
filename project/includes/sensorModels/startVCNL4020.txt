@@ -1,0 +1,75 @@
+====== VCNL4020 Proximity Sensor Models ======
+
+The VCNL4020 sensors from Vishay are infrared based proximity sensors. There are defined two sensor models.
+
+{{ :includes:sensorModels:VCNL4020-Sensor.png?300 }}
+
+===== General Sensor Behavior =====
+
+{{ :includes:sensorModels:VCNL4020-Schematic.png?300 }}
+
+The VCNL4020 sensors from Vishay are infrared based proximity sensors. An infrared LED emittes infrared light, whose intensity of the reflection in the environment can be received. The sensor calculates an internal offset of the environment's infrared light intensity for only measuring the intensity of the reflected light of the emitter. The VCNL4020 has also included an ambient light sensor, but its usage itsn't installed in the AMiRo yet.
+
+{{ :includes:sensorModels:VCNL4020-Cone.png?300 }}
+
+Due to the scattering of the infrared light (up to 60 degrees from the sensor's normal), there isn't any information about the precise direction, where the light has been reflected. If an object is moved angularly around the sensor by measuring the same sensor value, the distance between object and sensor will become smaller while increasing the angle between the object's direction and the sensor's normal. This behavior is shown in the figure above and can be descripted as the sensor's measurment cone.
+
+Additionally, if the distance between object and sensor is small, the measured intensity will be higher than by longer distances. The difference between two object positions, which are close to the sensor, is higher than the difference between two positions, which have the same distance to each other, but are farer away from the sensor. The intensity grows exponential while moving the object closer to the sensor.
+
+Finally, if the light is reflected by multiple objects, the intensity will be summed up. The measurement is the same as a measurement with only one object, which is much closer than the other objects before. The measured intensity is also dependent on the object's surface. If the object has a darker color and/or a very reflecting surface, there will be less light reflection than with lighter colors and/or more matted surfaces.
+
+===== Obstacle Model and Obstacle Error Model =====
+
+The obstacle model gives an approach of the position of the distance of an object (basic color is white). Due to the circular distance approximation change, an angle to the sensor's normal has to be given for a approximated point of the obstacle.
+
+==== Model Description ====
+
+If the objects are different, it will be very hard to calculate their distances by only using the proximity sensor, because the measured intensity is dependent on the light reflection on the object's surface. For designing a general obstacle model, the objects have the same parameters:
+
+^ Parameter ^ Value ^
+| Form | upright round cylinder |
+| Color | light white |
+| Size | diameter: 67 mm |
+| Surface | smooth, matt |
+
+Of course, there is an offset of the table, which has to be used to generalize the measured sensor value. Generalization means calculating the difference between the measured sensor value and the table offset (if the table offset is smaller than the measured sensor value, otherwise the result of the generalization is null).
+
+==== Model Usage ====
+
+Function call:
+''float [m] obstacleModel (float angle [rad], float sensorValue [sensor Ticks])''
+
+The ''angle'' is the angular difference between the obstacle and the sensor's normal and the ''sensorValue'' is the (generalized) value given by the sensor. The function ''obstacleModel'' gives the distance to the obstacle.
+
+Additionally the error of the calculated distance can be calculated by the obstacle error model. It calculates the standard deviation of the given distance in meters (due to the gaussian distribution assumption of the measurement error).
+
+Function call:
+''float [m] obstacleErrorModel(float dist [m], float angle [rad])''
+
+The parameter ''dist'' is the distance to the obstacle. The ''angle'' is the angular difference between the obstacle and the sensor's normal (as in the obstacle model). The function ''obstacleErrorModel'' finally gives the standard deviation of the given distance ''dist''.
+
+===== Edge Model =====
+
+The edge model gives an approach of the distance to an edge direct in front of the sensor. There aren't any angluar precisions.
+
+==== Model Description ====
+
+This is just a rough approximation. It is always expected, that the edge is in front of the sensor, parallel to the sensor's horizont. The model is based on the approach, that the measured intensity of the edge is smaller than the intensity of the table. For generalization there are two offsets needed: The table offset (as in the obstacle model) and the air offset. The air offset is the measured intensity without any objects (including the ground) in sensor range.
+
+The generalization is the calculation of the relative position (g) in range [0,1] of the measured sensor value (v) between the air (a) and the table offset (t). When the relative position was 0, then the sensor value is the same as (or higher than) the table offset, when it is 1, the sensor value is the same as (or smaller than) the air offset. Due to communication reasons the relative value is multiplied by 10000 and saved as an integer.
+  * ''if (v >= t)''
+    * ''g = t - a''
+  * ''else if (v > a)''
+    * ''e = v - a''
+  * ''else''
+    * ''e = 0''
+  * ''e = e / (t - a) * 10000''
+
+It is very important, that, when the robot shall detect a gap, the gap size has to be larger than the sensor's range. Otherwise it isn't sure, that the gap can be detected, due to the reflection of the obstacle (or even only of the ground) behind it.
+
+==== Model Usage ====
+
+Function call:
+''float [m] edgeModel (int sensorValue ["normalized"])''
+
+The ''sensorValue'' isn't the measured value of the sensor directly. This value represents the measured value in reference to the measurement in the air and the measurement of the ground (no obstacles around). The measured value can be in range of [air measurement, ground measurement] and will be generalized by normalization to [0, 1]. Due to integer communication this value is multiplied by 10000. The function ''edgeModel'' gives the distance to the edge.

@@ -1,0 +1,38 @@
+package rst.geometry;
+
+import "rst/geometry/FieldOfView.proto";
+
+option java_outer_classname = "ViewFrustumType";
+
+/**
+ * A camera's view frustum.
+ *
+ * Adds information about the maximal and minimal perceivable distance
+ * (@ref .minimal_distance, @ref .maximal_distance) of a sensor to the
+ * definition of its field of view (@ref .fov).
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+// @constraint(.maximal_distance > .minimal_distance)
+message ViewFrustum {
+
+    /**
+     * The field of view of the frustum.
+     */
+    required FieldOfView fov = 1;
+
+    /**
+     * The minimal perceivable distance.
+     */
+    // @constraint(value > 0)
+    // @unit(meter)
+    optional float minimal_distance = 2 [default = 0];
+
+    /**
+     * The maximal perceivable distance.
+     */
+    // @constraint(value > 0)
+    // @unit(meter)
+    optional float maximal_distance = 3 [default = 99999];
+
+}

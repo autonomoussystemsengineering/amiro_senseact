@@ -1,0 +1,35 @@
+====== saveOdometryAndRIR ======
+
+This tool is used for saving the actual odometry data and the ring proximity sensor values into the text file "RingProximityAndOdometry.txt". This is not a contiuous saving, the data is saved only once for a specific sensory situation!
+
+===== Build Program =====
+
+  - ''cmake .''
+  - ''make''
+
+===== Program Usage =====
+
+At first the text file "RingProximityAndOdometry.txt" has to be initialized. For this just type ''./saveOdometryAndRIR -i''.
+
+Afterwards just type ''./saveOdometryAndRIR'' for every sensory situation, where the data has to be saved once. Please have a look into section "Parameters" for changing scopes.
+
+===== Text File Structure =====
+
+The text file is a simple CSV file. Each line represents one sensory situation. Each sensory situation contains all eight ring proximity sensor values and the three odometry data values, which are seperated by tabs. The data is saved (as integer) without any interpretation, so the units are the same as the sensing programs are publishing the data over RSB. Basically a sensory situation is saved as:
+
+<code>
+<sensor 1>\t<sensor 2>\t ... \t<sensor 8>\t<x coordinate>\t<y coordinate>\t<orientation>
+</code>
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Ring Proximity Sensor Values | /rir_prox | Scope for receiving the values of the ring proximity sensors. |
+| Odometry | /odometrydata | Scope for receiving the odometry data. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Descrition ^
+| --rirScope, -r | String | "/rir_prox" | Scope for receiving proximity values for obstacles. |
+| --odoScope, -o | String | "/odometrydata" | Scope for receiving odometry data. |
+| --init, -i | - | - | Just initializes data file. |

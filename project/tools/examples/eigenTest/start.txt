@@ -1,0 +1,4 @@
+====== eigenTest ======
+
+This is project shows the usage of the Eigen library.
+It contains conversion between Eigen::Matrix and cv::Mat and compares times for Matrixaddition.

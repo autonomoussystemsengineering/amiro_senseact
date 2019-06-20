@@ -1,0 +1,14 @@
+Name:		machines/<Maschinen-/Fahrzeugname>.html
+Seitenname:	<Maschinen-/Fahrzeugname>
+Enthält Menü:	nein
+Logo Tab:	it's owl
+
+Aufbau:
+* Textfeld für Informationen
+* Auflistung der Sensoren mit entsprechenden Link
+
+Fragen/Anmerkungen:
+* Bei weiteren Sensoren melden!
+
+Erledigt
+-

@@ -1,0 +1,4 @@
+set(SOURCE
+  ${SOURCE}
+  $ENV{MUROX_INCLUDE_DIRS}/Color.cpp
+)

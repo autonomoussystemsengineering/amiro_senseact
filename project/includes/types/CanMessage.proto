@@ -1,0 +1,11 @@
+package rst.claas;
+
+option java_outer_classname = "CanMessageType";
+
+message CanMessage {
+	
+//Measured Data
+required uint32 canId = 1;
+repeated uint32 canMessage = 2;
+required uint32 canDlc = 3;
+}

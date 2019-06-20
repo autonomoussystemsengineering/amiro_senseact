@@ -1,0 +1,27 @@
+package rst.classification;
+
+import "rst/geometry/BoundingBox3DFloat.proto";
+import "rst/classification/ClassificationResult.proto";
+
+option java_outer_classname = "ClassifiedRegion3DType";
+
+/**
+ * Focus on image coordinate systems (vision-based).
+ *
+ * A region in 3D space with a classification result.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+message ClassifiedRegion3D {
+
+    /**
+     * Region in 3D space.
+     */
+    optional geometry.BoundingBox3DFloat region = 1;
+
+    /**
+     * The class represented by the 3D region.
+     */
+    optional ClassificationResult result = 2;
+
+}

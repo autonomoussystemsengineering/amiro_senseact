@@ -1,0 +1,7 @@
+====== MuRoX Types ======
+
+In this folder, the MuRoX types which are used in certain (very MuRoX specific) situations are stored.
+In all other situations, the standard [[http://docs.cor-lab.de//rst-manual/trunk/html/data-types.html|RST types]] should be used.
+To make use of the own types, first the script ''./createPbFiles.sh'' in this folder needs to be executed.
+It should quit without warnings.
+If you want to change or create new types, just edit/create any ''.proto'' file and execute the script again.

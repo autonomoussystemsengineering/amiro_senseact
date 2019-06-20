@@ -1,0 +1,36 @@
+package rst.devices.generic;
+
+import "rst/devices/generic/MemoryState.proto";
+import "rst/devices/generic/CpuState.proto";
+
+option java_outer_classname = "HostInformationType";
+
+/**
+ * Low-level information of the CPU utilization for a single system with
+ * potentially multiple cores.
+ *
+ * This message is currently designed closely along the information available
+ * in the Linux proc filesystem. So it is probably only directly useful for
+ * Linux systems.
+ *
+ * @author Jens-Christian Seele <jseele@techfak.uni-bielefeld.de>
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message HostInformation {
+
+    /**
+     * Name of the host being monitored.
+     */
+    optional string hostname = 1;
+
+    /**
+     * Information about the memory usage.
+     */
+    optional MemoryState memory_state = 2;
+
+    /**
+     * Information about the CPU usage.
+     */
+    optional CpuState cpu_state = 3;
+
+}

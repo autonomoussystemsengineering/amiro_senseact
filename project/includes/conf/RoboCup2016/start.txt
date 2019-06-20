@@ -1,0 +1,8 @@
+1. Delete password by typing ''passwd'' and hitting enter three times
+
+2. Make ''/etc/rc.local'' executable
+2.1 ''systemctl --system daemon-reload && systemctl start rc-local.service''
+
+3. Query information about a device: ''udevadm info  --query=all --path=/sys/class/net/wlan0''
+
+4. Querying an attribute by hand, which can be used by an udev rule: ''cat /sys/class/net/wlan0/address''

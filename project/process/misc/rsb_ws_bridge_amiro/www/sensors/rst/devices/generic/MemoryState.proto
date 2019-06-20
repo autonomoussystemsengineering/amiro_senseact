@@ -1,0 +1,28 @@
+package rst.devices.generic;
+
+option java_outer_classname = "MemoryStateType";
+
+/**
+ * Usage information about the system memory of a processing node.
+ *
+ * @author Jens-Christian Seele <jseele@techfak.uni-bielefeld.de>
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ * @author Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+ */
+message MemoryState {
+
+    /**
+     * The total amount of system memory available.
+     */
+    // @unit(byte)
+    // @constraint(value>=0)
+    optional float total = 2;
+
+    /**
+     * The currently used amount of memory.
+     */
+    // @unit(byte)
+    // @constraint(0<=value<=.total)
+    optional float used = 3;
+
+}

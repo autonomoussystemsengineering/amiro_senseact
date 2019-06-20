@@ -1,0 +1,23 @@
+====== sendControls ======
+
+Steer robot using the WASD keys on the keyboard (motor commands are produced and published via RSB). Use space to stop the robot.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== RSB Scopes =====
+
+For communication with the state machine the following RSB scopes are defined:
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Motor out scope | String | "/motor" | Scope for sending the motor steering commands (changeable as parameter). |
+
+===== Parameters =====
+
+For parameter information type ''sendControls -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --outscope, o | String | "/motor" | Scope for sending the motor steering commands. |

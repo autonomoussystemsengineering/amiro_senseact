@@ -1,0 +1,8 @@
+/**
+ * This package contains data types related to XML documents.
+ *
+ * In particular, the types @ref rst.xml.XOP and @ref
+ * rst.xml.Attachment are inspired by @see http://www.w3.org/TR/xop10/
+ * "XML-binary Optimized Packaging (XOP)".
+ */
+package rst.xml;

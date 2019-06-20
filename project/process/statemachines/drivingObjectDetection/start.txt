@@ -1,0 +1,44 @@
+====== drivingObjectDetection ======
+
+This is the object detection behavior. The robot drives to every object and tries to detect it (by using the [[process:objectDetection:objectDetection:objectDetection:start|object detection]]). It is very important, that all objects are known to the robot, otherwise the robot will try to detect the objects forever.
+
+===== Basic behavior =====
+
+This tool has the following behavior:
+
+  * For each object:
+    * While object hasn't been detected
+      - Calculate new position for best detection possibility
+      - Drive to detection position
+      - Turn towards object
+      - Try to detect the object
+      - If not detected
+        * Drive sidewards for new orientation
+
+===== Application Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --robotID | Integer | 0 | ID of robot for communication. |
+| --progressInscope | String | "/objectDetectionMain/command" | Inscope for progress data. |
+| --progressOutscope | String | "/objectDetectionMain/answer" | Outscope for progress data. |
+| --positionInscope | String | "/localization" | Inscope for position data of SLAM localization. |
+| --trackingInscope | String | "/murox/roboterlocation" | Inscope for tracking data. |
+| --pathResponseInscope | String | "/pathResponse" | Inscope for Local Planner response. |
+| --pathOutScope | String | "/path" | Outscope for Local Planner. |
+| --mapServerScope | String | "/mapGenerator" | Scope for Map Server. |
+| --pathRequest | String | "getPath" | Function name for path request. |
+| --objectOutscope | String | "/objectDetection/command" | Outscope for object detection. |
+| --objectInscope | String | "/objectDetection/detected" | Inscope for object detection. |
+| --rectInscope | String | "/rectangledata" | Inscope for rectangle data. |
+| --trackingID | Integer | 0 | ID of tracking data. |
+| --meterPerPixel | Float | 0.01 | Meter per pixel of tracking data. |
+| --useTrackingData | - | - | Use Tracking Data instead of PoseEuler for incomming position data. |
+| --bigMap | - | - | Flag if the map is very big (the pathplanner needs more than 25 seconds). |
+| --mapServerIsRemote | - | - | Flag, if the map server is a remote server (otherwise it uses local connection). |
+| --skipPathPlanner | - | - | Skipping Path Planner. |
+| --skipLocalPlanner | - | - | Skipping Local Planner. |
+| --skipFinalRotation | - | - | Skipping Final Rotation towards the object. |
+| --skipDetection | - | - | Skipping Object Detection. |
+| --skipCorrection | - | - | Skipping View Correction after detection failure. |
+| --skipLocalization | - | - | Skipping Localization. The robot then will be always at 0/0. |
+

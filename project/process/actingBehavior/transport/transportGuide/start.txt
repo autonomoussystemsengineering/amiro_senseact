@@ -1,0 +1,43 @@
+====== Transport Guide ======
+
+This tool is the guide behavior of the transport scenario, which is described in the [[process:transport:start|transport documentation]]. Basically the robot guides another robot to the final transport position.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Basic Functionality in the Scenario =====
+
+  - "Waiting" (doing some basic behavior)
+  - Receiving start position
+  - Transmits OK (as recognition)
+  - Receiving position of other robot (now called Transporter)
+  - Driving to start position (maybe driving around the Transporter)
+  - Transmits OK (as arrival signal)
+  - Receiving final transport position
+  - Calculating path to final transport position
+  - Driving to final transport position (followed by Transporter)
+  - Transmitting OK (as arrival at final position)
+  - Receiving disconnection
+  - Exit tool
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Obstacle Scope | /rir_prox/obstacle | Scope for receiving generalized proximity values for the obstacle model. |
+| Tracking Data | /murox/roboterlocation | Scope for receiving tracking position. |
+| Progress Output | /Transport/Follow | Scope for sending progress information to guide. |
+| Progress Input | /Transport/Guide | Scope for receiving progress information from guide. |
+| Map Server | /mapGenerator | Scope of the map server for path calculation. |
+| Local Planner Commands | /path | Scope for sending path commands to the local planner. |
+| Local Planner Response | /pathResponse | Scope for receiving confirmation from the local planner. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --id | Integer | 0 | Tracking ID for AMiRo. |
+| --mpp | Float | 0.0025 | Meter per pixel. |
+| --host | String | "127.0.0.1" | Host for Programatik Spread. |
+| --port | String | "4803" | Port for Programatik Spread. |

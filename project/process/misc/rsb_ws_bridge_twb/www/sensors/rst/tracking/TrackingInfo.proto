@@ -1,0 +1,17 @@
+package rst.tracking;
+
+option java_outer_classname = "TrackingInfoType";
+
+/**
+ * Identifier for tracked objects.
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message TrackingInfo {
+
+    /**
+     * A unique id for each track.
+     */
+    required uint32 id = 1;
+
+}

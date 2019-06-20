@@ -1,0 +1,4 @@
+====== sendRandomIntVector ======
+
+This is a simple dummy program, which makes use of the own written converter for template vector types.
+In this case, integer values are chosen, to simulate sensor values of a BeBot or AMiRo.

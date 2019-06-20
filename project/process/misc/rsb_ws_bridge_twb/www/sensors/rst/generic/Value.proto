@@ -1,0 +1,49 @@
+package rst.generic;
+
+option java_outer_classname = "ValueType";
+
+/**
+ * A representation of a generic value with a dynamic type.
+ *
+ * Each value has a declared type in @ref .type indicating which of the
+ * remaining type-specific fields contains the value, expect for
+ * @ref .Type.VOID, where no value is transported at all (most useful for return
+ * types).
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message Value {
+
+    /**
+     * The list of supported types.
+     */
+    enum Type {
+        VOID = 1;
+        INT = 2;
+        DOUBLE = 3;
+        STRING = 4;
+        BOOL = 5;
+        BINARY = 6;
+        /**
+         * Indicate that a list of Values is contained in @ref Value.array
+         * representing an array.
+         */
+        ARRAY = 7;
+    }
+
+    /**
+     * The type of the value transported in this message.
+     */
+    required Type type = 1;
+
+    optional int64 int = 2;
+    optional double double = 3;
+    optional string string = 4;
+    optional bool bool = 5;
+    optional bytes binary = 6;
+    /**
+     * Contained elements can be of different types and ordering is important.
+     */
+    repeated Value array = 7;
+
+}

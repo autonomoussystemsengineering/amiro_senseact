@@ -1,0 +1,54 @@
+package rst.navigation;
+
+import "rst/geometry/Pose.proto";
+
+option java_outer_classname = "OccupancyGrid2DIntType";
+
+/**
+ * This represents a 2D grid map, in which each cell represents the
+ * probability of occupancy.
+ *
+ * This kind of representation is often used in SLAM implementations.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+// @constraint(len(.map) = (.width * .height))
+message OccupancyGrid2DInt {
+
+    /**
+     * The map resolution as edge length of a cell.
+     */
+    // @unit(meter)
+    required float resolution = 1;
+
+    /**
+     * Number of cells in x direction.
+     */
+    required uint32 width = 2;
+
+    /**
+     * Number of cells in y direction.
+     */
+    required uint32 height = 3;
+
+    /**
+     * The origin of the map.
+     *
+     * This is the real-world pose of the cell (0,0) in the map. The
+     * grid is defined in the x-y plane given by this pose, therefore
+     * the rotation defines the orientation of the 2D grid in the real
+     * three-dimensional world. If the floor is defined as the x-y
+     * plane in world coordinates, the pose should only contain a
+     * rotation around the z-axis.
+     */
+    required geometry.Pose origin = 4;
+
+    /**
+     * The map data, in row-major order.
+     *
+     * Occupancy probabilities are signed 8-bit integer in the range
+     * [0,100]. Unknown is -1.
+     */
+    required bytes map = 5;
+
+}

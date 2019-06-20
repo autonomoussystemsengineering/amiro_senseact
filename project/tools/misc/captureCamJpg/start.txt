@@ -1,0 +1,4 @@
+This is a x86 program for capturing and sending mat-images in jpeg format.
+
+Compile: cmake . && make
+Run: capture_cam -i /scope   # Where -i <arg> is the scope to send on mat-images

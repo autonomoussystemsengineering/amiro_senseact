@@ -1,0 +1,74 @@
+====== Talking to the Robot  ======
+===== Connection =====
+The robots have USB and WiFi interfaces which can be used for communication.
+The USB interface is a RNDIS virtual network interface.
+As soon you connect your computer to it, it should install a new network device.
+Choose a static IP for your PC:
+  192.168.0.200/24
+The robots do always have the following IP:
+  192.168.0.1/24
+Now try to log in without a password:
+  $ ssh root@192.168.0.1
+You can copy files to the robot using scp:
+  $ scp anyFile root@192.168.0.1:~
+
+===== Cross Compilation =====
+The AMiRo robots have another architecture running an ARM Cortex-A8 on a [[https://store.gumstix.com/index.php/products/257/|Gumstix]] board.
+Thus, you cannot simply compile your programs with your common x86/amd64 compiler and run it on the robot.
+You need to install an ARM cross compiler which is given you by the supervisors.
+The cross compiler environment holds the whole robots system environment so that you only need to source it as follows:
+  $ source /opt/poky/1.6-20140617/environment-setup-cortexa8hf-vfp-neon-poky-linux-gnueabi
+After typing in this command, all you system variables for the **current bash** are set to the cross compiler environment (use ''$ env'' to inspect the variables).
+
+===== Programming Workflow =====
+All the programs for the robot are written in c/c++.
+While all the c/c++ projects consist of [[http://www.cmake.org/|CMake]] projects, development is pretty easy.
+First, you can build your program on your own PC, then test it and debug it until everything works well.
+Second, you source your cross compiler, compile the program for the ARM and copy it.
+
+==== Workflow with CAN ====
+The controller area network (CAN) is used for inter communication between the systems.
+It is a broadcast bus, where every board is listening to.
+Thus, you can just send the specific commands for setting the lights, or receiving the odometry by listening on the right message.
+=== Compiling on the PC ===
+For displaying the CAN communication we need the ''candump'' utility from [[https://gitorious.org/linux-can/can-utils|can-utils]].
+Now you have to load the CAN module:
+  $ modprobe can
+  $ modprobe can_raw
+  $ modprobe vcan
+  $ sudo ip link add dev can0 type vcan
+  $ sudo ip link set up can0
+  $ ip link show can0
+Now go to ''project/tools/setAmiroLights'' and do:
+  $ cmake .
+  $ make
+  $ ./setAmiroLights
+You see a certain program output, which you can adjust by the given flags.
+After starting the ''candump'' utility, you can see the raw messages on the bus:
+  $ candump any &
+  $ ./setAmiroLights
+
+=== Compiling on the PC for the ARM ===
+After you have seen that the messages are properly sent over the CAN bus, you can now test the tool on the robot:
+  $ source /opt/poky/1.6-20140617/environment-setup-cortexa8hf-vfp-neon-poky-linux-gnueabi
+  $ cmake .
+  $ make
+  $ scp setAmiroLights root@192.168.0.1:~
+  $ ssh root@192.168.0.1
+  # ./setAmiroLights
+You'll see the outcome directly. 
+
+==== Workflow with RSB ====
+Build the ''project/sense/senseCam'' project for the robot and start it:
+  $ source /opt/poky/1.6-20140617/environment-setup-cortexa8hf-vfp-neon-poky-linux-gnueabi
+  $ cmake .
+  $ make
+  $ scp senseCam root@192.168.0.1:~
+  $ ssh root@192.168.0.1
+  # ./senseCam
+
+Start another terminal and compile ''project/tools/showCam''
+  $ cmake .
+  $ make
+  $ ./showCam
+You should now see the camera stream.

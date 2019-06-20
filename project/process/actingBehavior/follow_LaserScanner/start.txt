@@ -1,0 +1,31 @@
+====== Follow (using Laser Scanner) ======
+
+By using a laser scanner the robot drives to the next object by checking the smallest measured distance and stops in front of it in a specified distance. If the object moves away, the robot will follow. If the object comes closer, the robot will drive backwards to hold the specified distance.
+
+There is also implemented an angular focus, which is straight forward at the beginning. If the smallest distance is at the side of the focus, the focus will be centered there in the next step. Finally the robot can follow the guiding object without being focussed by other objects at the sides.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Basic Functionality =====
+
+The behavior is simple: Drive in the direction of the smallest measured distance.
+
+Given the smallest measured distance is the distance to the object, the motor velocities are calculated based on the distance and angular direction of the laser, which measured the smallest distance. If the distance is large, the robot will drive faster (maximum: 50 cm/s). If the distance is smaller, the robot drives slower (minimum: 15 cm/s). If the maximum distance of 30 cm has been reached, the robot will stop in front of the object. If the distance gets smaller than 20 cm, the robot will correct its distance by (only!) driving backwards.
+
+While following the guiding object, it is possible, that the laser scanner measures smaller distances at the sides (or at the back) than to the guiding object. For focussing on the guiding object, the minimum comparison is ranged to all scans which are 60 degrees to the left and right side of the orientation laser, which had the smallest measured distance the step before. At the beginning the orientation laser is in the center.
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Laser Scanner Scope | /AMiRo_Hokuyo/lidar | Scope for receiving the laser data of the laser scanner. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --startNow, -s | - | - | Starts the following immediately without waiting of scopes. |
+| --debug | - | - | Activates debugging information. |
+| --lidarinscope, -l | String | "/AMiRo_Hokuyo/lidar" | Scope for receiving laser data. |

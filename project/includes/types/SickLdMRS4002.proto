@@ -1,0 +1,65 @@
+package rst.claas;
+
+import "PoseEuler.proto";
+
+option java_outer_classname = "SickLdMRS4002Type";
+
+message SickLdMRS400102 {
+
+//Header
+	required fixed32 magicWord = 1; //0xAFFEC0C2		// 4 Byte
+	optional uint32 sizePrevMsg =2;				// 4 Byte	
+	required uint32 sizeMsg = 3;				// 4 Byte	
+	optional uint32 reserved = 4 [default = 0];		// 4 Byte
+	required uint32 deviceId = 5;				// 4 Byte
+	required uint32 dataType = 6; //0x2202			// 4 Byte
+	required fixed64 timeMsgSent = 7;			// 8 Byte total = 32 Byte, 24 Byte without optional
+	
+	//Measured Data
+	required uint32 measureNumber = 8;			// 4 Byte
+	required sfixed32 sensorStatus = 9; //fixed32?		// 4 Byte
+	required uint32 synchroPhase = 10;			// 4 Byte
+	required fixed64 timestartMeasure = 11;			// 8 Byte	
+	required fixed64 timeendMeasure = 12;			// 8 Byte
+	required uint32 angularStepsPerRotation = 13;		// 4 Byte
+	required int32 startAngle = 14;				// 4 Byte
+	required int32 endAngle = 15;				// 4 Byte
+	required uint32 numberMeasuredPoints = 16;		// 4 Byte
+	optional int32 reserved_1 = 17 [default = 0];		// 4 Byte
+	optional int32 reserved_2 = 18 [default = 0];		// 4 Byte
+	optional int32 reserved_3 = 19 [default = 0];		// 4 Byte
+	optional int32 reserved_4 = 20 [default = 0];		// 4 Byte
+	optional int32 reserved_5 = 21 [default = 0];		// 4 Byte
+	optional int32 reserved_6 = 22 [default = 0];		// 4 Byte
+	optional int32 reserved_7 = 23 [default = 0];		// 4 Byte total = 72 Byte, 44 Byte without optional
+
+	//List of measured points
+	repeated uint32 layer 	= 24 [packed=true];	//1 .. 1000 Points a 8 Byte = 8000 Byte
+	repeated uint32 echo 	= 25 [packed=true];	//1 .. 1000 Points a 8 Byte = 8000 Byte
+	repeated uint32 flags 	= 26 [packed=true];	//1 .. 1000 Points a 8 Byte = 8000 Byte
+	repeated uint32 horizontalAngle = 27 [packed=true];	//1 .. 1000 Points a 8 Byte = 8000 Byte
+	repeated uint32 radialDistance = 28 [packed=true];	//1 .. 1000 Points a 8 Byte = 8000 Byte
+	repeated uint32 echoPulseWidth = 29 [packed=true];	//1 .. 1000 Points a 8 Byte = 8000 Byte
+	//Take care of this reserved value 
+	repeated uint32 reserved_8 = 30;
+
+	//calculated coordinates 
+	//repeated uint32 x_coord = 31 [packed=true];
+	//repeated uint32 y_coord = 32 [packed=true];
+
+	//addtional Values
+	required string uniqueIdentifier = 31;
+
+	optional geometry.PoseEuler pose = 32;  
+}
+
+message SickLdMRS400102_coord
+{
+	// List of re-calculated points 
+	repeated double x_coord = 1 [packed=true];
+	repeated double y_coord = 2 [packed=true];
+	repeated double z_coord = 3 [packed=true];
+	required double	Inclinometer_YAngl = 4;
+	required double ShlcVehicleS = 5;
+}
+

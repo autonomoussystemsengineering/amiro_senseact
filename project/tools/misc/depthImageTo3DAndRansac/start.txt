@@ -1,0 +1,3 @@
+====== depthImageTo3D&RANSAC ======
+
+This uses data from OpenNI2 driver and converts depth image to 3D (in function convertDepthToXYZ(..) ) ,  it also has code backup for custom implementation of Ransac algorithm for plane detection but the results of the later(Ransac) is not tested.

@@ -1,0 +1,47 @@
+====== Transport Follow ======
+
+This tool is the following behavior of the transport scenario, which is described in the [[process:transport:start|transport documentation]]. Basically the robot follows another robot by only using its proximity sensors (have a look into the [[process:actingBehavior:follow_ProximitySensors:start|follow proximity sensors project]]).
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Basic Functionality in the Scenario =====
+
+  - At beginning the final transport position is initialized by an additional marker
+  - "Waiting" (doing some basic behavior)
+  - Doesn't get a position any more -> Object has been placed on top of it
+  - Calculating path to final transport position
+  - Calculating start position in front of it (1 cm distance)
+  - Transmitting start position
+  - Waiting for recognition from other robot (now called Guide)
+  - Transmitting own position
+  - Waiting for arrival of Guide
+  - Turning towards Guide
+  - Transmitting final transport position
+  - Doing [[process:actingBehavior:follow_ProximitySensors:start|following behavior]] until Guide arrived final position
+  - Transmitting disconnection
+  - Exit tool
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Obstacle Scope | /rir_prox/obstacle | Scope for receiving generalized proximity values for the obstacle model. |
+| Tracking Data | /murox/roboterlocation | Scope for receiving tracking position. |
+| Progress Output | /Transport/Follow | Scope for sending progress information to guide. |
+| Progress Input | /Transport/Guide | Scope for receiving progress information from guide. |
+| Map Server | /mapGenerator | Scope of the map server for path calculation. |
+| Motor Command | /motor/02 | Scope for sending motor commands to motor control. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --id | Integer | 0 | Tracking ID for AMiRo. |
+| --mpp | Float | 0.0025 | Meter per pixel. |
+| --finaleID | Integer | 9 | Tracking ID for finale position. |
+| --initializeMin, -m | - | - | Initialize the direction for the following task by using the minimum of the proximity sensors. |
+| --initializePos, -p | - | - | Initialize the direction for the following task by using the Guide's position. |
+| --host | String | "127.0.0.1" | Host for Programatik Spread. |
+| --port| String | "4803" | Port for Programatik Spread. |

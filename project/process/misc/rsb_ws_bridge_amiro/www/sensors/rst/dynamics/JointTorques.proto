@@ -1,0 +1,18 @@
+package rst.dynamics;
+
+option java_outer_classname = "JointTorquesType";
+
+/**
+ * A sequence of joint torques of multiple joints.
+ *
+ * @author Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>
+ */
+message JointTorques {
+
+    /**
+     * TODO
+     */
+    // @unit(newton-meter)
+    repeated float torques = 1 [packed=true];
+
+}

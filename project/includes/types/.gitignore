@@ -1,0 +1,6 @@
+*.pb.cc
+*.pb.h
+ClaasCan_CombineHarvester.proto
+FrontAttachmentCan_CombineHarvester.proto
+J1939Can_CombineHarvester.proto
+SteeringCan.proto

@@ -1,0 +1,55 @@
+====== apt-get update is slow ======
+
+**Prefer IPV4**: Append the following to ''/etc/gai.conf''
+  precedence ::ffff:0:0/96  100
+  
+====== LaTeX and Tikz ======
+
+
+\begin{eqnarray*}
+& & \frac{3}{4 \pi}   \sqrt{4 \cdot x^2   12}\\
+& & \lim_{n \to \infty}
+  \sum_{k=1}^n \frac{1}{k^2} = \frac{\pi^2}{6}\\
+& & {\it f}(x) = \frac{1}{\sqrt{x} x^2}\\
+& & e^{i \pi} + 1 = 0\;
+\end{eqnarray*}
+
+
+<latex>
+
+\textcolor{white}{text}
+
+\tikzstyle{int}=[draw, fill=blue!20, minimum size=2em]
+\tikzstyle{init} = [pin edge={to-,thin,black}]
+
+\begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+    \node [int, pin={[init]above:$v_0$}] (a) {$\frac{1}{s}$};
+    \node (b) [left of=a,node distance=2cm, coordinate] {a};
+    \node [int, pin={[init]above:$p_0$}] (c) [right of=a] {$\frac{1}{s}$};
+    \node [coordinate] (end) [right of=c, node distance=2cm]{};
+    \path[->] (b) edge node {$a$} (a);
+    \path[->] (a) edge node {$v$} (c);
+    \draw[->] (c) edge node {$p$} (end) ;
+\end{tikzpicture}
+\textcolor{white}{text}
+</latex>
+
+====== CMake ======
+
+Set verbose mode on in ''CMakeLists.txt'' file:
+
+  set( CMAKE_VERBOSE_MAKEFILE on )
+  
+Generate proper Eclipse project
+
+  $ cmake -G"Eclipse CDT4 - Ninja" .
+
+====== git ======
+
+Make git ignore the ''chmod'' commands:
+
+  git config core.fileMode false
+  
+====== DokuWiki ======
+
+[[wiki:welcome|wiki]]: DokuWiki manuals

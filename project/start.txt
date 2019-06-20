@@ -1,0 +1,72 @@
+====== MuRoX DokuWiki ======
+
+
+This is the MuRoX DokuWiki.
+It contains the documentation and startup of the Project and all its components
+
+  * [[dokuwikiInstall|dokuwiki]]: How to run the DokuWiki 
+  * [[introduction|introduction]]: Robotic Service Bus system and installation
+  * [[tutorials|tutorials]]: Hands-on tutorials with the robots
+  * [[hints|hints]]: Good-to-know stuff
+
+
+====== Project Structure ======
+
+
+It follows this structure:
+
+===== act =====
+
+The **act** folder contains __action models of the robots__ for working with the MuRoX environment.
+Please use the [[act:start?do=index|Sitemap]] for a complete overview.
+
+[[act:start?do=index|{{ :act:act.png?300 }}]]
+
+===== sense =====
+
+The **sense** folder contains __sense models of the robots__ for working with the MuRoX environment.
+Please use the [[sense:start?do=index|Sitemap]] for a complete overview.
+
+[[sense:start?do=index|{{ :sense:sense.png?300 |}}]]
+
+===== process =====
+
+The **process** folder contains __processes of the robots__ for working with the MuRoX environment.
+Please use the [[process:start?do=index|Sitemap]] for a complete overview.
+
+[[process:start?do=index|{{ :process:process.png?300 }}]]
+
+===== sandbox =====
+
+The **sandbox** folder contains alpha versions of programs for working with the MuRoX environment.
+Please use the [[sandbox:start?do=index|Sitemap]] for a complete overview.
+
+[[sandbox:start?do=index|{{ :sandbox:sandbox.png?300 }}]]
+
+===== includes =====
+
+The **includes** folder contains includes like types, messaging or converters for the MuRoX environment.
+Please use the [[includes:start?do=index|Sitemap]] for a complete overview.
+
+[[includes:start?do=index|{{ includes::includes.png?300 |}}]]
+
+===== tools =====
+
+The **tools** folder contains tools for working with the MuRoX environment.
+Please use the [[tools:start?do=index|Sitemap]] for a complete overview.
+
+[[tools:start?do=index|{{ :tools:tools.png?300 }}]]
+
+
+===== utilities =====
+
+The **utilities** folder contains scripts and tools which help you working with the MuRoX environment.
+
+[[utilities:start|{{ :utilities:utilities.png?300 }}]]
+
+===== demo =====
+
+The **demo** folder contains working demos and manuals for showing stuff in with MuRoX environment.
+Please use the [[demo:start?do=index|Sitemap]] for a complete overview.
+
+[[demo:start?do=index|{{ :demo:demo.png?300 }}]]

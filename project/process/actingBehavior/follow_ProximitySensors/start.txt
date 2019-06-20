@@ -1,0 +1,54 @@
+====== Follow (using Proximity Sensors) ======
+
+By only using its proximity sensors the robot drives to the next object in front of it. If the object moves away, the robot will follow, but there isn't any behavior for driving backwards! Objects at the sides can be ignored. By giving commands the behavior can be started and stopped.
+
+For a very good following behavior, it is recommended to use a guide, which has a very bright and white color. Otherwise other objects can extremely influence the following behavior.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Following Behavior =====
+
+The inverse sensor model for the proximity sensors is dependent on the angular approach. For calculating the distance to the center of the guide, numerical approaches have to be used, due to the trigonometric functions in the inverse sensor model. But this is too hard, because the calculation isn't done once and has to be as fast as possible.
+
+Finally a vector based approach has been used. In this case, there aren't used the angular information of the proximity sensors. They are just used, as they measured an object just in front of them. For the distance and angle calculation the two frontal proximity sensors //lf// (left one) and //rf// (right one) are used:
+  - left distance //ld// = inverseSensorModel(0, //lf//)
+  - right distance //rd// = inverseSensorModel(0, //rf//)
+  - position x //posX// = [//ld//*cos(pi/8) + //rd//*cos(-pi/8)] / 2
+  - position y //posY// = [//ld//*sin(pi/8) + //rd//*sin(-pi/8)] / 2
+  - distance //d// = sqrt(//posX//*//posX// + //posY//*//posY//) - //robot radius// / 2
+  - angle //a// = atan(//posY// / //posX//)
+
+With the distance //d// and the angle //a// the driving behavior can be calculated very precisely to follow the guide. But the frontal proximity sensors can be influenced by other objects at the side of the transporter. In this case the angle //a// will be pulled to the side and the distance //d// may become smaller. To avoid these errors, the next proximity sensors at the sides are used to correct the distance and angle calculation. Both correction functions are ranged linear functions, which are developed with many measurements in different scenarios. Please have a look into chapter "Development". Finally the correction with the proximity sensors at the sides //ls// (left one) and //rs// (right one) can be calculated as follows:
+  - left side distance //lsd// = inverseSensorModel(0, //ls//)
+  - right side distance //rsd// = inverseSensorModel(0, //rs//)
+  - //d// += distanceCorrection(//lsd//) + distanceCorrection(//rsd//)
+  - //a// += angleCorrection(//lsd//) - angleCorrection(//rsd//)
+
+Now the robot can follow the Guide, even if there are objects at the side. Due to the small ranges of the proximity sensors, the motor velocities have to be slowed down. The maximum forward speed of the robot is 8 cm/s, the minimum forward speed is 3 cm/s.
+
+===== Development =====
+
+For the development of the following behavior, there are done many measurements in different scenarios. For detailed information, please have a look into the folder "Development", which contains many measurement files, matlab scripts and the results in diagrams. The calculated correction function with matlab has been used as a start function. Due to measurement errors, it had to be optimized in the final program.
+
+===== Commands =====
+
+^ Command Code ^ Description ^
+| START | Starts the following behavior. |
+| STOP | Stops the following behavior. |
+| QUIT | Quits the application. |
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Proximity Sensor Values | /rir_prox/obstacle | Scope for receiving proximity sensor values. |
+| Commands | /follow/proximitysensors | Scope for receiving commands. |
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --proximityScope, -p | String | "/rir_prox/obstacle" | Scope for receiving proximity sensor values. |
+| --commandScope, -c | String | "/follow/proximitysensors" | Scope for receiving commands. |

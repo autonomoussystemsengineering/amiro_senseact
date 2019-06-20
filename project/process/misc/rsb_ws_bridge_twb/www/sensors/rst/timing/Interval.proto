@@ -1,0 +1,25 @@
+package rst.timing;
+
+import "rst/timing/Timestamp.proto";
+
+option java_outer_classname = "IntervalType";
+
+/**
+ * A time interval represented with two absolute timestamps.
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ */
+// @constraint(.begin.time <= .end.time)
+message Interval {
+
+    /**
+     * Start of the interval.
+     */
+    optional Timestamp begin = 1;
+
+    /**
+     * End of the interval.
+     */
+    optional Timestamp end = 2;
+
+}

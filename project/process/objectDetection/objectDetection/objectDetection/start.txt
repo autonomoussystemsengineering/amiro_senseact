@@ -1,0 +1,65 @@
+====== Object Detection ======
+
+This is the object detection for the robot. This tool can save snapshots of the objects (for example by using the [[process:objectDetection:objectDetection:objectDetectionCommand:start|object detection command tool]]) and can compare an actual snapshot with the saved ones and detect the saved object. For the detection it uses the SURF algorithm.
+
+===== Building =====
+
+This is a cmake project, so just type:
+  - ''cmake .''
+  - ''make''
+
+===== Commands =====
+
+For external applications it is possible to send string commands.
+
+^ Key ^ Description ^
+| SAVE | Takes a snapshot and saves it in the given directory. Have a look into the chapter "Saving Objects". |
+| DEL | Resets all counters, so there are no loaded images anymore. |
+| LOAD | Loads saved snapshots for the objects. Have a look into chapter "Loading Objects". |
+| COMP | Takes a snapshot and compares it to every known snapshot and tries to detect the object. |
+| QUIT | Quits the application. |
+
+===== RSB Scopes =====
+
+For communication there are RSB scopes defined.
+
+^ Name ^ Type ^ Default scope ^ Description ^
+| Image scope | String | "/objectDetection/image" | Scope for sending the camera frame. |
+| Detection scope | String | "/objectDetection/detected" | Scope for sending the detection result. |
+| Command scope | String | "/objectDetection/command" | Scope for receiving commands. |
+
+===== Saving Objects =====
+
+For each object there are saved 8 images for every side. For saving an object, place it close to the camera and take 8 snapshots (use save command) of the object. Turn the object for 45 degrees for every new snapshot. The snapshots will be saved directly in the given directory (on default it is "objectPics/").
+
+Each time, when the save command has been given, it takes a snapshot. It will be saved as a new side for the actual object. If there are taken 8 snapshots for the object, the tool will automatically save the snapshot as a side of a new object.
+
+===== Loading Objects =====
+
+Of course it is possible to load taken snapshots. By giving the load command, the tool will load the images from the given directory (on default "objectPics/").
+
+The images need a basic structure: ''object_<object number>_<side number>''
+The ''object number'' must be an integer 0 or higher. It is important, that, if there are n objects, the ''object number'' will be in range of [0,n-1]. The ''side number'' is an integer in range [0,7]. For each object there have to be 8 different side numbers.
+
+===== Detecting the Object =====
+
+By giving the compare command, the tool takes an actual snapshot. It runs through all saved snapshots and tries to detect the object by using the SURF algorithm. On default the detection stops the comparison, if there is a match with one of the saved snapshots. By using the parameter flag ''--checkAll'', the tool doesn't stop and prints all possible matches.
+
+===== Parameters =====
+
+For parameter information type ''objectDetection -h''.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --outscope, -o | String | "/objectDetection/detected" | Scope for sending images. |
+| --inscope, -i | String | "/objectDetection/command" | Scope for receiving commands. |
+| --loadingDirectory, -l | String | "objectPics/" | Directory from where the data can be loaded. |
+| --device, -d | Integer | 0 | Number of device. |
+| --quality, -q | Unsigned Integer | 85 | Quality of JPEG compression [0 .. 100]. |
+| --loadingDirectly | - | - | Loads the objects directly without waiting for any command. |
+| --sending, -s | - | - | Sends the taken snapshot over RSB. |
+| --reverseSearch, -r | - | - | Reverses search order of objects. |
+| --debug | - | - | Activates debugging which includes generated pictures and additional console information. |
+| --checkAll | - | - | All objects will be checked. |
+| --printPic | - | - | Prints a notice if a new picture has been taken. |
+| --countUp | - | - | Just gives random object number without using any detection algorithm. |
+

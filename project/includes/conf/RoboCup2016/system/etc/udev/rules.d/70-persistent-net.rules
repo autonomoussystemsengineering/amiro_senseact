@@ -1,0 +1,8 @@
+# amiro21
+ACTION=="add", ATTRS{address}=="74:da:38:06:45:e3", RUN+="/bin/sed 's#192\.168\.2\.[0-9].#192\.168\.2\.21#g' -i /var/lib/connman/wifi.config"
+# amiro30
+ACTION=="add", ATTRS{address}=="74:da:38:06:45:f6", RUN+="/bin/sed 's#192\.168\.2\.[0-9].#192\.168\.2\.30#g' -i /var/lib/connman/wifi.config"
+# amiro36
+ACTION=="add", ATTRS{address}=="74:da:38:25:c7:ae", RUN+="/bin/sed 's#192\.168\.2\.[0-9].#192\.168\.2\.36#g' -i /var/lib/connman/wifi.config"
+# amiro37
+ACTION=="add", ATTRS{address}=="74:da:38:06:45:2e", RUN+="/bin/sed 's#192\.168\.2\.[0-9].#192\.168\.2\.37#g' -i /var/lib/connman/wifi.config"

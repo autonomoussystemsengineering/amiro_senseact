@@ -1,0 +1,5 @@
+/**
+ * Tracking refers to the process of maintaining an estimate of some
+ * property, such as the position, of a tracked subject over time.
+ */
+package rst.tracking;

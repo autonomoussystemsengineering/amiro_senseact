@@ -1,0 +1,36 @@
+package rst.vision;
+
+import "rst/geometry/ViewFrustum.proto";
+import "rst/geometry/CameraPose.proto";
+import "rst/vision/SimpleXYZImage.proto";
+
+option java_outer_classname = "LocatedXYZImageType";
+
+/**
+ * A simple point cloud represented in 2D structure with information
+ * from where it was taken.
+ *
+ * By adding information about the pose of the camera and its
+ * perceived view frustum, one can reconstruct the location and the
+ * circumstances under which the provided point cloud was captured.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+message LocatedXYZImage {
+
+    /**
+     * The background model.
+     */
+    required vision.SimpleXYZImage image = 1;
+
+    /**
+     * The camera's pose in 3d space.
+     */
+    required geometry.CameraPose camera = 2;
+
+    /**
+     * The camera's view frustum.
+     */
+    required geometry.ViewFrustum frustum = 3;
+
+}

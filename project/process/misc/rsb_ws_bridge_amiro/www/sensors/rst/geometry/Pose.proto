@@ -1,0 +1,26 @@
+package rst.geometry;
+
+import "Translation.proto";
+import "Rotation.proto";
+
+option java_outer_classname = "PoseType";
+
+/**
+ * Pose data (camera, robot, ...).
+ * @todo "extend explanation"
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ */
+message Pose {
+
+    /**
+     * TODO
+     */
+    required Translation translation = 1;
+
+    /**
+     * TODO
+     */
+    required Rotation rotation = 2;
+
+}

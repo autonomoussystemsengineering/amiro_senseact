@@ -1,0 +1,15 @@
+====== Command Simulation of GEPTRO State Machine ======
+
+This is the ToBI state machine simulation. It can simulate all functions of ToBI, which are used by the [[process:statemachines:stateMachineGEPTRO:start|state machine]] of the RoboCup@Home 2015 OpenChallenge or of the GEPTRO table application. The functions cannot be deactivated.
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --spread, -s | String | "localhost" | IP of remote spread server. |
+| --spreadPort, -p | String | "4823" | Port of remote spread server. |
+| --outscopeTobi, -o | String | "/tobiamiro" | Scope for sending the current state to tobi. |
+| --outscopeState, -s | String | "/amiroState" | Scope for sending the current state internaly. |
+| --inscopeTobi, -i | String | "/amiro" | Scope for recieving Tobis messages. |
+| --objectID | Integer | 3 | ID of the object, which shall be delivered. |
+| --objectOffset | Integer | 2 | Object count offset for ToBI's objects. |
+| --robotID, -d | Integer | 0 | Robot ID. |
+
+For additional information about the application parameters type ''answerer_tobi -h''.

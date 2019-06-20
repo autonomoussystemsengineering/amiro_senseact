@@ -1,0 +1,31 @@
+package twbTracking.proto;
+
+/**
+  * 2D pose of an object with an object id
+  */
+message Pose2D {
+  /**
+    * x position of the object in the original frame
+    */
+  required float x = 1;
+  /**
+    * y position of the object in the original frame
+    */
+  required float y = 2;
+  /**
+    * Id position of the object
+    */
+  optional int32 id = 3 [default = -1];
+  /**
+    * Orientation of the object in the original frame
+    */
+  optional float orientation = 4 [default = 0.0];
+}
+
+
+/**
+ * 2D pose list
+ */
+message Pose2DList {
+  repeated Pose2D pose = 1;
+}

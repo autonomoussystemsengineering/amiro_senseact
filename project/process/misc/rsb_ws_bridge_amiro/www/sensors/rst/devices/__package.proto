@@ -1,0 +1,8 @@
+/**
+ * This package collects data types describing technical devices.
+ *
+ * Sub-packages, on the one hand, exist for specific devices, and on the other
+ * hand, the generic sub-package collects device-related data types which
+ * can be used across a wider range of technical devices.
+ */
+package rst.devices;

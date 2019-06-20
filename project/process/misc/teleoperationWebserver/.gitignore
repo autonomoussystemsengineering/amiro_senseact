@@ -1,0 +1,7 @@
+websocketServerLibWebSockets
+*~
+lib
+RPM
+CMakeFiles
+*.cmake
+Makefile

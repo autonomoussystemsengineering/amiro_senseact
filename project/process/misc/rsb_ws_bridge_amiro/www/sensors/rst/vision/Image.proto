@@ -1,0 +1,167 @@
+package rst.vision;
+
+option java_outer_classname = "ImageType";
+
+/**
+ * An uncompressed image with a certain pixel format, color and depth.
+ *
+ * The binary intensity data is contained in the @ref .data field. The
+ * remaining fields contain information about the interpretation, that
+ * is dimensions (@ref .width x @ref .height), color (@ref
+ * .color_mode, @ref .channels), depth (@ref .depth) and channel
+ * layout (@ref .data_order, @ref .channels), of that data.
+ *
+ * Suggested interpretation of RSB timestamps:
+ *
+ * create
+ *
+ *   Image grab time
+ *
+ * @todo "to be more precisely defined. e.g. what does this mean
+ *        for rolling shutter cameras?"
+ *
+ * @author Johannes Wienke <jwienke@techfak.uni-bielefeld.de>
+ */
+message Image {
+
+    /**
+     * Depth of one color channel.
+     *
+     * Reflecting the definitions from OpenCV's IplImage.
+     */
+    enum Depth {
+        DEPTH_8U = 8;
+        DEPTH_16U = 16;
+        DEPTH_32F = 32;
+    }
+
+    /**
+     * Colorspace(s) and layout of color channel(s).
+     */
+    enum ColorMode {
+
+        /**
+         * The image consists of only one channel containing intensity
+         * values.
+         *
+         * MUST be used with @ref .channels = 1.
+         */
+        COLOR_GRAYSCALE = 0;
+
+        /**
+         * The image has three color channels containing the red,
+         * green and blue color components (note the order of the
+         * channels, not to be confused with @ref .COLOR_BGR).
+         *
+         * MUST be used with @ref .channels = 3.
+         */
+        COLOR_RGB = 1;
+
+        /**
+         * The image has three color channels containing the blue,
+         * green and red color components (note the order of the
+         * channels, not to be confused with @ref .COLOR_RGB).
+         *
+         * MUST be used with @ref .channels = 3.
+         */
+        COLOR_BGR = 2;
+
+        /**
+         * The image has three color channels, encoded in the YUV
+         * colorspace, and uses the YUVYUV pixel layout.
+         *
+         * MUST be used with @ref .channels = 3.
+         */
+        COLOR_YUV = 4;
+
+        /**
+         * The image has three color channels, encoded in the YUV
+         * colorspace, and uses the YUYV pixel layout.
+         *
+         * MUST be used with @ref .channels = 3.
+         */
+        COLOR_YUV422 = 8;
+
+    }
+
+    /**
+     * Describes storage layout of pixels with respect to channels.
+     */
+    enum DataOrder {
+
+        /**
+         * Separate planes.
+         *
+         * Example for @ref .ColorMode.COLOR_RGB:
+         *
+         * .. parsed-literal::
+         *
+         *    R R R ... (@ref .width x @ref .height times)
+         *    G G G ... (@ref .width x @ref .height times)
+         *    B B B ... (@ref .width x @ref .height times)
+         */
+        DATA_SEPARATE = 0;
+
+        /**
+         * Interleaved image.
+         *
+         * Example for @ref .ColorMode.COLOR_RGB:
+         *
+         * .. parsed-literal::
+         *
+         *    R G B R G B R G B ... (@ref .width x @ref .height times)
+         */
+        DATA_INTERLEAVED = 1;
+
+    }
+
+    /**
+     * Stores the actual pixel data of the image.
+     *
+     * The number of bytes and their interpretation depend on the
+     * values of the remaining fields.
+     */
+    // @constraint(len(value) = (.width * .height * .channels * .depth) / 8)
+    required bytes data = 1;
+
+    /**
+     * The number of pixels in each row of the image.
+     */
+    // @unit(pixel)
+    required uint32 width = 2;
+
+    /**
+     * The number of pixels in each column of the image.
+     */
+    // @unit(pixel)
+    required uint32 height = 3;
+
+    /**
+     * The number of color channels in the image.
+     *
+     * The interpretation of these channels depends on @ref
+     * .color_mode.
+     */
+    // @unit(number)
+    optional uint32 channels = 4 [default = 3];
+
+    /**
+     * The number of bits used to encode
+     */
+    optional Depth depth = 5 [default = DEPTH_8U];
+
+    /**
+     * Colorspace and layout of the color channels of the image.
+     *
+     * Determines pixel layout in combination with @ref .data_order.
+     */
+    optional ColorMode color_mode = 6 [default = COLOR_RGB];
+
+    /**
+     * Layout of the color planes of the image.
+     *
+     * Determines pixel layout in combination with @ref .color_mode.
+     */
+    optional DataOrder data_order = 7 [default = DATA_SEPARATE];
+
+}

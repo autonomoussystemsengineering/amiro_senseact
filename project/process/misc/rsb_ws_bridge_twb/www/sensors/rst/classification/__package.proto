@@ -1,0 +1,13 @@
+/**
+ * In machine learning and statistics, classification is the problem
+ * of identifying to which of a set of categories (sub-populations) a
+ * new observation belongs.
+ *
+ * This package contains data types representing classification
+ * problems and classification results (e.g. @ref
+ * rst.classification.ClassificationResult).
+ *
+ * @see http://en.wikipedia.org/wiki/Statistical_classification
+ *      "Wikipedia article containing the definition above"
+ */
+package rst.classification;

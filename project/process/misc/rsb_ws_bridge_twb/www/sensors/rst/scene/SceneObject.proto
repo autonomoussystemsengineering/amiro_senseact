@@ -1,0 +1,39 @@
+package rst.scene;
+
+import "rst/geometry/Pose.proto";
+import "rst/geometry/Shape3DFloat.proto";
+
+option java_outer_classname = "SceneObjectType";
+
+/**
+ * Geometry and location within a 3D scene of an uniquely identifiable
+ * object.
+ *
+ * @author David Klotz <dklotz@techfak.uni-bielefeld.de>
+ */
+message SceneObject {
+
+    /**
+     * A unique name.
+     */
+    required string name = 1;
+
+    /**
+     * The kind of the object, e.g.: "chair", "painting", etc.
+     */
+    optional string kind = 2;
+
+    /**
+     * Geometrical object position and orientation in the world
+     * coordinate system.
+     */
+    required geometry.Pose center = 3;
+
+    /**
+     * Geometric shape of the object.
+     *
+     * All transformations are relative to @ref .center.
+     */
+    optional geometry.Shape3DFloat shape = 4;
+
+}

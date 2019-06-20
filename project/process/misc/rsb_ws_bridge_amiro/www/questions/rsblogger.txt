@@ -1,0 +1,15 @@
+Name:		watchdog/rsblogger.html
+Seitenname:	RSB Logger
+Enthält Menü:	nein
+Logo Tab:	it's owl
+
+Aufbau:
+* Textfeld für Output
+* Eingabefeld für Scope
+* Start- und Stopp-Buttons
+
+Fragen/Anmerkungen:
+-
+
+Erledigt:
+* Button zum Beenden

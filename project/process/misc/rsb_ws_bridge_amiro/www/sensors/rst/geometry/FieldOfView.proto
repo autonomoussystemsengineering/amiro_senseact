@@ -1,0 +1,32 @@
+package rst.geometry;
+
+option java_outer_classname = "FieldOfViewType";
+
+/**
+ * The field of view of a sensor.
+ *
+ * The sensor's FOV is defined as the angular extent of a scene that is
+ * imaged by a visual sensor. The outermost observable ray that falls
+ * in a sensor's FOV has the angular distance +/- AOV/2.0 from the
+ * optical axis in the respective extent (vertical/horizontal). The
+ * angles are given in radian.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+message FieldOfView {
+
+    /**
+     * An angle defining the horizontal bounds of the FOV.
+     */
+    // @constraint(value > 0)
+    // @unit(radian)
+    required float horizontal_aov = 1;
+
+    /**
+     * An angle defining the vertical bounds of the FOV.
+     */
+    // @constraint(value > 0)
+    // @unit(radian)
+    required float vertical_aov = 2;
+
+}

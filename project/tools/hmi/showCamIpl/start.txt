@@ -1,0 +1,4 @@
+====== showCamIpl ======
+
+This application greps ''cv::Mat'' images from a RSB scope and displays them.
+See the demo [[demo:cameraJpeg:start|Sending and displaying of camera images]] for a similar setup, but for generating the frames for this particular program, see [[sense:senseCam::start|senseCam]].

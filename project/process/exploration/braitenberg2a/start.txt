@@ -1,0 +1,11 @@
+====== Building the Braitenberg vehicle for AMiRo ======
+
+This is a demo of the braitenberg 2a vehicle, using the ring proximity sensors of AMiRo.
+
+===== Run the demo =====
+
+  - ''cmake . && make''
+  - Copy the program onto the AMiRo
+  - Switch to the target folder on the AMiRo
+  - Run the demo with ''./braitenbergAmiro''
+  - Hit "Strg+C" for stopping the demo

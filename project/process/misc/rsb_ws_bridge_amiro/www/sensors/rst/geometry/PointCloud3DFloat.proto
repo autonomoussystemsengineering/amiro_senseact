@@ -1,0 +1,21 @@
+package rst.geometry;
+
+option java_outer_classname = "PointCloud3DFloatType";
+
+import "rst/math/Vec3DFloat.proto";
+
+/**
+ * A collection of points in 3D space.
+ *
+ * @author Jordi "Sanchez Riera" <jordi.sanchez-riera@inrialpes.fr>
+ * @todo "correct author?"
+ */
+message PointCloud3DFloat {
+
+    /**
+     * TODO
+     */
+    // @unit(meter?)
+    repeated math.Vec3DFloat points = 1;
+
+}

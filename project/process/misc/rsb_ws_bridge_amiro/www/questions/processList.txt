@@ -1,0 +1,13 @@
+Name:		watchdog/processList.html
+Seitenname:	Process List
+Enthält Menü:	nein
+Logo Tab:	it's owl
+
+Aufbau:
+* Textfeld für Output
+
+Fragen/Anmerkungen:
+* Fake Programm für Test entfernen (wenn ausreichend getestet wurde)
+
+Erledigt:
+* Übersicht, ob Programme laufen

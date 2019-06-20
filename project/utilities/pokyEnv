@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Source the poky environment"
+module load poky

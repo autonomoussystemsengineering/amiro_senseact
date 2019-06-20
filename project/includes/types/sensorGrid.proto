@@ -1,0 +1,27 @@
+package rst.geometry;
+
+import "PoseEuler.proto";
+
+option java_outer_classname = "sensorGridType";
+
+message OccupancyGrid2DInt {
+
+    /**
+     * The odometry.
+     */
+    required PoseEuler globalOdometry = 1;
+
+    /**
+     * The origin of the sensor frame relative to the machine origin.
+     */
+    required PoseEuler sensorFrame = 2;
+
+    /**
+     * The map data, in row-major order.
+     *
+     * Occupancy probabilities are unsigned float in the range
+     * [0,1]. Unknown is 0.5.
+     */
+    repeated float map = 3;
+
+}

@@ -1,0 +1,63 @@
+package rst.geometry;
+
+option java_outer_classname = "Cylinder3DFloatType";
+
+import "rst/geometry/Pose.proto";
+
+/**
+ * Cylinder in 3D in general position and orientation.
+ *
+ * The general cylinder with dimensions @ref .radius and @ref .height
+ * is constructed by translating and rotating (via @ref
+ * .transformation) a zero-centered, z-oriented axis-aligned cylinder
+ * such as below around its center of mass.
+ *
+ * .. parsed-literal::
+ *
+ *                       < @ref .radius >
+ *            .---------------------.
+ *           /                       \\
+ *         /                           \\
+ *        +              +              +  ^
+ *        \|\\                           /|
+ *        | \\                        /  |
+ *        |   \`---------------------'   |
+ *        |                             |
+ *        |            Z ^              |
+ *        \|              \|  ^  Y        \|  @ref .height
+ *        \|              \| /            \|
+ *        \|              \|/             \|
+ *        \|              +-----> X      \|
+ *        |                             |
+ *   ˙    |                             |
+ *        |                             |
+ *        |                             |
+ *        +                             +  v
+ *         \\                           /
+ *           \\                       /
+ *            \`---------------------'
+ *
+ *
+ * @author Christian Emmerich <cemmeric@cor-lab.de>
+ */
+message Cylinder3DFloat {
+
+    /**
+     * Transformation, consisting of translation and orientation, of
+     * the center of mass of the cylinder.
+     */
+    required geometry.Pose transformation = 1;
+
+    /**
+     * The radius of the cylinder.
+     */
+    // @unit(meter)
+    required float radius = 2;
+
+    /**
+     * The height of the cylinder.
+     */
+    // @unit(meter)
+    required float height = 3;
+
+}

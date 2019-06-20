@@ -1,0 +1,8 @@
+/**
+ * This package contains data types representing mathematical concepts.
+ *
+ * Examples include vectors over different bodies and precisions
+ * (e.g. @ref rst.math.Vec2DInt, @ref rst.math.Vec2DFloat) and similar
+ * matrices (e.g. @ref rst.math.MatrixDouble).
+ */
+package rst.math;

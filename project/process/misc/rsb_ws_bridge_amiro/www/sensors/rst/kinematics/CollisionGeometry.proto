@@ -1,0 +1,22 @@
+package rst.kinematics;
+
+import "rst/geometry/Translation.proto";
+
+option java_outer_classname = "CollisionGeometryType";
+
+/**
+ * Geometric description of a collision between objects.
+ *
+ * @author Daniel Seidel <dseidel@techfak.uni-bielefeld.de>
+ */
+message CollisionGeometry {
+
+    /**
+     * Contact points of the collision in world coordinate system.
+     *
+     * Order of contact points is not significant.
+     */
+    // @constraint(len(value) > 0)
+    repeated geometry.Translation contact_points = 1;
+
+}

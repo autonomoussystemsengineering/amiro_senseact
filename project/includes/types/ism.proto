@@ -1,0 +1,32 @@
+package rst.claas;
+
+import "PoseEuler.proto";
+
+option java_outer_classname = "ismType";
+
+/**
+ * Inverse sensor model
+ *
+ * @author Timo Korthals <tkorthals@cor-lab.uni-bielefeld.de>
+ */
+message ism {
+
+    /**
+     * TODO
+     */
+    repeated float map = 1;
+    
+    required int32 rows = 2;
+    
+    required int32 cols = 3; 
+
+    /**
+     * TODO
+     */
+    required geometry.PoseEuler sensor = 4; 
+
+    /**
+     * TODO
+     */
+    optional geometry.PoseEuler odometry = 5;  
+}

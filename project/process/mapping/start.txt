@@ -1,0 +1,6 @@
+====== Mapping Programs ======
+
+In this subdirectory there are included all mapping programs:
+  * [[process:mapping:CoreSLAM:start|CoreSLAM]]: <Description>
+  * [[process:mapping:CoreSLAMBasic:start|CoreSLAMBasic]]: <Description>
+  * [[process:mapping:mapGenerator:start|GEPTRO Map Generator]]: Generating maps by using TWB positions and proximity sensors (GEPTRO).

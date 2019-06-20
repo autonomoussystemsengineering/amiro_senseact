@@ -1,0 +1,21 @@
+package rst.classification;
+
+import "rst/classification/ClassifiedRegion3D.proto";
+
+option java_outer_classname = "ClassifiedRegions3DType";
+
+/**
+ * A set of 3D regions with classification results.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+message ClassifiedRegions3D {
+
+    /**
+     * The set of regions.
+     *
+     * The order of elements is not significant.
+     */
+    repeated ClassifiedRegion3D regions = 1;
+
+}

@@ -1,0 +1,89 @@
+#!/bin/bash
+
+# Add content of a variable to a double period seperated list and return the list
+# Call: NEW_PATH=$(add_variable_to_list PATH /new/path)
+function add_variable_to_list {
+  _add="1"
+  _list_name=${1}
+  _content=${2}
+for line in $(echo ${!_list_name} | tr ":" "\n"); do if [[ ${line} == ${_content} ]];then _add="0";break;fi;done
+if [[ $_add == "1" ]]; then
+  _list=${_content}:\$${_list_name}
+else
+  _list=\$${!_list_name}
+fi
+echo ${_list}
+}
+
+echo -e "\e[44mMake shure you run this command in the utilities folder\e[0m"
+
+_file="$(readlink -f ${HOME}/.bashrc)"
+_tmp="${HOME}/.tmp"
+
+# Define some start and end quotes for detecting the MuRoX defines
+_start="# ##### MuRoX start -- DO NOT EDIT #####"
+_end="# ##### MuRoX end #####"
+
+# Some checks
+if [ ! -e $_file ]
+then
+  echo -e "\e[41m${_file} does not exist\e[0m"
+  exit 1
+fi
+
+touch $_tmp 2>/dev/null
+if [ ! -w "$_tmp" ]
+then
+  echo -e "\e[41mCan not create temporary file ${_tmp}\e[0m"
+  exit 2
+fi
+
+# Chop the old block if it exists
+_line_start=`grep -x -n "$_start" "$_file" | cut -f1 -d:`
+_line_end=`grep -x -n "$_end" "$_file" | cut -f1 -d:`
+_lines=`wc -l < $_file`
+
+if [[ "$_line_start" != "" ]]
+then
+    echo -e "\e[42mChopping out old MuRoX definition in ${_file}\e[0m"
+    head -n`expr $_line_start - 1` $_file > $_tmp
+    tail -n`expr $_lines - $_line_end` $_file >> $_tmp
+    _replace_old_definition="1"
+else
+    echo -e "\e[42mNo old MuRoX definition found in ${_file}\e[0m"
+    cp $_file $_tmp
+    _replace_old_definition="0"
+fi
+
+# Set the MuRoX defines
+echo -e "\e[42mInit the utilities for global usage in bash\e[0m"
+if [ $_replace_old_definition == "0" ]; then
+  echo -e "\n" >> "$_tmp"
+fi
+echo "${_start}" >> "$_tmp"
+echo "export PATH=$(add_variable_to_list PATH ${PWD})" | tee -a "$_tmp"
+echo -e "\e[42mSet environment variables with MUROX_ prefix\e[0m"
+# Go to folder murox_dev and set the environment variables
+cd ../..
+echo "export MUROX_ENV=${PWD}" | tee -a "$_tmp"
+echo "export MUROX_RSB_VERSION_ARM=0.13" | tee -a "$_tmp"
+echo "export MUROX_RSB_VERSION=0.16" | tee -a "$_tmp"
+echo "export MUROX_DOKU=${PWD}/dokuwiki" | tee -a "$_tmp"
+echo "export MUROX_PROJECT=${PWD}/project" | tee -a "$_tmp"
+echo "export MUROX_ROS=${PWD}/catkin_ws" | tee -a "$_tmp"
+echo "export MUROX_INCLUDE_DIRS=${PWD}/project/includes" | tee -a "$_tmp"
+echo "export MUROX_CMAKE_MODULES=${PWD}/project/utilities/cmake" | tee -a "$_tmp"
+echo "export MUROX_CXX_FLAGS='-std=c++0x'" | tee -a "$_tmp"
+echo -e "\e[42mSet environment variables with for GAZEBO\e[0m"
+echo "export GAZEBO_MODEL_PATH=$(add_variable_to_list GAZEBO_MODEL_PATH ${PWD}/project/ros/src)" | tee -a "$_tmp"
+# echo "export GAZEBO_PLUGIN_PATH=${PWD}/project/simulation/gazebo_rsb_pkgs/gazebo_plugins:${GAZEBO_PLUGIN_PATH}" | tee -a "$_tmp"
+echo 'source ${MUROX_ROS}/devel/setup.bash' | tee -a "$_tmp"
+echo -e "\e[42mSet helpful aliases\e[0m"
+echo 'alias ros="cd ${MUROX_ROS} && source devel/setup.bash"' | tee -a "$_tmp"
+echo 'alias murox="cd ${MUROX_PROJECT}"' | tee -a "$_tmp"
+echo "${_end}" >> "$_tmp"
+
+# Replace and cleanup the old file
+mv $_tmp $_file
+
+echo -e "\e[42mDONE -- Source your ${_file} to use MuRoX\e[0m"

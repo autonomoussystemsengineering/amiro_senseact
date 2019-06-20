@@ -1,0 +1,7 @@
+====== Acting Behavior Programs ======
+
+In this subdirectory there are included all acting behavior programs:
+  * [[process:actingBehavior:objectDelivery:start|Object Delivery]]: Delivering an object by pushing it by using proximity sensors.
+  * [[process:actingBehavior:transport:start|Transport]]: Transporting an object on top of the robot while following another.
+  * [[process:actingBehavior:follow_LaserScanner:start|Following (Laser Scanner)]]: Following an object by using the laser scanner.
+  * [[process:actingBehavior:follow_ProximitySensors:start|Following (Proximity Sensors)]]: Following an object by using proximity sensors.

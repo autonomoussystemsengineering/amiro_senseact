@@ -1,0 +1,65 @@
+package rst.geometry;
+
+import "rst/geometry/Pose.proto";
+
+option java_outer_classname = "CameraPoseType";
+
+/**
+ * Pose of a camera with semantic annotation of the axes.
+ *
+ * The pure transformation of the camera's pose (in terms of
+ * coordinate systems) does not provide information about the viewing
+ * direction. There must be a convention about the semantic meaning of
+ * the transformation in order to convey the information about where
+ * the camera actually looks. @ref .coordinate_frame realizes this
+ * convention by describing the three axes of the camera's coordinate
+ * system semantically including viewing direction and up direction.
+ *
+ * @author Leon Ziegler <lziegler@techfak.uni-bielefeld.de>
+ */
+message CameraPose {
+
+    /**
+     * Semantic annotation of the axes. (all right-handed)
+     */
+    enum CoordinateFrame {
+
+        /**
+         * X: right - Y: down - Z: forward (depth axis)
+         */
+        CAMERA_IMAGE_FRAME = 0;
+
+        /**
+         * X: up - Y: right - Z: forward (depth axis)
+         */
+        CAMERA_X_UP_FRAME = 1;
+
+        /**
+         * X: left - Y: up - Z: forward (depth axis)
+         */
+        CAMERA_Y_UP_FRAME = 2;
+
+        /**
+         * X: forward (depth axis) - Y: left - Z: up
+         */
+        LASER_FRAME = 3;
+
+        /**
+         * X: right - Y: up - Z: towards viewer (negative depth axis)
+         */
+        SCREEN_FRAME = 4;
+
+    }
+
+    /**
+     * Annotation of the axes.
+     */
+    optional CoordinateFrame coordinate_frame = 1 [default = CAMERA_IMAGE_FRAME];
+
+    /**
+     * The pose of the camera's coordinate system in 3d space relative
+     * to a given parent coordinate system.
+     */
+    required geometry.Pose pose = 2;
+
+}

@@ -1,0 +1,143 @@
+<!DOCUMENT html>
+<html lang="en">
+<head>
+<script src="disabled.js"></script>
+<meta charset=utf-8 />
+<title>WebConVis</title>
+<link rel="stylesheet" href="project.css">
+</head>
+
+<body >
+	
+	<!--							Camera			-->
+	<div id='cam_div'>
+		<canvas id='image'></canvas>
+	</div>
+	<!--							Statusarea		-->
+	<div id=statusarea scroll="no" align="left">
+		<div id=Robot_ID>Roboter:?</div>
+		<div id=WebsocketCamera>Not initialized</div>
+		<div id=WebsocketInfrared>Not initialized</div>
+		<div id=Ired_0></div>
+		<div id=Ired_1></div>
+		<div id=Ired_2></div>
+		<div id=Ired_3></div>
+		<div id=Ired_4></div>
+		<div id=Ired_5></div>
+		<div id=Ired_6></div>
+		<div id=Ired_7></div>
+		<div id=Ired_8></div>
+		<div id=Ired_9></div>
+		<div id=Ired_10></div>
+		<div id=Ired_11></div>
+		<div id=Mouse_Position></div>
+		<div id=Mouse_Position1></div>
+		<div id=User_Number></div>
+		<div id=Steering_Status></div>
+		<div id=Speed_IMG></div>
+		<div id=Light_Status></div>
+		<div id=Speed_Status></div>
+		<div id=User_Robot_Control></div>
+		<div id=User_Headcount></div>
+	</div>
+
+	<!--							Infrared		-->
+	<div id=statusinfrared align=left>
+		<!-- Top LEFT AREA -->
+		<div id="bebot_div">
+			<canvas id="toplefttlc" height="60px" width="34px"></canvas>
+			<canvas id="topleftblc" height="60px" width="34px"></canvas>
+			<canvas id="toplefttrc" height="60px" width="34px"></canvas>
+
+			<!-- BOTTOM LEFT AREA -->
+			<canvas id="bottomlefttlc" height="60px" width="34px"></canvas>
+			<canvas id="bottomleftblc" height="60px" width="34px"></canvas>
+			<canvas id="bottomleftbrc" height="60px" width="34px"></canvas>
+
+			<!-- TOP RIGHT AREA -->
+			<canvas id="toprighttlc" height="60px" width="34px"></canvas>
+			<canvas id="toprighttrc" height="60px" width="34px"></canvas>
+			<canvas id="toprightbrc" height="60px" width="34px"></canvas>
+
+			<!-- BOTTOM RIGHT AREA -->
+			<canvas id="bottomrightblc" height="60px" width="34px"></canvas>
+			<canvas id="bottomrighttrc" height="60px" width="34px"></canvas>
+			<canvas id="bottomrightbrc" height="60px" width="34px"></canvas>
+
+			<img id="robotBebot" src="robot_bebot.png"></img>
+		</div>
+
+		<div id="amiro_div">
+			<canvas id="canvas_amiro1" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro2" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro3" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro4" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro5" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro6" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro7" height="60px" width="34px"></canvas>
+			<canvas id="canvas_amiro8" height="60px" width="34px"></canvas>
+			<img id="robotAmiro" src="robot_amiro.png"></img>
+		</div>
+
+	</div>
+	<!-- 					Container for buttons and Controlpanel	-->
+	<div id="divControl" align=center>
+		<!--							Buttons			-->
+		<div id="divButtons" align=center>
+			<input id="whiteLight" type="button" name="white light"
+				value="Weißes Licht aus">
+			</ipnut>
+			<input id="redLight" type="button" name="red light"
+				value="Rotes Licht aus">
+			</ipnut>
+			<input id="greenLight" type="button" name="green light"
+				value="Gruenes Licht aus">
+			</ipnut>
+			<input id="blueLight" type="button" name="blue light"
+				value="Blaues Licht aus">
+			</ipnut>
+			<div id="speeddiv">Geschwindigkeit:</div>
+			<div id="speed_range">
+				<input id="speedbar" type="range" min="0" max="100" value="50" />
+			</div>
+		</div>
+		<!--							Controlpanel		-->
+		<div id=controlpanel>
+			<div id=pre_Activ></div>
+			<img id="imgnormal" src="1nSteuerung600x600.png"></img> 
+			<img id="img_NO_CONTROL" src="1nSteuerung600x600_NO_CONTROL.png"></img>
+			<img id="img_OL" src="1nSteuerung600x600_OL.png"></img> 
+			<img id="img_O" src="1nSteuerung600x600_O.png"></img> 
+			<img id="img_OR" src="1nSteuerung600x600_OR.png"></img> 	
+			<img id="img_ML" src="1nSteuerung600x600_ML.png"></img> 
+			<img id="img_MR" src="1nSteuerung600x600_MR.png"></img> 
+			<img id="img_UL" src="1nSteuerung600x600_UL.png"></img> 
+			<img id="img_U" src="1nSteuerung600x600_U.png"></img> 
+			<img id="img_UR" src="1nSteuerung600x600_UR.png"></img>
+			<canvas id="control"></canvas>
+		</div>
+	</div>
+	
+	<button id="help" >Help</button>
+	<div id=help_div>
+		<canvas id="help_Example"></canvas>
+		<img id="img_Help" src="help.png"></img>
+	</div>		
+
+	<img id="geniale_logo" src="logo-geniale.png"></img>
+	<input id="leave_get_Control" type="button" value="In Warteschlange"></ipnut>
+
+	<script src="main.js"></script>
+	<script src="functions.js"></script>	
+	<script src="draw.js"></script>
+	<script src="bebot_infrared.js"></script>
+	<script src="amiro_infrared.js"></script>
+	<script src="Steuern_Steuerkreuz.js"></script>
+	<script src="Steuern_Camera.js"></script>
+	<script src="help.js"></script>
+	<script src="variables.js"></script>
+	
+
+	
+</body>
+</html>

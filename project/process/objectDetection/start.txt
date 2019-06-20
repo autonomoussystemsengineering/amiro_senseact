@@ -1,0 +1,6 @@
+====== Object Detection Programs ======
+
+In this subdirectory there are included all programs for detecting objects:
+  * [[process:objectDetection:objectDetection:start|Object Detection]]: Detecting learned objects.
+  * [[process:objectDetection:frontObjectDetection:start|Front Object Detection]]: Detecting object in front of the robot based on proximity sensors.
+  * [[process:objectDetection:visualMotionDetection:start|Motion Detection]]: Detection of motion.

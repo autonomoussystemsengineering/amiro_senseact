@@ -1,0 +1,34 @@
+package rst.dynamics;
+
+option java_outer_classname = "TorquesType";
+
+/**
+ * Cartesian 3-dimensional rotational force (moment).
+ *
+ * To specify torques in joint space, use @ref
+ * rst.dynamics.JointTorques instead.
+ *
+ * @author Arne Nordmann <anordman@techfak.uni-bielefeld.de>
+ * @todo "can we be more specific about the axes here?"
+ */
+message Torques {
+
+    /**
+     * Torque around the x axis.
+     */
+    // @unit(newton-meter)
+    required float a = 1;
+
+    /**
+     * Torque around the y axis.
+     */
+    // @unit(newton-meter)
+    required float b = 2;
+
+    /**
+     * Torque around the z axis.
+     */
+    // @unit(newton-meter)
+    required float c = 3;
+
+}

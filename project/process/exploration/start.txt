@@ -1,0 +1,9 @@
+====== Exploration Programs ======
+
+In this subdirectory there are included all exploration programs:
+  * [[process:exploration:braitenberg:start|Braitenberg]]: Braitenberg behavior based on proximity sensors with obstacle and edge models.
+  * [[process:exploration:braitenbergAmiro:start|Braitenberg AMiRo]]: Simple braitenberg behavior based on proximity sensors without any model.
+  * [[process:exploration:exploDriveEdge:start|Edge Exploration]]: Exploration next to the edges.
+  * [[process:exploration:frontierExploration:start|GEPTRO Frontier Exploration]]: Basic Frontier Exploration of the GEPTRO project.
+  * [[process:exploration:localPlanner:start|Local Planner]]: Local Planner.
+  * [[process:exploration:localPlannerISY:start|Local Planner (GEPTRO)]]: Local Planner of the GEPTRO project.

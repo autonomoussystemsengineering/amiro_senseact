@@ -1,0 +1,17 @@
+package rst.claas;
+
+option java_outer_classname = "LASE_2000D_226Type";
+
+message LASE_2000D_226 {
+	
+//Measured Data
+required uint32 scannumber = 1;				// 4 Byte
+required uint32 timestamp = 2;				// 4 Byte
+required uint32 systemtemperature = 3;			// 4 Byte
+
+//List of measured points
+repeated fixed32 distance = 4 [packed=true];	//1 .. 1000 Points a 4 Byte = 4000 Byte
+repeated fixed32 pulsewidth = 5 [packed=true];	//1 .. 1000 Points a 4 Byte = 4000 Byte
+
+}
+

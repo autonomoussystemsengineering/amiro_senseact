@@ -1,0 +1,57 @@
+====== ExploDriveEdge ======
+
+The robot drives on a table along the edges. Basically the robot starts driving forward (there isn't any obstacle avoidance!) until it detects an edge. The corner position will be saved. Then it turns right until the edge is measured completely on the left. This behavior is done as often as set (on default it's done twice). At the end the robot will turn towards the table's center.
+
+The edges are detected by the proximity sensors, which can be read by the [[sense:senseRingProximity:start|senseRingProximity program]]. The distances can be calculated by using the [[includes:sensorModels:startVCNL4020|edge model]]. For the calculation of the corner positions there is a localization tool needed.
+
+The tool doesn't start immediately. It waits for the start command and returns if the exploration is finished or has been stopped due to some errors. Additionally on demand the tool gives the list of corner positions.
+
+===== Build Program =====
+
+  - ''cmake .''
+  - ''make''
+
+===== RSB Scopes =====
+
+^ Name ^ Default Scope ^ Description ^
+| Obstacle Sensor Values | /rir_prox/obstacle | Scope for receiving obstacle values of the proximity sensors. |
+| Edge Sensor Values | /rir_prox/ground | Scope for receiving edge values of the proximity sensors. |
+| Localization Position | /localization | Scope for receiving actual position of the localization tool. |
+| Command Input | /exploration/command | Scope for receiving commands. |
+| Command Response Ouput | /exploration/answer | Scope for sending command responses. |
+| Corner Position Request | /rectposition/command | Scope for receiving corner positions request. |
+| Corner Positions | /rectposition/answer | Scope for sending corner positions. |
+
+===== Commands =====
+
+^ Command ^ Type ^ Scope Name ^ Description ^
+| "start" | String | Command Input | The exploration will start. |
+| - | - | Corner Position Request | Requests the list of corner positions. |
+
+===== Command Responses =====
+
+^ Response ^ Type ^ Scope Name ^ Decription ^
+| "finish" | String | Command Response Output | The exploration has been finished without any errors. |
+| "broken" | String | Command Response Output | The exploration has been stopped due to some errors. Please check the console output for detailed information. |
+| Corner Positions | Pose2DList | Corner Positions | List of corner positions. |
+
+===== States =====
+
+^ State ^ Description ^ Transitions ^
+| turnEdge | Starts turning. | __findDirection:__ directly |
+| findDirection | Turning behavior until edge is behind robot. | __roundScan:__ if edge is behind robot |
+| roundScan | Starts driving forward. | __driveEdge:__ directly |
+| driveEdge | Stop, if edge is in front of robot. Otherwise continue driving. | __checkEdge:__ if edge is in front of robot |
+| checkEdge | Checks one more time, if there is an edge in front of the robot. If not, continue driving. | __driveEdge:__ if there isn't an edge in front of the robot; __correctEdge:__ if there is an edge in front of the robot |
+| correctEdge | Drives a bit backwards, if edge is too close. Saves corner position. Starts turning to the right. | __turn:__ if there are more edges to drive along; __finalize:__ if this was the last edge |
+| turn | Continue turning until edge is on the left. Start driving forward. | __driveEdge:__ if edge is on the left |
+| finalize | Turns to the left towards the table's center. Finalizes state machine. | - |
+
+The state machine starts with initializing state "turnEdge". After finalizing the state machine, the tool waits for new start command.
+
+===== Parameters =====
+
+^ Parameter ^ Type ^ Default Value ^ Description ^
+| --edgeCount, -e | Integer | 2 | Count of edges the robot should drive. |
+| --positionInscope | String | "/localization" | Inscope for position data of SLAM localization. |
+

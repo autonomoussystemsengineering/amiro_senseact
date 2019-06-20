@@ -1,0 +1,181 @@
+#ifndef AMIRO_COLOR_H_
+#define AMIRO_COLOR_H_
+
+namespace amiro {
+
+  class Color {
+  public:
+    enum GlobalColor {
+      ALICEBLUE,
+      ANTIQUEWHITE,
+      AQUA,
+      AQUAMARINE,
+      AZURE,
+      BEIGE,
+      BISQUE,
+      BLACK,
+      BLANCHEDALMOND,
+      BLUE,
+      BLUEVIOLET,
+      BROWN,
+      BURLYWOOD,
+      CADETBLUE,
+      CHARTREUSE,
+      CHOCOLATE,
+      CORAL,
+      CORNFLOWERBLUE,
+      CORNSILK,
+      CRIMSON,
+      CYAN,
+      DARKBLUE,
+      DARKCYAN,
+      DARKGOLDENROD,
+      DARKGRAY,
+      DARKGREEN,
+      DARKGREY,
+      DARKKHAKI,
+      DARKMAGENTA,
+      DARKOLIVEGREEN,
+      DARKORANGE,
+      DARKORCHID,
+      DARKRED,
+      DARKSALMON,
+      DARKSEAGREEN,
+      DARKSLATEBLUE,
+      DARKSLATEGRAY,
+      DARKSLATEGREY,
+      DARKTURQUOISE,
+      DARKVIOLET,
+      DEEPPINK,
+      DEEPSKYBLUE,
+      DIMGRAY,
+      DIMGREY,
+      DODGERBLUE,
+      FIREBRICK,
+      FLORALWHITE,
+      FORESTGREEN,
+      FUCHSIA,
+      GAINSBORO,
+      GHOSTWHITE,
+      GOLD,
+      GOLDENROD,
+      GRAY,
+      GREY,
+      GREEN,
+      GREENYELLOW,
+      HONEYDEW,
+      HOTPINK,
+      INDIANRED,
+      INDIGO,
+      IVORY,
+      KHAKI,
+      LAVENDER,
+      LAVENDERBLUSH,
+      LAWNGREEN,
+      LEMONCHIFFON,
+      LIGHTBLUE,
+      LIGHTCORAL,
+      LIGHTCYAN,
+      LIGHTGOLDENRODYELLOW,
+      LIGHTGRAY,
+      LIGHTGREEN,
+      LIGHTGREY,
+      LIGHTPINK,
+      LIGHTSALMON,
+      LIGHTSEAGREEN,
+      LIGHTSKYBLUE,
+      LIGHTSLATEGRAY,
+      LIGHTSLATEGREY,
+      LIGHTSTEELBLUE,
+      LIGHTYELLOW,
+      LIME,
+      LIMEGREEN,
+      LINEN,
+      MAGENTA,
+      MAROON,
+      MEDIUMAQUAMARINE,
+      MEDIUMBLUE,
+      MEDIUMORCHID,
+      MEDIUMPURPLE,
+      MEDIUMSEAGREEN,
+      MEDIUMSLATEBLUE,
+      MEDIUMSPRINGGREEN,
+      MEDIUMTURQUOISE,
+      MEDIUMVIOLETRED,
+      MIDNIGHTBLUE,
+      MINTCREAM,
+      MISTYROSE,
+      MOCCASIN,
+      NAVAJOWHITE,
+      NAVY,
+      OLDLACE,
+      OLIVE,
+      OLIVEDRAB,
+      ORANGE,
+      ORANGERED,
+      ORCHID,
+      PALEGOLDENROD,
+      PALEGREEN,
+      PALETURQUOISE,
+      PALEVIOLETRED,
+      PAPAYAWHIP,
+      PEACHPUFF,
+      PERU,
+      PINK,
+      PLUM,
+      POWDERBLUE,
+      PURPLE,
+      RED,
+      ROSYBROWN,
+      ROYALBLUE,
+      SADDLEBROWN,
+      SALMON,
+      SANDYBROWN,
+      SEAGREEN,
+      SEASHELL,
+      SIENNA,
+      SILVER,
+      SKYBLUE,
+      SLATEBLUE,
+      SLATEGRAY,
+      SLATEGREY,
+      SNOW,
+      SPRINGGREEN,
+      STEELBLUE,
+      TAN,
+      TEAL,
+      THISTLE,
+      TOMATO,
+      TURQUOISE,
+      VIOLET,
+      WHEAT,
+      WHITE,
+      WHITESMOKE,
+      YELLOW,
+      YELLOWGREEN
+    };
+
+    Color();
+    Color(const Color& color);
+    Color(int r, int g, int b);
+    Color(GlobalColor color);
+    Color darker(int factor);
+    void getRedGreenBlue(int* r, int* g, int* b);
+    unsigned char getRed();
+    unsigned char getGreen();
+    unsigned char getBlue();
+    Color lighter(int factor);
+    void setRedGreenBlue(int r, int g, int b);
+
+    Color& operator=(Color const& color);
+    Color& operator=(GlobalColor color);
+
+  private:
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+  };
+
+}
+
+#endif /* AMIRO_COLOR_H_ */

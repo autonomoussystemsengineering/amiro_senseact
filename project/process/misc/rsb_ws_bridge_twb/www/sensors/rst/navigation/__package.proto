@@ -1,0 +1,12 @@
+/**
+ * A Navigation is a field of study that focuses on the process of
+ * monitoring and controlling the movement of a craft or vehicle from
+ * one place to another.
+ *
+ * This package contains data type definitions related to (robot)
+ * navigation.
+ *
+ * @see http://en.wikipedia.org/wiki/navigation
+ *      "Wikipedia article containing the definition above"
+ */
+package rst.navigation;

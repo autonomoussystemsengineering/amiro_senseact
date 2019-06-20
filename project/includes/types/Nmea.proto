@@ -1,0 +1,95 @@
+package rst.claas;
+
+option java_outer_classname = "sensorNmeaType";
+
+message Nmea_Time{
+
+required uint32 year = 1;	//< Years since 1900
+required uint32 mon = 2;	//< Months since January - [0,11]
+required uint32 day = 3;  	//< Day of the month - [1,31]
+required uint32 hour = 4; 	//< Hours since midnight - [0,23]
+required uint32 min = 5;  	//< Minutes after the hour - [0,59]
+required uint32 sec = 6;  	//< Seconds after the minute - [0,59]
+required uint32 hsec = 7; 	//< Hundredth part of second - [0,99]
+}
+
+message Nmea_Satellite{
+
+required uint32 id = 1;		//< Satellite PRN number 
+required uint32 in_use = 2;     //< Used in position fix
+required uint32 elv = 3;        //< Elevation in degrees, 90 maximum
+required uint32 azimuth = 4;    //< Azimuth, degrees from true north, 000 to 359
+required uint32 sig = 5;        //< Signal, 00-99 dB
+}
+
+message Nmea_Pos{
+
+required double lat = 1; 	// Latitude - [degree][min].[sec/60]
+required int32 northsouth = 2;	// [N]orth or [S]outh
+required double lon = 3;	// Longitude - [degree][min].[sec/60]
+required int32 eastwest = 4;	// [E]ast or [W]est
+}
+
+message Nmea_GPGGA {
+
+required Nmea_Time time = 1;
+required Nmea_Pos pos = 2;
+required uint32 sig = 3;     	//< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive) */
+required uint32 satinuse = 4; 	//< Number of satellites in use (not those in view)
+required double  HDOP = 5;   	//< Horizontal dilution of precision
+required double  elv = 6;         	//< Antenna altitude above/below mean sea level (geoid)
+required int32   elv_units = 7;  	//< [M]eters (Antenna height unit)
+required double  diff = 8;       	//< Geoidal separation (Diff. between WGS-84 earth ellipsoid and mean sea level. '-' = geoid is below WGS-84 ellipsoid)
+required int32 diff_units = 9; 	//< [M]eters (Units of geoidal separation)
+optional double  dgps_age = 10;   	//< Time in seconds since last DGPS update
+optional uint32 dgps_sid = 11;	//< DGPS station ID number
+}
+
+message Nmea_GPGSA{
+
+required int32 fix_mode = 1;	//< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
+required uint32 fix_type = 2;	//< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+repeated uint32 sat_prn = 3;	//< PRNs of satellites used in position fix (null for unused fields) */
+required double PDOP = 4;		//< Dilution of precision
+required double HDOP = 5;		//< Horizontal dilution of precision
+required double VDOP = 6;		//< Vertical dilution of precision
+}
+
+message Nmea_GPGSV{
+
+required uint32 pack_count = 1;	//< Total number of messages of this type in this cycle
+required uint32 pack_index = 2;	//< Message number
+required uint32 sat_count = 3;	//< Total number of satellites in view
+repeated Nmea_Satellite satellite = 4;
+}
+
+message Nmea_GPRMC{
+
+required Nmea_Time time = 1;
+required int32 status = 2;	//< Status (A = active or V = void)
+required Nmea_Pos pos = 3;
+required double speed = 4;     	//< Speed over the ground in knots
+required double direction = 5; 	//< Track angle in degrees True
+required double declination = 6;//< Magnetic variation degrees (Easterly var. subtracts from true course)
+required int32 declin_ew = 7; 	//< [E]ast or [W]est
+required int32 mode = 8;      	//< Mode indicator of fix type (A = autonomous, D = differential, E = estimated, N = not valid, S = simulator)
+}
+
+message Nmea_GPVTG{
+
+required double  dir = 1;	//< True track made good (degrees) */
+required int32 dir_t = 2;      	//< Fixed text 'T' indicates that track made good is relative to true north */
+required double dec = 3;       	//< Magnetic track made good */
+required int32 dec_m = 4;      	//< Fixed text 'M' */
+required double spn = 5;       	//< Ground speed, knots */
+required int32 spn_n = 6;      	//< Fixed text 'N' indicates that speed over ground is in knots */
+required double spk = 7;       	//< Ground speed, kilometers per hour */
+required int32 spk_k = 8;      	//< Fixed text 'K' indicates that speed over ground is in kilometers/hour */
+}
+
+message Nmea_GPGLL{
+required Nmea_Pos pos = 1;
+required Nmea_Time time = 2;
+required int32 active = 3;	// Data Active or V (void)
+}
+

@@ -1,0 +1,4 @@
+/**
+ * This package contains data types which represent aspects of time.
+ */
+package rst.timing;

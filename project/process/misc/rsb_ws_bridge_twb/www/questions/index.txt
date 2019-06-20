@@ -1,0 +1,20 @@
+Name:		index.html
+Seitenname:	Forschungsprojekt CLAAS & CITEC - it's owl
+Enthält Menü:	nein
+Logo Tab:	it's owl
+Logo Seite:	it's owl, CITEC, CLAAS
+
+Links:
+* Overview		-> overview.html
+* Lexion C5500942	-> machines/lexion.html
+* RSBLogger		-> watchdog/rsblogger.html
+* Process List		-> watchdog/processList.html
+
+Fragen/Anmerkungen:
+* Grundsätzlich weiterer Inhalt (Sensoren, Maschinen Watchdogs, etc.)
+
+Erledigt:
+* Korrekter Name: Lexion C5500942
+* Erst auf Maschine (eigener Tab!), dann auf Sensoren
+* Hier dicken Titelbalken, sonst schmal
+* Alle Logos hier einbauen

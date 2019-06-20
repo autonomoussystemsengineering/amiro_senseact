@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <title>RSB Logger</title>
+  <link rel="icon" type="image/png" href="../media/logo_its-owl_en.png">
+  <link rel="apple-touch-icon" href="../media/logo_its-owl_en.png" />
+  <link rel="stylesheet" href="../iui/iui.css" type="text/css" />
+  <link rel="stylesheet" title="Default" href="../iui/t/default/default-theme.css"  type="text/css"/>
+  <script type="application/x-javascript" src="../iui/iui.js"></script>
+</head>
+
+<body>
+  <div class="toolbar">
+      <h1 id="pageTitle">RSB Logger</h1>
+  </div>
+
+  <div id="home" class="panel" selected="true">
+    <textarea id="log" style="width: 100%; height: 400px" readonly></textarea>
+    <input type="text" id="text" value="/" placeholder="RSB Scope" />
+    <button id="startButton" onclick="startRSBLogger()" disabled>Start</button>
+    <button id="stopButton" onclick="stopRSBLogger()" disabled>Stop</button>
+  </div>
+  
+  
+  <script>
+    var log = document.getElementById("log");
+    var text = document.getElementById("text");
+    var initDone = false;
+
+    window.onbeforeunload = function () {
+      socket.close();
+    };
+
+    window.onunload = function () {
+      socket.close();
+    };
+
+    window.onpagehide = function() {
+      socket.close();
+    };
+
+    // Connect to our server
+    var socket = new WebSocket("ws://" + location.hostname + (location.port ? ':'+location.port: '') + "/ws");
+    socket.binaryType = "arraybuffer"; // We are talking binary
+
+    function startRSBLogger() {
+        if (text.value == "") {
+          log.value += "Please enter RSB scope.\n";
+        } else if (socket.readyState == WebSocket.OPEN) {
+            socket.send("execrsb-loggercpp0.11 --style detailed --scope " + text.value);
+            log.value += "Started RSB-Logger with scope " + text.value +"\n";
+            document.getElementById("startButton").disabled = true;
+            document.getElementById("stopButton").disabled = false;
+        } else {
+            log.value += "Not connected\n";
+        }
+    }
+
+    function stopRSBLogger() {
+        if (socket.readyState == WebSocket.OPEN) {
+            socket.send("execkillall rsb-loggercpp0.11");
+            log.value += "Stopped RSB-Logger\n";
+            document.getElementById("startButton").disabled = false;
+            document.getElementById("stopButton").disabled = true;
+        } else {
+            log.value += "Not connected\n";
+        }
+    }
+
+    socket.onopen = function() {
+        log.value += "Connected\n";
+        if (!initDone) {
+            socket.send("execps");
+        } 
+    };
+
+    socket.onclose = function() {
+        log.value += "Disconnected\n";
+    };
+        
+    socket.onmessage = function(evt) {
+      // load input
+      var input = String.fromCharCode.apply(null, new Uint8Array(evt.data));
+
+      // reaction on first input
+      if (!initDone) {
+        initDone = true;
+        var processes = input.split("\n");
+        var rsbloggerFound = false;
+        for (var ps=0; ps<processes.length; ps++) {
+          if (processes[ps].search("rsb-logger") >= 0) {
+            rsbloggerFound = true;
+            break;
+          }
+        }
+        if (!rsbloggerFound) {
+          document.getElementById("startButton").disabled = false;
+        } else {
+          document.getElementById("stopButton").disabled = false;
+          log.value += "RSB Logger is still running.\n";
+        }
+        return;
+      }
+
+      // Print the received data in the log window
+      log.value += String.fromCharCode.apply(null, new Uint8Array(evt.data));
+
+      // Scroll to the bottom to keep track of the output
+      var logarea = document.getElementById('log');
+      logarea.scrollTop = logarea.scrollHeight;
+    };
+
+    log.value = ""; // Clear log on reload
+  </script>
+
+
+</body>
+</html>

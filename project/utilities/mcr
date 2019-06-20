@@ -1,0 +1,10 @@
+#!/bin/bash
+PREFIX="192.168.2."
+echo "This is the Make & Copy & Run script"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $ ${0} <IP suffix for prefix ${PREFIX}> <program options>"
+    exit
+fi
+PROG=`pwd | tr '/' '\n' | tail -n 1`
+echo "Make, then Copy $PROG to ${PREFIX}${1} and run it with options: ${2}"
+make && scp ${PROG} root@${PREFIX}${1}:~ && ssh root@${PREFIX}${1} "~/${PROG} ${2}"
