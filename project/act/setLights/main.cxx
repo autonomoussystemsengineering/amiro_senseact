@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <math.h>
 
+#include <chrono>
+#include <thread>
 
 #include <iostream>
 #include <boost/thread.hpp>
@@ -173,6 +175,10 @@ rsb::converter::converterRepository<std::string>()->registerConverter(converter)
 
 	INFO_MSG("Starting lighting loop");
 	exitProg = false;
+
+	// Prepare the sleep timer
+    boost::chrono::steady_clock::time_point next = boost::chrono::steady_clock::now();
+
 	while (!exitProg) {
 		// check for new color input
 		colorChanged = false;
@@ -196,8 +202,9 @@ rsb::converter::converterRepository<std::string>()->registerConverter(converter)
 		// set colors
 		setColor(colorChanged, timeCounter, changeColorCounter, myCAN);
 
-		// sleep 10 ms
-		usleep(10000);
+		// delay for the rest of 10ms before iterating again
+        next += boost::chrono::milliseconds(10);
+        boost::this_thread::sleep_until(next);
 	}
 
 	for (uint led=0; led<8; led++) {

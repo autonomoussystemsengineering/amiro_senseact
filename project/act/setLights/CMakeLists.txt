@@ -17,7 +17,7 @@ else()
 endif()
 
 # Get modules
-SET (BOOST_COMPONENTS regex date_time program_options system thread)
+SET (BOOST_COMPONENTS regex date_time program_options system thread chrono)
 INCLUDE("$ENV{MUROX_CMAKE_MODULES}/findPackageBoost.cmake")
 
 # Get the compiler specific includes and store them in GXX_INCLUDES
@@ -57,6 +57,7 @@ target_link_libraries (
     ${RSTSANDBOX_LIBRARIES}
     ${BOOST_LIRBRARIES}
     boost_thread
+    boost_chrono
 )
 
 ADD_DEFINITIONS(${RST_CFLAGS} ${RSTSANDBOX_CFLAGS} -Wall -Wno-deprecated-declarations -Wno-write-strings -Wno-unused-function -std=c++11)
